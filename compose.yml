@@ -1,6 +1,7 @@
 services:
   dev:
     image: node:25-bookworm-slim
+    restart: unless-stopped
     working_dir: /app
     volumes:
       - ./:/app:cached
@@ -23,6 +24,7 @@ services:
       sh -lc "npm install && npm run dev"
   prod:
     image: node:25-bookworm-slim
+    restart: unless-stopped
     working_dir: /app
     volumes:
       - ./:/app:cached
