@@ -7,6 +7,8 @@
       value: /
     - type: startsWith
       value: /posts/
+    - type: startsWith
+      value: /page/
 - id: series
   label: Series
   url: /series/
