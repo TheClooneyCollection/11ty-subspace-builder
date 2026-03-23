@@ -1,6 +1,7 @@
 /_site/
 assets/og/
 _data/ogImages.json
+.claude/
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,vim,emacs,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,vim,emacs,node
