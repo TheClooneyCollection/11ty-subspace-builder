@@ -1,0 +1,49 @@
+---
+layout: layouts/home.njk
+title: Series
+description: Curated collections of related posts with editorial intros and flexible sorting.
+showPostHeader: false
+permalink: /series/
+---
+
+{% set seriesList = series | default([]) %}
+
+<section class="mw7 center">
+  <header class="mb5">
+    <h1 class="f3 f2-ns lh-title mt0 mb3">Series</h1>
+    <p class="f5 f4-ns lh-copy mt0 mb0 theme-midtone">
+      Curated reading paths through related posts. Each series starts in my
+      recommended order, and the detail page can switch to reverse or date-based
+      sorting.
+    </p>
+  </header>
+
+  {% if seriesList | length %}
+    <div class="flex flex-column">
+      {% for item in seriesList %}
+        <article class="mb4 pb4 bb b--black-10">
+          <h2 class="f3 lh-title mb2 mt0">
+            <a class="link dim theme-text" href="{{ ('/series/' ~ item.id ~ '/') | url }}">
+              {{ item.title }}
+            </a>
+          </h2>
+          <p class="f6 theme-midtone mt0 mb3">
+            {{ item.posts | length }} post{% if (item.posts | length) != 1 %}s{% endif %}
+          </p>
+          {% if item.intro %}
+            <p class="lh-copy mt0 mb3">
+              {{ item.intro }}
+            </p>
+          {% endif %}
+          <p class="mt0 mb0">
+            <a class="link dim fw5 theme-text underline" href="{{ ('/series/' ~ item.id ~ '/') | url }}">
+              Read series
+            </a>
+          </p>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="theme-midtone">No series published yet.</p>
+  {% endif %}
+</section>
