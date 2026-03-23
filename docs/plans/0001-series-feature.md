@@ -25,11 +25,12 @@ Add a "Series" root navigation item that presents curated collections of existin
 
 | File | Action | Purpose |
 |---|---|---|
-| `_data/series.yaml` | Create | Series definitions + curated post slug lists |
+| `_data/series.yaml` | Create | Series definitions + curated post URL lists |
 | `src/series/index.njk` | Create | `/series/` listing page |
 | `src/series/series-page.njk` | Create | Individual series pages via 11ty pagination |
+| `src/series/series-page.11tydata.js` | Create | Resolve post URLs, validate entries, and prepare series data |
 | `_data/sidebarNav.yaml` | Edit | Add "Series" nav item |
-| `eleventy.config.js` | Edit | Add `getPost` filter (~3 lines) |
+| `assets/js/series-sort.js` | Create | Client-side sort controls for individual series pages |
 
 ---
 
@@ -43,20 +44,22 @@ Add a "Series" root navigation item that presents curated collections of existin
   intro: |
     This series walks you through the core concepts...
   posts:
-    - slug: my-first-post
-    - slug: configuring-your-build
-    - slug: advanced-patterns
+    - /posts/my-first-post/
+    - /posts/configuring-your-build/
+    - /posts/advanced-patterns/
 
 - id: release-notes
   title: "Release Notes"
   intro: |
     A curated log of notable releases and what changed.
   posts:
-    - slug: v1-12-0-roundup
-    - slug: some-other-release
+    - /posts/v1-12-0-roundup/
+    - /posts/some-other-release/
 ```
 
-Slugs correspond to post filenames (without extension) in `posts/subspace/`.
+Posts are referenced by their output URL, not by filename. That avoids tying
+series membership to a specific source directory and makes the identifier match
+the site's canonical routing.
 
 ---
 
@@ -78,24 +81,35 @@ No custom plugin needed. This is standard 11ty.
 
 ---
 
-## Post Lookup
+## Post Resolution & Validation
 
-Add one filter to `eleventy.config.js`:
+`src/series/series-page.11tydata.js` resolves each referenced post URL against
+`collections.posts` and validates the result at build time.
 
 ```js
-eleventyConfig.addFilter("getPost", (posts, slug) =>
-  posts.find(p => p.fileSlug === slug)
-);
+export default {
+  eleventyComputed: {
+    resolvedSeries(data) {
+      // Find posts by URL, skip duplicates, warn in development,
+      // and fail in production if a referenced post is missing.
+    },
+  },
+};
 ```
 
-Use in the series page template:
+The template then loops over `resolvedSeries.posts`:
 
 ```njk
-{% for postSlug in seriesItem.posts %}
-  {% set post = collections.posts | getPost(postSlug) %}
+{% for post in resolvedSeries.posts %}
   {# render post card with post.data.title, post.data.date, post.url, etc. #}
 {% endfor %}
 ```
+
+Recommended validation behavior:
+
+- Warn on duplicate URLs inside a series and skip repeats
+- Warn in development when a series references draft posts
+- Fail in production when a referenced post URL cannot be resolved
 
 ---
 
@@ -128,7 +142,8 @@ Four buttons at the top of the series page:
 [Default] [Reverse] [Oldest First] [Newest First]
 ```
 
-A small inline `<script>` (roughly 20 lines of vanilla JS) handles button clicks and reorders the list in-place. No page reload. No framework.
+A small dedicated asset file, `assets/js/series-sort.js`, handles button clicks
+and reorders the list in-place. No page reload. No framework.
 
 - **Default**: DOM order as rendered (YAML curated order)
 - **Reverse**: Reverse DOM order
@@ -145,10 +160,11 @@ A small inline `<script>` (roughly 20 lines of vanilla JS) handles button clicks
 - Uses 11ty's native pagination (no new dependencies)
 - Follows existing data-file patterns (`projects.yaml`, `themes.yaml`, etc.)
 - Minimal new code
+- Post references are based on canonical output URLs, not source file layout
 
 ### Cons
 - Posts don't "know" they belong to a series (no back-link on post pages)
-- If a post file is renamed, the YAML slug reference must be updated manually
+- If a post URL changes, the YAML reference must be updated manually
 
 ### Future Extension (Option C / Hybrid)
 If back-links from individual post pages become desirable ("Part of: [Series Name]"), add `series: series-id` to relevant post front matter. No structural changes needed, just a template addition and some front matter edits.

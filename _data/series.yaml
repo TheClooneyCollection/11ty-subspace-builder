@@ -1,0 +1,22 @@
+---
+- id: release-notes
+  title: Release Notes & Milestones
+  intro: >
+    A guided reading path through the biggest Subspace Builder releases, from
+    the first stable launch to later rounds of polish.
+  posts:
+    - /posts/v1.0.0-release/
+    - /posts/v1.10-1.12-roundup/
+
+- id: publishing-toolbelt
+  title: Publishing Workflow & Tooling
+  intro: >
+    The behind-the-scenes posts that shaped the publishing pipeline: images,
+    social cards, draft handling, table of contents generation, and GitHub
+    embeds.
+  posts:
+    - /posts/responsive-images-eleventy-img/
+    - /posts/social-cards/
+    - /posts/hide-drafts-production/
+    - /posts/auto-generated-toc/
+    - /posts/github-code-embeds/

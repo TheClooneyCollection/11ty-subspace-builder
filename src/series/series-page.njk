@@ -1,0 +1,105 @@
+---
+layout: layouts/home.njk
+showPostHeader: false
+pagination:
+  data: series
+  size: 1
+  alias: seriesItem
+permalink: /series/{{ seriesItem.id }}/
+scripts:
+  - /assets/js/series-sort.js
+eleventyComputed:
+  title: "{{ seriesItem.title }}"
+  description: "{{ seriesItem.intro }}"
+---
+
+{% set seriesPosts = resolvedSeries.posts | default([]) %}
+{% set sortOptions = [
+  { id: 'curated', label: 'Curated' },
+  { id: 'reverse', label: 'Reverse' },
+  { id: 'date-asc', label: 'Oldest First' },
+  { id: 'date-desc', label: 'Newest First' }
+] %}
+
+<section class="mw7 center" data-series-page>
+  <header class="mb5">
+    <p class="f6 ttu tracked theme-midtone mt0 mb2">Series</p>
+    <h1 class="f3 f2-ns lh-title mt0 mb3">{{ seriesItem.title }}</h1>
+    {% if seriesItem.intro %}
+      <p class="f5 f4-ns lh-copy mt0 mb4 theme-midtone">
+        {{ seriesItem.intro }}
+      </p>
+    {% endif %}
+    <div class="flex items-center justify-between flex-wrap">
+      <p class="f6 theme-midtone mt0 mb3 mb0-ns">
+        {{ seriesPosts | length }} post{% if (seriesPosts | length) != 1 %}s{% endif %}
+      </p>
+      {% if seriesPosts | length > 1 %}
+        <div class="flex flex-wrap" data-series-sort-controls>
+          {% for option in sortOptions %}
+            <button
+              type="button"
+              class="ba b--black-20 br-pill ph3 pv2 mr2 mb2 bg-transparent pointer theme-text"
+              data-series-sort="{{ option.id }}"
+              aria-pressed="{% if loop.first %}true{% else %}false{% endif %}"
+              disabled
+            >
+              {{ option.label }}
+            </button>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+    <p class="mt3 mb0">
+      <a class="link dim fw5 underline theme-text" href="{{ '/series/' | url }}">
+        Back to all series
+      </a>
+    </p>
+  </header>
+
+  {% if seriesPosts | length %}
+    <ol class="pl3 mt0 mb0" data-series-posts>
+      {% for post in seriesPosts %}
+        <li
+          class="mb4 pb4 bb b--black-10"
+          data-series-post
+          data-curated-index="{{ loop.index0 }}"
+          value="{{ loop.index }}"
+          data-date="{{ post.date | machineDate }}"
+        >
+          <article>
+            <h2 class="f3 lh-title mb2 mt0">
+              <a class="link dim theme-text" href="{{ post.url | url }}">{{ post.data.title }}</a>
+            </h2>
+            {% if post.date %}
+              <p class="f6 theme-midtone mt0 mb3">
+                <time datetime="{{ post.date | machineDate }}">{{ post.date | readableDate }}</time>
+              </p>
+            {% endif %}
+            {% set itemTags = (post.data.tags | default([])) | filterTags %}
+            {% if itemTags | length %}
+              <ul class="list pl0 ma0 mb3 flex flex-wrap">
+                {% for tag in itemTags %}
+                  <li class="mr2 mb2">
+                    <a class="link dim f6 theme-midtone ba b--black-20 br-pill ph2 pv1" href="/tags/{{ tag | slug }}/">
+                      #{{ tag }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            <div class="lh-copy">
+              {% if post.data.excerpt %}
+                {{ post.data.excerpt | safe }}
+              {% else %}
+                {{ post.templateContent | excerpt(2) | safe }}
+              {% endif %}
+            </div>
+          </article>
+        </li>
+      {% endfor %}
+    </ol>
+  {% else %}
+    <p class="theme-midtone">This series does not have any published posts yet.</p>
+  {% endif %}
+</section>

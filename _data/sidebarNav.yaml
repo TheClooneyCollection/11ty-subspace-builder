@@ -7,6 +7,12 @@
       value: /
     - type: startsWith
       value: /posts/
+- id: series
+  label: Series
+  url: /series/
+  activePatterns:
+    - type: startsWith
+      value: /series/
 - id: drafts
   label: Drafts
   url: /drafts/
