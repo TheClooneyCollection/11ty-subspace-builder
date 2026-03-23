@@ -7,25 +7,26 @@ showPostHeader: false
 permalink: /tags/
 ---
 
-{% set tagNames = collections.tagList | default([]) %}
-
 <section class="mw7 center">
-  <h1 class="f3 f2-ns lh-title mt0 mb3">All Tags</h1>
-  {% if tagNames | length %}
-    <ul class="list pl0 mt0">
-      {% for tag in tagNames %}
-        {% set tagItems = collections[tag] | default([]) %}
-        {% set postCount = tagItems | length %}
-        <li class="mb2">
-          <a class="link dim theme-text fw5" href="/tags/{{ tag | slug }}/">
-            {{ tag }}
-          </a>
-          <span class="theme-midtone f6">
-            ({{ postCount }} post{% if postCount != 1 %}s{% endif %})
-          </span>
-        </li>
-      {% endfor %}
-    </ul>
+  <h1 class="f3 f2-ns lh-title mt0 mb4">All Tags</h1>
+  {% if collections.tagGroups | length %}
+    {% for group in collections.tagGroups %}
+      <div class="mb4">
+        <h2 class="f6 ttu tracked theme-midtone mt0 mb2">
+          {{ group.count }} post{% if group.count != 1 %}s{% endif %}
+        </h2>
+        <ul class="list pl0 ma0 flex flex-wrap">
+          {% for tag in group.tags %}
+            <li class="mr2 mb2">
+              <a class="link dim f5 theme-text ba b--black-20 br-pill ph3 pv1 dib fw5"
+                 href="/tags/{{ tag | slug }}/">
+                {{ tag }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
   {% else %}
     <p class="theme-midtone">No tags found.</p>
   {% endif %}

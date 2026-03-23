@@ -373,6 +373,28 @@ export default function (eleventyConfig) {
     );
   });
 
+  eleventyConfig.addCollection('tagGroups', (collectionApi) => {
+    const tagCounts = new Map();
+    for (const item of collectionApi.getAllSorted()) {
+      const tags = item?.data?.tags;
+      if (!tags) continue;
+      for (const tag of filterTagList(tags)) {
+        tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+      }
+    }
+    const groups = new Map();
+    for (const [tag, count] of tagCounts) {
+      if (!groups.has(count)) groups.set(count, []);
+      groups.get(count).push(tag);
+    }
+    return Array.from(groups.entries())
+      .sort(([a], [b]) => b - a)
+      .map(([count, tags]) => ({
+        count,
+        tags: tags.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })),
+      }));
+  });
+
   eleventyConfig.addCollection('drafts', (collectionApi) =>
     collectionApi.getAllSorted().filter((item) => item?.data?.draft),
   );
