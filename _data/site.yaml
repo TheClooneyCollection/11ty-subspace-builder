@@ -16,6 +16,10 @@ theme:
 githubEmbed:
   collapseLineThreshold: 15
 
+pagination:
+  home:
+    size: 10
+
 # tracking with umami
 umami:
   source: https://analytics.clooney.ninja/script.js

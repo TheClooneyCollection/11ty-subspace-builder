@@ -1,12 +1,31 @@
 ---
 layout: layouts/home.njk
-title: Home
-permalink: /
+permalink: "{% if pagination.pageNumber > 0 %}/page/{{ pagination.pageNumber + 1 }}/{% else %}/{% endif %}"
+eleventyComputed:
+  title: "{% if pagination.pageNumber > 0 %}Home · Page {{ pagination.pageNumber + 1 }}{% else %}Home{% endif %}"
 ---
 
 {% from "components/post-list.njk" import renderPostList %}
 
 <section class="mw7 center">
   <h1 class="f3 f2-ns lh-title mt0 mb0">Latest Posts</h1>
-  {{ renderPostList(collections.posts, "No posts published yet. Check back soon.") | safe }}
+  {{ renderPostList(homePosts, "No posts published yet. Check back soon.", false) | safe }}
+
+  {% if (pagination.pages | length) > 1 %}
+    <nav class="mt4 pt3 bt b--black-10 flex items-center justify-between flex-wrap" aria-label="Pagination">
+      <div class="mb2">
+        {% if pagination.href.previous %}
+          <a class="link dim fw5 underline theme-text" href="{{ pagination.href.previous | url }}">Newer Posts</a>
+        {% endif %}
+      </div>
+      <p class="f6 theme-midtone mv0 order-0 order-1-ns w-100 w-auto-ns tc">
+        Page {{ pagination.pageNumber + 1 }} of {{ pagination.pages | length }}
+      </p>
+      <div class="mb2 tr">
+        {% if pagination.href.next %}
+          <a class="link dim fw5 underline theme-text" href="{{ pagination.href.next | url }}">Older Posts</a>
+        {% endif %}
+      </div>
+    </nav>
+  {% endif %}
 </section>

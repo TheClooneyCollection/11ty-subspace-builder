@@ -6,6 +6,8 @@
     - type: equals
       value: /
     - type: startsWith
+      value: /page/
+    - type: startsWith
       value: /posts/
 - id: series
   label: Series

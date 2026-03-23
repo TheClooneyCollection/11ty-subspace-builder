@@ -19,6 +19,7 @@ import excerpt from './lib/excerpt.js';
 
 const OG_FORCE_ENV = process.env.OG_FORCE === 'true';
 const ELEVENTY_FETCH_CACHE_DIR = path.resolve('.cache');
+const DEFAULT_HOME_PAGE_SIZE = 10;
 
 const parseBlobUrl = (githubBlobUrl) => {
   const url = new URL(githubBlobUrl);
@@ -122,6 +123,11 @@ const guessLanguageByExt = (filePath) => {
 
 const slugify = (value) =>
   encodeURIComponent(String(value).trim().toLowerCase().replace(/\s+/g, '-'));
+
+const toPositiveInteger = (value, fallback) => {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+};
 
 const loadSiteData = () => {
   try {
@@ -326,6 +332,17 @@ export default function (eleventyConfig) {
     'environment',
     process.env.ELEVENTY_ENV || 'development',
   );
+  eleventyConfig.addGlobalData('paginationConfig', () => {
+    const siteData = loadSiteData();
+    return {
+      home: {
+        size: toPositiveInteger(
+          siteData?.pagination?.home?.size,
+          DEFAULT_HOME_PAGE_SIZE,
+        ),
+      },
+    };
+  });
   eleventyConfig.addGlobalData('eleventyComputed', {
     eleventyExcludeFromCollections(data) {
       return data.draft && process.env.ELEVENTY_ENV === 'production';
