@@ -1,8 +1,8 @@
-{% macro renderPostList(items=[], emptyMessage='No entries found.') %}
+{% macro renderPostList(items=[], emptyMessage='No entries found.', reverse=true) %}
   {% set list = items or [] %}
   {% if list | length %}
     <div class="flex flex-column">
-      {% for item in list | reverse %}
+      {% for item in (list | reverse if reverse else list) %}
         <article class="mb4 pb4 bb b--black-10">
           <h2 class="f3 lh-title mb2">
             <a class="link dim theme-text" href="{{ item.url | url }}">{{ item.data.title }}</a>
