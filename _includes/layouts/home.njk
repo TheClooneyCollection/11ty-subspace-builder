@@ -178,6 +178,24 @@ layout: layouts/base.njk
           {% if title %}
             <h1 class="f2 lh-title mt0 mb3">{{ title }}</h1>
           {% endif %}
+          {% set seriesLinks = postSeries | default([]) %}
+          {% if page.url and page.url.indexOf('/posts/') == 0 and seriesLinks | length %}
+            <div class="pa3 ba b--black-10 br3 bg-white-20">
+              <p class="f6 ttu tracked theme-midtone mt0 mb2">Part of a series</p>
+              <ul class="list pl0 ma0">
+                {% for seriesItem in seriesLinks %}
+                  <li{% if not loop.last %} class="mb2"{% endif %}>
+                    <a class="link dim fw6 theme-text underline" href="{{ seriesItem.url | url }}">
+                      {{ seriesItem.title }}
+                    </a>
+                    <span class="theme-midtone">
+                      ({{ seriesItem.position }} of {{ seriesItem.total }})
+                    </span>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
         </header>
       {% endif %}
       <heading-anchors>
