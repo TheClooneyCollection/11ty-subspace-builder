@@ -405,7 +405,7 @@ export default function (eleventyConfig) {
 
   eleventyConfig.addAsyncShortcode(
     'github',
-    async function (url, style = 'light') {
+    async function (url, style = 'auto') {
       const meta = parseBlobUrl(url);
 
       const fetched = await fetchTextWithCacheRecovery(meta.raw, {
@@ -448,7 +448,11 @@ export default function (eleventyConfig) {
         })
         .join('\n');
 
-      const theme = style || 'light';
+      const normalizedStyle =
+        typeof style === 'string' ? style.toLowerCase().trim() : '';
+      const theme = ['light', 'dark'].includes(normalizedStyle)
+        ? normalizedStyle
+        : 'auto';
       const languageClass = normalizedLanguage
         ? ` language-${normalizedLanguage}`
         : '';

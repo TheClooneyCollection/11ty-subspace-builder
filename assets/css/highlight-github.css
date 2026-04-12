@@ -1,19 +1,40 @@
-/* GitHub-inspired highlight.js theme */
+/* GitHub-inspired highlight.js theme with light/dark runtime theme support */
+main {
+  --hljs-fg: #24292f;
+  --hljs-comment: #6a737d;
+  --hljs-keyword: #d73a49;
+  --hljs-value: #005cc5;
+  --hljs-string: #22863a;
+  --hljs-type: #6f42c1;
+}
+
+html.theme[data-theme='grape'] main,
+html.theme[data-theme='deep-blue'] main,
+html.theme[data-theme='midnight'] main,
+html.theme[data-theme='charcoal'] main {
+  --hljs-fg: #c9d1d9;
+  --hljs-comment: #8b949e;
+  --hljs-keyword: #ff7b72;
+  --hljs-value: #79c0ff;
+  --hljs-string: #7ee787;
+  --hljs-type: #d2a8ff;
+}
+
 .hljs {
-  color: #24292f;
+  color: var(--hljs-fg);
   background: transparent;
 }
 
 .hljs-comment,
 .hljs-quote {
-  color: #6a737d;
+  color: var(--hljs-comment);
 }
 
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-literal,
 .hljs-subst {
-  color: #d73a49;
+  color: var(--hljs-keyword);
 }
 
 .hljs-number,
@@ -25,7 +46,7 @@
 .hljs-selector-class,
 .hljs-regexp,
 .hljs-deletion {
-  color: #005cc5;
+  color: var(--hljs-value);
 }
 
 .hljs-doctag,
@@ -38,12 +59,12 @@
 .hljs-bullet,
 .hljs-code,
 .hljs-symbol {
-  color: #22863a;
+  color: var(--hljs-string);
 }
 
 .hljs-type,
 .hljs-class .hljs-title {
-  color: #6f42c1;
+  color: var(--hljs-type);
 }
 
 .hljs-strong {

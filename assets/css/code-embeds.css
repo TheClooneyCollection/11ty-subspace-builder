@@ -33,6 +33,20 @@
   box-shadow: 0 0 0 1px rgba(240, 246, 252, 0.04);
 }
 
+html.theme[data-theme='grape'] .gh-embed:not(.gh-embed--light),
+html.theme[data-theme='deep-blue'] .gh-embed:not(.gh-embed--light),
+html.theme[data-theme='midnight'] .gh-embed:not(.gh-embed--light),
+html.theme[data-theme='charcoal'] .gh-embed:not(.gh-embed--light) {
+  --gh-bg: #0d1117;
+  --gh-fg: #c9d1d9;
+  --gh-border: #30363d;
+  --gh-meta-bg: #161b22;
+  --gh-link: #58a6ff;
+  --gh-line-number: #8b949e;
+  --gh-code-bg: #0d1117;
+  box-shadow: 0 0 0 1px rgba(240, 246, 252, 0.04);
+}
+
 .gh-embed__meta {
   display: flex;
   flex-wrap: wrap;
@@ -105,13 +119,25 @@
   border-color: rgba(27, 31, 36, 0.2);
 }
 
-.gh-embed--dark .gh-embed__copy {
+.gh-embed--dark .gh-embed__copy,
+html.theme[data-theme='grape'] .gh-embed:not(.gh-embed--light) .gh-embed__copy,
+html.theme[data-theme='deep-blue'] .gh-embed:not(.gh-embed--light) .gh-embed__copy,
+html.theme[data-theme='midnight'] .gh-embed:not(.gh-embed--light) .gh-embed__copy,
+html.theme[data-theme='charcoal'] .gh-embed:not(.gh-embed--light) .gh-embed__copy {
   background: rgba(110, 118, 129, 0.12);
   border-color: rgba(110, 118, 129, 0.4);
 }
 
 .gh-embed--dark .gh-embed__copy:hover,
-.gh-embed--dark .gh-embed__copy:focus {
+.gh-embed--dark .gh-embed__copy:focus,
+html.theme[data-theme='grape'] .gh-embed:not(.gh-embed--light) .gh-embed__copy:hover,
+html.theme[data-theme='grape'] .gh-embed:not(.gh-embed--light) .gh-embed__copy:focus,
+html.theme[data-theme='deep-blue'] .gh-embed:not(.gh-embed--light) .gh-embed__copy:hover,
+html.theme[data-theme='deep-blue'] .gh-embed:not(.gh-embed--light) .gh-embed__copy:focus,
+html.theme[data-theme='midnight'] .gh-embed:not(.gh-embed--light) .gh-embed__copy:hover,
+html.theme[data-theme='midnight'] .gh-embed:not(.gh-embed--light) .gh-embed__copy:focus,
+html.theme[data-theme='charcoal'] .gh-embed:not(.gh-embed--light) .gh-embed__copy:hover,
+html.theme[data-theme='charcoal'] .gh-embed:not(.gh-embed--light) .gh-embed__copy:focus {
   background: rgba(110, 118, 129, 0.24);
   border-color: rgba(240, 246, 252, 0.3);
 }
@@ -218,7 +244,15 @@
 }
 
 .gh-embed--dark .gh-embed__toggle:hover,
-.gh-embed--dark .gh-embed__toggle:focus {
+.gh-embed--dark .gh-embed__toggle:focus,
+html.theme[data-theme='grape'] .gh-embed:not(.gh-embed--light) .gh-embed__toggle:hover,
+html.theme[data-theme='grape'] .gh-embed:not(.gh-embed--light) .gh-embed__toggle:focus,
+html.theme[data-theme='deep-blue'] .gh-embed:not(.gh-embed--light) .gh-embed__toggle:hover,
+html.theme[data-theme='deep-blue'] .gh-embed:not(.gh-embed--light) .gh-embed__toggle:focus,
+html.theme[data-theme='midnight'] .gh-embed:not(.gh-embed--light) .gh-embed__toggle:hover,
+html.theme[data-theme='midnight'] .gh-embed:not(.gh-embed--light) .gh-embed__toggle:focus,
+html.theme[data-theme='charcoal'] .gh-embed:not(.gh-embed--light) .gh-embed__toggle:hover,
+html.theme[data-theme='charcoal'] .gh-embed:not(.gh-embed--light) .gh-embed__toggle:focus {
   background: rgba(110, 118, 129, 0.2);
   border-color: rgba(110, 118, 129, 0.5);
   box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
