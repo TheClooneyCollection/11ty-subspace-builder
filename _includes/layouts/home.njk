@@ -7,6 +7,12 @@ layout: layouts/base.njk
 {% set defaultTheme = themes | first %}
 {% set defaultThemeId = siteThemeConfig.defaultId if siteThemeConfig.defaultId is defined else (defaultTheme.id if defaultTheme is defined else null) %}
 {% set giscusConfig = site.giscus or {} %}
+{% set currentUrl = page.url or '/' %}
+{% set isPostPage = currentUrl.indexOf('/posts/') == 0 %}
+{% set isNotePage = currentUrl.indexOf('/notes/') == 0 %}
+{% set isPostDetailPage = isPostPage and currentUrl != '/posts/' %}
+{% set isNoteDetailPage = isNotePage and currentUrl != '/notes/' %}
+{% set isArticlePage = isPostDetailPage or isNoteDetailPage %}
 
 <div class="sans-serif">
   <style>
@@ -134,7 +140,6 @@ layout: layouts/base.njk
   <div class="flex flex-column flex-row-ns">
     <!-- Sidebar nav: hidden on mobile until toggle; no background color -->
     <nav id="sidebar" class="dn db-ns w-100 w-25-ns pa4">
-      {% set currentUrl = page.url or '/' %}
       <ul class="list pl0 ma0 pa0 flex flex-column lh-copy items-end">
         {% for item in sidebarNav %}
           {% set activePatterns = item.activePatterns if item.activePatterns is defined else [{'type': 'equals', 'value': item.url}] %}
@@ -179,7 +184,7 @@ layout: layouts/base.njk
             <h1 class="f2 lh-title mt0 mb3">{{ title }}</h1>
           {% endif %}
           {% set seriesLinks = postSeries | default([]) %}
-          {% if page.url and page.url.indexOf('/posts/') == 0 and seriesLinks | length %}
+          {% if isPostPage and seriesLinks | length %}
             <div class="pa3 ba b--black-10 br3 bg-white-20">
               <p class="f6 ttu tracked theme-midtone mt0 mb2">Part of a series</p>
               <ul class="list pl0 ma0">
@@ -201,7 +206,7 @@ layout: layouts/base.njk
       <heading-anchors>
         {{ content | safe }}
       </heading-anchors>
-      {% if page.url and page.url.indexOf('/posts/') == 0 and giscusConfig.repo %}
+      {% if isArticlePage and giscusConfig.repo %}
         <script src="https://giscus.app/client.js"
                 data-repo="{{ giscusConfig.repo }}"
                 data-repo-id="{{ giscusConfig.repoId }}"

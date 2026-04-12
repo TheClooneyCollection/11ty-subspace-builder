@@ -17,7 +17,7 @@ eleventyComputed:
 <section class="mw7 center">
   <h1 class="f3 f2-ns lh-title mb2">Tagged “{{ tag }}”</h1>
   <p class="f6 f5-ns theme-midtone mt0 mb4">
-    {{ postCount }} post{% if postCount != 1 %}s{% endif %}
+    {{ postCount }} entr{% if postCount == 1 %}y{% else %}ies{% endif %}
   </p>
-  {{ renderPostList(tagItems, "No posts found for this tag.") | safe }}
+  {{ renderPostList(tagItems, "No entries found for this tag.") | safe }}
 </section>

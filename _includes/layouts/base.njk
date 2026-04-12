@@ -33,7 +33,7 @@
 	{% set ogImageUrl = ogImage | absoluteUrl(site.url) %}
 {% endif %}
 {% set ogType = 'website' %}
-{% if page.filePathStem and page.filePathStem.indexOf('/posts/') == 0 %}
+{% if page.filePathStem and (page.filePathStem.indexOf('/posts/') == 0 or page.filePathStem.indexOf('/notes/') == 0) %}
 	{% set ogType = 'article' %}
 {% endif %}
 {% set twitterCard = 'summary' %}

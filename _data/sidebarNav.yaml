@@ -9,6 +9,14 @@
       value: /posts/
     - type: startsWith
       value: /page/
+- id: notes
+  label: Notes
+  url: /notes/
+  activePatterns:
+    - type: equals
+      value: /notes/
+    - type: startsWith
+      value: /notes/
 - id: series
   label: Series
   url: /series/

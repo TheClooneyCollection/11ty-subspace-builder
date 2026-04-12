@@ -22,7 +22,10 @@ const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
-const POSTS_DIR = path.join(ROOT_DIR, 'posts');
+const CONTENT_DIRECTORIES = [
+  { name: 'posts', dir: path.join(ROOT_DIR, 'posts') },
+  { name: 'notes', dir: path.join(ROOT_DIR, 'notes') },
+];
 const OUTPUT_DIR = path.join(ROOT_DIR, 'assets', 'og');
 const CACHE_DIR = path.join(ROOT_DIR, '.cache', 'og');
 const MANIFEST_PATH = path.join(CACHE_DIR, 'manifest.json');
@@ -270,39 +273,63 @@ function sanitizeNode(node) {
   return node;
 }
 
-function createHashForPost(data) {
+function createHashForEntry(data) {
   const hash = createHash('sha256');
   hash.update(JSON.stringify(data));
   return hash.digest('hex').slice(0, 12);
 }
 
-async function collectPosts() {
-  const files = await readdir(POSTS_DIR, { withFileTypes: true, recursive: true });
-  const markdownFiles = files.filter(
-    (entry) => entry.isFile() && entry.name.endsWith('.md'),
-  );
-  const posts = [];
+function toPosixPath(value) {
+  return value.split(path.sep).join('/');
+}
 
-  for (const file of markdownFiles) {
-    const filePath = path.join(file.parentPath, file.name);
-    const slug = path.basename(file.name, path.extname(file.name));
-    const raw = await readFile(filePath, 'utf8');
-    const { data, content } = matter(raw);
-    const htmlContent = markdown.render(content ?? '');
-    const excerptSource = data.excerpt
-      ? String(data.excerpt)
-      : excerpt(htmlContent, 2);
-    const plainExcerpt = stripHtml(excerptSource);
-    const normalizedExcerpt = truncate(plainExcerpt, 320);
+function toContentKey(collectionName, relativePath) {
+  const stem = relativePath.replace(path.extname(relativePath), '');
+  return `/${collectionName}/${toPosixPath(stem)}`;
+}
 
-    posts.push({
-      slug,
-      title: data.title ?? slug,
-      excerpt: normalizedExcerpt,
-    });
+function toOutputFilename(contentKey) {
+  const basename = contentKey
+    .replace(/^\/+/, '')
+    .replace(/[\\/]+/g, '--')
+    .replace(/[^a-zA-Z0-9._-]+/g, '-');
+  return `${basename}.png`;
+}
+
+async function collectEntries() {
+  const entries = [];
+
+  for (const { name, dir } of CONTENT_DIRECTORIES) {
+    if (!(await fileExists(dir))) continue;
+
+    const files = await readdir(dir, { withFileTypes: true, recursive: true });
+    const markdownFiles = files.filter(
+      (entry) => entry.isFile() && entry.name.endsWith('.md'),
+    );
+
+    for (const file of markdownFiles) {
+      const filePath = path.join(file.parentPath, file.name);
+      const relativePath = path.relative(dir, filePath);
+      const slug = path.basename(file.name, path.extname(file.name));
+      const raw = await readFile(filePath, 'utf8');
+      const { data, content } = matter(raw);
+      const htmlContent = markdown.render(content ?? '');
+      const excerptSource = data.excerpt
+        ? String(data.excerpt)
+        : excerpt(htmlContent, 2);
+      const plainExcerpt = stripHtml(excerptSource);
+      const normalizedExcerpt = truncate(plainExcerpt, 320);
+
+      entries.push({
+        key: toContentKey(name, relativePath),
+        slug,
+        title: data.title ?? slug,
+        excerpt: normalizedExcerpt,
+      });
+    }
   }
 
-  return posts;
+  return entries;
 }
 
 export async function generateOgImages(options = {}) {
@@ -310,36 +337,36 @@ export async function generateOgImages(options = {}) {
   await ensureDir(OUTPUT_DIR);
   await ensureDir(CACHE_DIR);
 
-  const [fonts, manifest, posts] = await Promise.all([
+  const [fonts, manifest, entries] = await Promise.all([
     loadFonts(),
     readManifest(),
-    collectPosts(),
+    collectEntries(),
   ]);
 
   const ogMap = {};
   const nextManifest = { version: TEMPLATE_VERSION, entries: {} };
 
-  for (const post of posts) {
-    const outputFilename = `${post.slug}.png`;
+  for (const entry of entries) {
+    const outputFilename = toOutputFilename(entry.key);
     const outputPath = path.join(OUTPUT_DIR, outputFilename);
 
     const templateData = {
-      ...post,
+      ...entry,
       templateVersion: TEMPLATE_VERSION,
     };
-    const hash = createHashForPost(templateData);
-    const previousEntry = manifest.entries?.[post.slug];
+    const hash = createHashForEntry(templateData);
+    const previousEntry = manifest.entries?.[entry.key];
     const hasMatch =
       !force && previousEntry?.hash === hash && (await fileExists(outputPath));
 
     if (hasMatch) {
-      console.log(`[og] ✓ ${post.slug} unchanged (hash ${hash})`);
-      ogMap[post.slug] = `/assets/og/${outputFilename}`;
-      nextManifest.entries[post.slug] = previousEntry;
+      console.log(`[og] ✓ ${entry.key} unchanged (hash ${hash})`);
+      ogMap[entry.key] = `/assets/og/${outputFilename}`;
+      nextManifest.entries[entry.key] = previousEntry;
       continue;
     }
 
-    const templateTree = sanitizeNode(buildTemplate(post));
+    const templateTree = sanitizeNode(buildTemplate(entry));
     const svg = await satori(templateTree, {
       width: WIDTH,
       height: HEIGHT,
@@ -356,9 +383,9 @@ export async function generateOgImages(options = {}) {
     const png = resvg.render().asPng();
     await writeFile(outputPath, png);
 
-    console.log(`[og] ★ generated ${post.slug} (hash ${hash})`);
-    ogMap[post.slug] = `/assets/og/${outputFilename}`;
-    nextManifest.entries[post.slug] = { hash };
+    console.log(`[og] ★ generated ${entry.key} (hash ${hash})`);
+    ogMap[entry.key] = `/assets/og/${outputFilename}`;
+    nextManifest.entries[entry.key] = { hash };
   }
 
   await Promise.all([writeManifest(nextManifest), writeDataFile(ogMap)]);
