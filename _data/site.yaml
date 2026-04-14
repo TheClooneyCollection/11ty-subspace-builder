@@ -33,6 +33,9 @@ giscus:
   categoryId: DIC_kwDOOtI2P84CwAOl
   mapping: og:title
 
+timeline:
+  showInNav: false  # set to true to show Timeline in the sidebar nav
+
 # social identity verification
 mastodon:
   relMe:

@@ -43,3 +43,12 @@
 - id: about
   label: About
   url: /about/
+- id: timeline
+  label: Timeline
+  url: /timeline/
+  showWhen: timeline.showInNav
+  activePatterns:
+    - type: equals
+      value: /timeline/
+    - type: startsWith
+      value: /timeline/

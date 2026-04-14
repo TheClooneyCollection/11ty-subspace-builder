@@ -713,6 +713,12 @@ export default function (eleventyConfig) {
     return slugify(value);
   });
 
+  // Resolve a dot-path flag against site config (e.g. 'timeline.showInNav')
+  eleventyConfig.addFilter('siteFlag', (flagPath, siteData) => {
+    if (!flagPath || !siteData) return true;
+    return flagPath.split('.').reduce((obj, key) => obj?.[key], siteData) ?? true;
+  });
+
   eleventyConfig.on('eleventy.after', ({ results = [] } = {}) => {
     if (!Array.isArray(results) || results.length === 0) {
       return;
