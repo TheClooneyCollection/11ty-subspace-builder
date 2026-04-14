@@ -40,9 +40,6 @@
   activePatterns:
     - type: startsWith
       value: /tags/
-- id: about
-  label: About
-  url: /about/
 - id: timeline
   label: Timeline
   url: /timeline/
@@ -51,3 +48,6 @@
       value: /timeline/
     - type: startsWith
       value: /timeline/
+- id: about
+  label: About
+  url: /about/

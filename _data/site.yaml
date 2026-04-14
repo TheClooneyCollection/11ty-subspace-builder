@@ -34,7 +34,7 @@ giscus:
   mapping: og:title
 
 timeline:
-  showInNav: false  # set to true to show Timeline in the sidebar nav
+  showInNav: true  # set to true to show Timeline in the sidebar nav
 
 # social identity verification
 mastodon:
