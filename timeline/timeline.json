@@ -1,0 +1,5 @@
+{
+  "layout": "layouts/home.njk",
+  "tags": ["timeline"],
+  "showPostHeader": true
+}
