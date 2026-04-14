@@ -1,0 +1,81 @@
+---
+layout: layouts/home.njk
+title: Codex Logbook Variants
+description: A few captain's log and timeline directions, all reading from markdown files in /logs/.
+showPostHeader: false
+permalink: /codex-logbook/
+stylesheets:
+  - /assets/css/codex-logbook.css
+---
+
+{% from "components/codex-logbook-feed.njk" import renderCodexLogbookNav with context %}
+
+{% set logItems = collections.timeline | default([]) %}
+{% set latestLog = (logItems | reverse | first) if logItems | length else null %}
+
+<section class="codex-logbook-shell">
+  <header class="codex-logbook-hero">
+    <p class="codex-logbook-hero__eyebrow">Codex Preview Set</p>
+    <h1 class="codex-logbook-hero__title">Captain's log pages with the same markdown underneath.</h1>
+    <p class="codex-logbook-hero__copy">
+      Every variant below reads from the same <code>/logs/</code> folder.
+      The entries use front matter like posts or notes, while the body stays a short markdown snippet.
+      I left the public route as <code>/codex-logbook/...</code> so you can pick a direction before committing to <code>/logs/</code> as the final list page.
+    </p>
+
+    <div class="codex-logbook-hero__stats">
+      <div class="codex-logbook-stat">
+        <span class="codex-logbook-stat__label">Source folder</span>
+        <strong class="codex-logbook-stat__value">/logs/</strong>
+      </div>
+      <div class="codex-logbook-stat">
+        <span class="codex-logbook-stat__label">Entries loaded</span>
+        <strong class="codex-logbook-stat__value">{{ logItems | length }}</strong>
+      </div>
+      <div class="codex-logbook-stat">
+        <span class="codex-logbook-stat__label">Latest sample</span>
+        <strong class="codex-logbook-stat__value">{{ latestLog.data.title if latestLog else 'No logs yet' }}</strong>
+      </div>
+    </div>
+  </header>
+
+  {{ renderCodexLogbookNav('overview') }}
+
+  <section class="codex-logbook-preview-grid" aria-label="Logbook variants">
+    <article class="codex-logbook-preview-card">
+      <h2 class="codex-logbook-preview-card__title">Threaded Feed</h2>
+      <p class="codex-logbook-preview-card__copy">
+        The closest to a Twitter or Threads view.
+        Compact identity row, stacked cards, and full markdown content visible inline.
+      </p>
+      <div class="codex-logbook-preview-card__actions">
+        <a class="codex-logbook-preview-card__link" href="/codex-logbook/threaded/">Open threaded variant</a>
+      </div>
+      <p class="codex-logbook-preview-card__meta">Best if you want the most social-feed-like presentation.</p>
+    </article>
+
+    <article class="codex-logbook-preview-card">
+      <h2 class="codex-logbook-preview-card__title">Bridge Console</h2>
+      <p class="codex-logbook-preview-card__copy">
+        More cinematic and naval.
+        A left-hand rail, sticky time stamps, and cards that feel closer to a command-deck journal.
+      </p>
+      <div class="codex-logbook-preview-card__actions">
+        <a class="codex-logbook-preview-card__link" href="/codex-logbook/bridge/">Open bridge variant</a>
+      </div>
+      <p class="codex-logbook-preview-card__meta">Best if you want "captain's log" to feel explicit and atmospheric.</p>
+    </article>
+
+    <article class="codex-logbook-preview-card">
+      <h2 class="codex-logbook-preview-card__title">Archive Ledger</h2>
+      <p class="codex-logbook-preview-card__copy">
+        A sharper editorial layout with date columns and compact cards.
+        Still scrollable like a feed, but more like an operations archive than a social app.
+      </p>
+      <div class="codex-logbook-preview-card__actions">
+        <a class="codex-logbook-preview-card__link" href="/codex-logbook/archive/">Open archive variant</a>
+      </div>
+      <p class="codex-logbook-preview-card__meta">Best if you want the page to feel durable, indexed, and referenceable.</p>
+    </article>
+  </section>
+</section>

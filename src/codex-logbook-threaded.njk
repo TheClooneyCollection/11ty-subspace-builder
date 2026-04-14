@@ -1,0 +1,25 @@
+---
+layout: layouts/home.njk
+title: Codex Logbook - Threaded Feed
+description: Threaded captain's log timeline rendered from markdown files in /logs/.
+showPostHeader: false
+permalink: /codex-logbook/threaded/
+stylesheets:
+  - /assets/css/codex-logbook.css
+---
+
+{% from "components/codex-logbook-feed.njk" import renderCodexLogbookNav, renderCodexLogFeed with context %}
+
+<section class="codex-logbook-shell">
+  <header class="codex-logbook-hero">
+    <p class="codex-logbook-hero__eyebrow">Variant One</p>
+    <h1 class="codex-logbook-hero__title">Threaded feed, built like a mission-social timeline.</h1>
+    <p class="codex-logbook-hero__copy">
+      This variant leans hardest into the social feed metaphor.
+      Every entry is visible in full, with enough metadata to feel like a captain's log instead of a generic microblog.
+    </p>
+  </header>
+
+  {{ renderCodexLogbookNav('threaded') }}
+  {{ renderCodexLogFeed(collections.timeline | reverse, 'threaded', 'No logs yet. Add markdown files under /logs/.') | safe }}
+</section>

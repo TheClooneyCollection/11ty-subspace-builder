@@ -1,0 +1,37 @@
+---
+layout: layouts/home.njk
+showPostHeader: false
+---
+
+{% from "components/codex-logbook-feed.njk" import renderCodexLogPill, renderCodexLogTags with context %}
+
+<article class="codex-log-detail">
+  <a class="codex-log-detail__back" href="/codex-logbook/">Back to codex variants</a>
+
+  <header class="codex-log-detail__header">
+    <p class="codex-log-detail__eyebrow">{{ status or "Captain's log entry" }}</p>
+    <h1 class="codex-log-detail__title">{{ title }}</h1>
+    {% if excerpt %}
+      <p class="codex-log-detail__deck">{{ excerpt }}</p>
+    {% endif %}
+
+    <div class="codex-log-entry__meta-strip">
+      {{ renderCodexLogPill('Captain', captain or site.author.name) }}
+      {{ renderCodexLogPill('Handle', handle or '@captains-log') }}
+      {{ renderCodexLogPill('Logged', page.date | readableDate) }}
+      {{ renderCodexLogPill('Stardate', stardate) }}
+      {{ renderCodexLogPill('Watch', watch) }}
+      {{ renderCodexLogPill('Sector', location) }}
+    </div>
+
+    {{ renderCodexLogTags({
+      data: {
+        tags: tags
+      }
+    }) }}
+  </header>
+
+  <div class="codex-log-detail__body">
+    {{ content | safe }}
+  </div>
+</article>

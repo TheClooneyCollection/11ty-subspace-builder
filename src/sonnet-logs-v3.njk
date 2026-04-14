@@ -1,0 +1,120 @@
+---
+layout: layouts/home.njk
+title: "Logs: Column Grid"
+description: A two-column card grid view of the captain's log.
+showPostHeader: false
+permalink: /sonnet-logs-v3/
+---
+
+<style>
+  .snv3-grid {
+    columns: 2;
+    column-gap: 1.25rem;
+  }
+  @media (max-width: 40em) {
+    .snv3-grid { columns: 1; }
+  }
+
+  .snv3-card {
+    break-inside: avoid;
+    margin-bottom: 1.25rem;
+    border: 1px solid rgba(128,128,128,0.18);
+    border-top: 3px solid var(--accent);
+    border-radius: 0 0 0.375rem 0.375rem;
+    padding: 1rem 1.125rem 0.875rem;
+  }
+
+  .snv3-eyebrow {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    opacity: 0.45;
+    margin: 0 0 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .snv3-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    line-height: 1.3;
+  }
+  .snv3-title a { text-decoration: none; }
+  .snv3-title a:hover { text-decoration: underline; }
+
+  .snv3-content { font-size: 0.875rem; line-height: 1.6; }
+  .snv3-content p { margin: 0 0 0.5em; }
+  .snv3-content p:last-child { margin-bottom: 0; }
+
+  .snv3-footer {
+    margin-top: 0.75rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(128,128,128,0.15);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.2rem 0.5rem;
+  }
+  .snv3-status {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    opacity: 0.8;
+  }
+  .snv3-tags { display: flex; flex-wrap: wrap; gap: 0.2rem 0.4rem; margin-left: auto; }
+  .snv3-tags a { font-size: 0.7rem; opacity: 0.5; text-decoration: none; }
+  .snv3-tags a:hover { opacity: 1; text-decoration: underline; }
+</style>
+
+{% set logItems = collections.timeline | default([]) | reverse %}
+
+<section>
+  <div class="flex items-baseline justify-between flex-wrap mb4">
+    <h1 class="f3 f2-ns lh-title mt0 mb0">Captain's Log</h1>
+    <nav class="flex items-center f6" aria-label="Log variants">
+      <a href="/sonnet-logs-v1/" class="link dim theme-midtone mr3">Field Notes</a>
+      <a href="/sonnet-timeline/" class="link dim theme-midtone mr3">Timeline</a>
+      <a href="/sonnet-logs-v3/" class="link dim theme-midtone underline">Column Grid</a>
+    </nav>
+  </div>
+
+  {% if logItems | length %}
+    <div class="snv3-grid">
+      {% for entry in logItems %}
+        <article class="snv3-card">
+          <p class="snv3-eyebrow">
+            <time datetime="{{ entry.date | machineDate }}">{{ entry.date | readableDate }}</time>
+            {% if entry.data.stardate %}<span>{{ entry.data.stardate }}</span>{% endif %}
+          </p>
+          {% if entry.data.title %}
+            <h2 class="snv3-title"><a href="{{ entry.url | url }}">{{ entry.data.title }}</a></h2>
+          {% endif %}
+          <div class="snv3-content">{{ entry.templateContent | safe }}</div>
+          {% set entryTags = (entry.data.tags | default([])) | filterTags %}
+          {% set hasFooter = entry.data.status or entryTags | length %}
+          {% if hasFooter %}
+            <div class="snv3-footer">
+              {% if entry.data.status %}<span class="snv3-status">{{ entry.data.status }}</span>{% endif %}
+              {% if entryTags | length %}
+                <div class="snv3-tags">
+                  {% for tag in entryTags %}<a href="/tags/{{ tag | slug }}/">#{{ tag }}</a>{% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="theme-midtone">No log entries yet.</p>
+  {% endif %}
+</section>

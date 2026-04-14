@@ -1,0 +1,25 @@
+---
+layout: layouts/home.njk
+title: Codex Logbook - Bridge Console
+description: A more atmospheric bridge-style captain's log timeline rendered from /logs/.
+showPostHeader: false
+permalink: /codex-logbook/bridge/
+stylesheets:
+  - /assets/css/codex-logbook.css
+---
+
+{% from "components/codex-logbook-feed.njk" import renderCodexLogbookNav, renderCodexLogFeed with context %}
+
+<section class="codex-logbook-shell">
+  <header class="codex-logbook-hero">
+    <p class="codex-logbook-hero__eyebrow">Variant Two</p>
+    <h1 class="codex-logbook-hero__title">Bridge console with a proper timeline rail.</h1>
+    <p class="codex-logbook-hero__copy">
+      This pushes toward a sci-fi operations journal.
+      Dates stay visible as you scroll, the left rail makes the chronology obvious, and the cards feel more ceremonial than casual.
+    </p>
+  </header>
+
+  {{ renderCodexLogbookNav('bridge') }}
+  {{ renderCodexLogFeed(collections.timeline | reverse, 'bridge', 'No logs yet. Add markdown files under /logs/.') | safe }}
+</section>

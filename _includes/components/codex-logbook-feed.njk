@@ -1,0 +1,208 @@
+{% macro renderCodexLogbookNav(current='overview') %}
+  {% set variants = [
+    {
+      id: 'overview',
+      label: 'Overview',
+      url: '/codex-logbook/'
+    },
+    {
+      id: 'threaded',
+      label: 'Threaded Feed',
+      url: '/codex-logbook/threaded/'
+    },
+    {
+      id: 'bridge',
+      label: 'Bridge Console',
+      url: '/codex-logbook/bridge/'
+    },
+    {
+      id: 'archive',
+      label: 'Archive Ledger',
+      url: '/codex-logbook/archive/'
+    }
+  ] %}
+
+  <nav class="codex-logbook-switcher" aria-label="Captain's log variants">
+    {% for variant in variants %}
+      <a
+        class="codex-logbook-switcher__link"
+        href="{{ variant.url }}"
+        {% if current == variant.id %}data-active="true"{% endif %}
+      >
+        {{ variant.label }}
+      </a>
+    {% endfor %}
+  </nav>
+{% endmacro %}
+
+{% macro renderCodexLogPill(label, value) %}
+  {% if value %}
+    <span class="codex-log-pill">
+      <span class="codex-log-pill__label">{{ label }}</span>
+      <span class="codex-log-pill__value">{{ value }}</span>
+    </span>
+  {% endif %}
+{% endmacro %}
+
+{% macro renderCodexLogTags(item) %}
+  {% set visibleTags = (item.data.tags | default([])) | filterTags %}
+  {% if visibleTags | length %}
+    <ul class="codex-log-tags" aria-label="Entry tags">
+      {% for tag in visibleTags %}
+        <li class="codex-log-tags__item">
+          <a class="codex-log-tags__link" href="/tags/{{ tag | slug }}/">#{{ tag }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endmacro %}
+
+{% macro renderCodexLogThreadedEntry(item) %}
+  {% set captain = item.data.captain or site.author.name %}
+  {% set handle = item.data.handle or '@captains-log' %}
+  {% set summary = item.data.excerpt or item.templateContent | striptags | truncate(180) %}
+
+  <article class="codex-log-entry codex-log-entry--threaded">
+    <div class="codex-log-entry__avatar" aria-hidden="true">
+      {{ captain[0] | upper }}
+    </div>
+    <div class="codex-log-entry__content">
+      <header class="codex-log-entry__topline">
+        <div>
+          <p class="codex-log-entry__author">{{ captain }}</p>
+          <p class="codex-log-entry__meta-line">
+            <span>{{ handle }}</span>
+            <span aria-hidden="true">&middot;</span>
+            <time datetime="{{ item.date | machineDate }}">{{ item.date | readableDate }}</time>
+          </p>
+        </div>
+        <a class="codex-log-entry__permalink" href="{{ item.url | url }}">Open</a>
+      </header>
+
+      <h2 class="codex-log-entry__title">
+        <a href="{{ item.url | url }}">{{ item.data.title }}</a>
+      </h2>
+
+      {% if summary %}
+        <p class="codex-log-entry__summary">{{ summary }}</p>
+      {% endif %}
+
+      <div class="codex-log-entry__body">
+        {{ item.templateContent | safe }}
+      </div>
+
+      <div class="codex-log-entry__meta-strip">
+        {{ renderCodexLogPill('Stardate', item.data.stardate) }}
+        {{ renderCodexLogPill('Status', item.data.status) }}
+        {{ renderCodexLogPill('Watch', item.data.watch) }}
+        {{ renderCodexLogPill('Sector', item.data.location) }}
+      </div>
+
+      {{ renderCodexLogTags(item) }}
+    </div>
+  </article>
+{% endmacro %}
+
+{% macro renderCodexLogBridgeEntry(item) %}
+  {% set captain = item.data.captain or site.author.name %}
+
+  <article class="codex-log-entry codex-log-entry--bridge">
+    <div class="codex-log-entry__bridge-rail" aria-hidden="true">
+      <span class="codex-log-entry__bridge-node"></span>
+    </div>
+    <div class="codex-log-entry__bridge-stamp">
+      <time datetime="{{ item.date | machineDate }}">{{ item.date | readableDate }}</time>
+      {% if item.data.watch %}
+        <span>{{ item.data.watch }} Watch</span>
+      {% endif %}
+    </div>
+    <div class="codex-log-entry__bridge-card">
+      <header class="codex-log-entry__bridge-header">
+        <p class="codex-log-entry__eyebrow">{{ item.data.status or "Captain's log" }}</p>
+        <h2 class="codex-log-entry__title">
+          <a href="{{ item.url | url }}">{{ item.data.title }}</a>
+        </h2>
+        <p class="codex-log-entry__meta-line">
+          <span>{{ captain }}</span>
+          {% if item.data.location %}
+            <span aria-hidden="true">&middot;</span>
+            <span>{{ item.data.location }}</span>
+          {% endif %}
+          {% if item.data.stardate %}
+            <span aria-hidden="true">&middot;</span>
+            <span>{{ item.data.stardate }}</span>
+          {% endif %}
+        </p>
+      </header>
+
+      <div class="codex-log-entry__body">
+        {{ item.templateContent | safe }}
+      </div>
+
+      <footer class="codex-log-entry__bridge-footer">
+        {{ renderCodexLogTags(item) }}
+        <a class="codex-log-entry__permalink" href="{{ item.url | url }}">Read full log</a>
+      </footer>
+    </div>
+  </article>
+{% endmacro %}
+
+{% macro renderCodexLogArchiveEntry(item) %}
+  {% set captain = item.data.captain or site.author.name %}
+  {% set summary = item.data.excerpt or item.templateContent | striptags | truncate(160) %}
+
+  <article class="codex-log-entry codex-log-entry--archive">
+    <div class="codex-log-entry__archive-date">
+      <time datetime="{{ item.date | machineDate }}">{{ item.date | readableDate }}</time>
+      {% if item.data.stardate %}
+        <span>{{ item.data.stardate }}</span>
+      {% endif %}
+    </div>
+    <div class="codex-log-entry__archive-card">
+      <header class="codex-log-entry__archive-header">
+        <div>
+          <p class="codex-log-entry__eyebrow">{{ item.data.watch or 'Open watch' }}</p>
+          <h2 class="codex-log-entry__title">
+            <a href="{{ item.url | url }}">{{ item.data.title }}</a>
+          </h2>
+        </div>
+        <a class="codex-log-entry__permalink" href="{{ item.url | url }}">View</a>
+      </header>
+
+      {% if summary %}
+        <p class="codex-log-entry__summary">{{ summary }}</p>
+      {% endif %}
+
+      <div class="codex-log-entry__meta-strip">
+        {{ renderCodexLogPill('Captain', captain) }}
+        {{ renderCodexLogPill('Status', item.data.status) }}
+        {{ renderCodexLogPill('Sector', item.data.location) }}
+      </div>
+
+      <div class="codex-log-entry__body codex-log-entry__body--compact">
+        {{ item.templateContent | safe }}
+      </div>
+
+      {{ renderCodexLogTags(item) }}
+    </div>
+  </article>
+{% endmacro %}
+
+{% macro renderCodexLogFeed(items=[], variant='threaded', emptyMessage='No log entries published yet.') %}
+  {% set list = items or [] %}
+  {% if list | length %}
+    <div class="codex-log-feed codex-log-feed--{{ variant }}">
+      {% for item in list %}
+        {% if variant == 'threaded' %}
+          {{ renderCodexLogThreadedEntry(item) }}
+        {% elseif variant == 'bridge' %}
+          {{ renderCodexLogBridgeEntry(item) }}
+        {% elseif variant == 'archive' %}
+          {{ renderCodexLogArchiveEntry(item) }}
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="codex-logbook-empty">{{ emptyMessage }}</p>
+  {% endif %}
+{% endmacro %}

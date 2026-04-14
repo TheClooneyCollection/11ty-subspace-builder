@@ -43,3 +43,27 @@
 - id: about
   label: About
   url: /about/
+- id: codex-logbook
+  label: Logs (codex)
+  url: /codex-logbook/
+  activePatterns:
+    - type: startsWith
+      value: /codex-logbook/
+- id: sonnet-logs-v1
+  label: Logs v1 (sonnet)
+  url: /sonnet-logs-v1/
+  activePatterns:
+    - type: equals
+      value: /sonnet-logs-v1/
+- id: sonnet-timeline
+  label: Timeline (sonnet)
+  url: /sonnet-timeline/
+  activePatterns:
+    - type: equals
+      value: /sonnet-timeline/
+- id: sonnet-logs-v3
+  label: Logs v3 (sonnet)
+  url: /sonnet-logs-v3/
+  activePatterns:
+    - type: equals
+      value: /sonnet-logs-v3/

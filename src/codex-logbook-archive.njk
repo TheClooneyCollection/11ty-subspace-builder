@@ -1,0 +1,25 @@
+---
+layout: layouts/home.njk
+title: Codex Logbook - Archive Ledger
+description: A compact archive-style captain's log timeline rendered from /logs/.
+showPostHeader: false
+permalink: /codex-logbook/archive/
+stylesheets:
+  - /assets/css/codex-logbook.css
+---
+
+{% from "components/codex-logbook-feed.njk" import renderCodexLogbookNav, renderCodexLogFeed with context %}
+
+<section class="codex-logbook-shell">
+  <header class="codex-logbook-hero">
+    <p class="codex-logbook-hero__eyebrow">Variant Three</p>
+    <h1 class="codex-logbook-hero__title">Archive ledger for a cleaner, more editorial logbook.</h1>
+    <p class="codex-logbook-hero__copy">
+      This is the least social and the most archival.
+      It still reads like a feed, but the date column and tighter cards make it feel better suited to long-running records.
+    </p>
+  </header>
+
+  {{ renderCodexLogbookNav('archive') }}
+  {{ renderCodexLogFeed(collections.timeline | reverse, 'archive', 'No logs yet. Add markdown files under /logs/.') | safe }}
+</section>

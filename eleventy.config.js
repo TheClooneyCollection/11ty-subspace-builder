@@ -484,7 +484,7 @@ export default function (eleventyConfig) {
     return path;
   };
 
-  const excludedTags = new Set(['all', 'nav', 'post', 'posts', 'notes']);
+  const excludedTags = new Set(['all', 'nav', 'post', 'posts', 'notes', 'timeline']);
   const filterTagList = (tags = []) =>
     (Array.isArray(tags) ? tags : [tags])
       .map((tag) => (typeof tag === 'string' ? tag : null))
@@ -578,6 +578,10 @@ export default function (eleventyConfig) {
 
   eleventyConfig.addCollection('notes', (collectionApi) =>
     collectionApi.getFilteredByTag('notes'),
+  );
+
+  eleventyConfig.addCollection('timeline', (collectionApi) =>
+    collectionApi.getFilteredByTag('timeline'),
   );
 
   eleventyConfig.addAsyncShortcode(

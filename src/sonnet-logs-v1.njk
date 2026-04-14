@@ -1,0 +1,113 @@
+---
+layout: layouts/home.njk
+title: "Logs: Field Notes"
+description: A minimal field-notes view of the captain's log.
+showPostHeader: false
+permalink: /sonnet-logs-v1/
+---
+
+<style>
+  .snv1-entry {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 0 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+  }
+  .snv1-entry:first-child {
+    border-top: 1px solid rgba(128, 128, 128, 0.2);
+  }
+
+  .snv1-datecol { padding-top: 0.15rem; }
+  .snv1-date {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--accent);
+    line-height: 1.4;
+  }
+
+  .snv1-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+    line-height: 1.3;
+  }
+  .snv1-title a { text-decoration: none; }
+  .snv1-title a:hover { text-decoration: underline; }
+
+  .snv1-body { font-size: 0.9375rem; line-height: 1.65; }
+  .snv1-body p { margin: 0 0 0.55em; }
+  .snv1-body p:last-child { margin-bottom: 0; }
+
+  .snv1-meta {
+    margin-top: 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+    font-size: 0.72rem;
+    opacity: 0.5;
+  }
+  .snv1-meta-pill {
+    background: rgba(128,128,128,0.15);
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+  }
+
+  .snv1-tags { display: flex; flex-wrap: wrap; gap: 0.2rem 0.5rem; margin-top: 0.6rem; }
+  .snv1-tags a { font-size: 0.75rem; opacity: 0.55; text-decoration: none; }
+  .snv1-tags a:hover { opacity: 1; text-decoration: underline; }
+
+  @media (max-width: 30em) {
+    .snv1-entry { grid-template-columns: 1fr; }
+    .snv1-datecol { margin-bottom: 0.4rem; }
+  }
+</style>
+
+{% set logItems = collections.timeline | default([]) | reverse %}
+
+<section class="mw7">
+  <div class="flex items-baseline justify-between flex-wrap mb4">
+    <h1 class="f3 f2-ns lh-title mt0 mb0">Captain's Log</h1>
+    <nav class="flex items-center f6" aria-label="Log variants">
+      <a href="/sonnet-logs-v1/" class="link dim theme-midtone mr3 underline">Field Notes</a>
+      <a href="/sonnet-timeline/" class="link dim theme-midtone mr3">Timeline</a>
+      <a href="/sonnet-logs-v3/" class="link dim theme-midtone">Column Grid</a>
+    </nav>
+  </div>
+
+  {% if logItems | length %}
+    <div>
+      {% for entry in logItems %}
+        <article class="snv1-entry">
+          <div class="snv1-datecol">
+            <time class="snv1-date" datetime="{{ entry.date | machineDate }}">{{ entry.date | readableDate }}</time>
+          </div>
+          <div>
+            {% if entry.data.title %}
+              <h2 class="snv1-title"><a href="{{ entry.url | url }}">{{ entry.data.title }}</a></h2>
+            {% endif %}
+            <div class="snv1-body">{{ entry.templateContent | safe }}</div>
+            {% set hasMeta = entry.data.watch or entry.data.status or entry.data.location %}
+            {% if hasMeta %}
+              <div class="snv1-meta">
+                {% if entry.data.watch %}<span class="snv1-meta-pill">{{ entry.data.watch }} watch</span>{% endif %}
+                {% if entry.data.status %}<span class="snv1-meta-pill">{{ entry.data.status }}</span>{% endif %}
+                {% if entry.data.location %}<span>{{ entry.data.location }}</span>{% endif %}
+              </div>
+            {% endif %}
+            {% set entryTags = (entry.data.tags | default([])) | filterTags %}
+            {% if entryTags | length %}
+              <div class="snv1-tags">
+                {% for tag in entryTags %}<a href="/tags/{{ tag | slug }}/">#{{ tag }}</a>{% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="theme-midtone">No log entries yet.</p>
+  {% endif %}
+</section>
