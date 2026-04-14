@@ -153,8 +153,7 @@ layout: layouts/base.njk
               {% endif %}
             {% endif %}
           {% endfor %}
-          {% set itemVisible = (item.showWhen | siteFlag(site)) if item.showWhen else true %}
-          {% if not (item.id == 'drafts' and environment == 'production') and itemVisible %}
+          {% if not (item.id == 'drafts' and environment == 'production') and not (item.id == 'timeline' and not site.timeline.showInNav) %}
             {% set displayLabel = item.label %}
             {% if item.id == 'drafts' %}
               {% set draftCount = (collections.drafts | default([])) | length %}

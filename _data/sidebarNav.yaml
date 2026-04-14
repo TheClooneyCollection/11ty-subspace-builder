@@ -46,7 +46,6 @@
 - id: timeline
   label: Timeline
   url: /timeline/
-  showWhen: timeline.showInNav
   activePatterns:
     - type: equals
       value: /timeline/
