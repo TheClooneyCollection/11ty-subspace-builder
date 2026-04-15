@@ -77,7 +77,7 @@ permalink: /timeline/
           <div class="timeline-body-wrap">
             <div class="timeline-topline">
               <span class="timeline-handle">{{ me.profile.name }}</span>
-              <time class="timeline-timestamp" datetime="{{ entry.date | machineDate }}">{{ entry.date | readableDate }}</time>
+              <time class="timeline-timestamp" datetime="{{ entry.date | machineDate }}T{{ entry.data.time }}">{{ entry.date | readableDate }} · {{ entry.data.time }}</time>
             </div>
             {% if entry.data.title %}
               <h2 class="timeline-title"><a href="{{ entry.url | url }}">{{ entry.data.title }}</a></h2>

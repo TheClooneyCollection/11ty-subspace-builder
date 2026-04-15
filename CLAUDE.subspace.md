@@ -52,6 +52,7 @@ draft: true     # hidden in production, visible in dev
 ```yaml
 title:          # optional
 date:
+time:           # required — 24-hour HH:MM (e.g. "15:42")
 tags:
   - timeline    # always present (set by timeline/timeline.json)
   - shipped     # green  — something released
