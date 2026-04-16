@@ -833,11 +833,19 @@ export default function (eleventyConfig) {
     'posts',
     'notes',
     'timeline',
+    'testing',
   ]);
   const filterTagList = (tags = []) =>
     (Array.isArray(tags) ? tags : [tags])
       .map((tag) => (typeof tag === 'string' ? tag : null))
       .filter((tag) => tag && !excludedTags.has(tag));
+  const productionEnvironment = process.env.ELEVENTY_ENV === 'production';
+  const hasTag = (data, targetTag) =>
+    (Array.isArray(data?.tags) ? data.tags : [data?.tags]).some(
+      (tag) => typeof tag === 'string' && tag === targetTag,
+    );
+  const isTestingOnlyContent = (data) =>
+    productionEnvironment && hasTag(data, 'testing');
 
   eleventyConfig.on('eleventy.after', ({ dir }) => {
     emitFingerprintedAssets(dir?.output || '_site');
@@ -882,7 +890,7 @@ export default function (eleventyConfig) {
   );
   eleventyConfig.addGlobalData('eleventyComputed', {
     eleventyExcludeFromCollections(data) {
-      return data.draft && process.env.ELEVENTY_ENV === 'production';
+      return isTestingOnlyContent(data) || (data.draft && productionEnvironment);
     },
     title(data) {
       const prefix = '🚧 DRAFT - ';
