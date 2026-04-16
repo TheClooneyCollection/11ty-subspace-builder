@@ -19,7 +19,7 @@ layout: layouts/base.njk
 {% set timelineEntries = collections.timeline | default([]) %}
 {% set currentTimelineEntry = page.url | timelineEntryByRef(timelineEntries) if isTimelineDetailPage else null %}
 {% set timelineAncestorChain = currentTimelineEntry | timelineAncestorEntries(timelineEntries) if currentTimelineEntry else [] %}
-{% set timelineChildEntries = currentTimelineEntry | timelineChildEntries(timelineEntries) if currentTimelineEntry else [] %}
+{% set timelineFollowUpTree = currentTimelineEntry | timelineDescendantTree(timelineEntries, 2) if currentTimelineEntry else [] %}
 
 <div class="sans-serif">
   {% if isTimelinePage %}
@@ -216,7 +216,7 @@ layout: layouts/base.njk
       <heading-anchors>
         {{ content | safe }}
       </heading-anchors>
-      {% if isTimelineDetailPage and (timelineAncestorChain | length or timelineChildEntries | length) %}
+      {% if isTimelineDetailPage and (timelineAncestorChain | length or timelineFollowUpTree | length) %}
         <section class="timeline-thread">
           {% if timelineAncestorChain | length %}
             <div class="timeline-thread__branch timeline-thread__branch--parent">
@@ -229,12 +229,28 @@ layout: layouts/base.njk
             </div>
           {% endif %}
 
-          {% if timelineChildEntries | length %}
+          {% if timelineFollowUpTree | length %}
             <div id="timeline-children" class="timeline-thread__branch timeline-thread__branch--children">
               <p class="timeline-thread__label">Follow-ups</p>
               <div class="timeline-thread__stack">
-                {% for childEntry in timelineChildEntries %}
-                  {{ renderTimelineEntry(childEntry, timelineEntries, true, false, true, false) | safe }}
+                {% for childNode in timelineFollowUpTree %}
+                  <div class="timeline-thread__node">
+                    {{ renderTimelineEntry(childNode.entry, timelineEntries, true, false, true, false) | safe }}
+                    {% if childNode.children | length %}
+                      <div class="timeline-thread__stack timeline-thread__stack--nested">
+                        {% for grandchildNode in childNode.children %}
+                          <div class="timeline-thread__node">
+                            {{ renderTimelineEntry(grandchildNode.entry, timelineEntries, true, false, true, false) | safe }}
+                            {% if grandchildNode.continues %}
+                              <p class="timeline-thread__continues">
+                                <a href="{{ grandchildNode.entry.url | url }}#timeline-children">continues...</a>
+                              </p>
+                            {% endif %}
+                          </div>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
                 {% endfor %}
               </div>
             </div>

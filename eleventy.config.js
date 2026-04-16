@@ -261,13 +261,32 @@ const getTimelineEntryByRef = (ref, entries = []) => {
   return buildTimelineEntryMap(entries).get(normalizedRef) || null;
 };
 
+const buildTimelineChildMap = (entries = []) => {
+  const childMap = new Map();
+
+  for (const entry of Array.isArray(entries) ? entries : []) {
+    const parentRef = getTimelineParentRef(entry);
+    if (!parentRef) continue;
+
+    if (!childMap.has(parentRef)) childMap.set(parentRef, []);
+    childMap.get(parentRef).push(entry);
+  }
+
+  for (const childEntries of childMap.values()) {
+    childEntries.sort((a, b) =>
+      getTimelineSortKey(a).localeCompare(getTimelineSortKey(b)),
+    );
+  }
+
+  return childMap;
+};
+
 const getTimelineChildEntries = (entryOrRef, entries = []) => {
   const parentRef = getTimelineEntryRef(entryOrRef);
   if (!parentRef) return [];
 
-  return (Array.isArray(entries) ? entries : [])
-    .filter((entry) => getTimelineParentRef(entry) === parentRef)
-    .sort((a, b) => getTimelineSortKey(a).localeCompare(getTimelineSortKey(b)));
+  const childMap = buildTimelineChildMap(entries);
+  return childMap.get(parentRef) || [];
 };
 
 const getTimelineAncestorEntries = (entryOrRef, entries = []) => {
@@ -292,6 +311,62 @@ const getTimelineAncestorEntries = (entryOrRef, entries = []) => {
   }
 
   return ancestors;
+};
+
+const getTimelineDescendantCount = (entryOrRef, entries = []) => {
+  const rootRef = getTimelineEntryRef(entryOrRef);
+  if (!rootRef) return 0;
+
+  const childMap = buildTimelineChildMap(entries);
+  const countDescendants = (parentRef) => {
+    const childEntries = childMap.get(parentRef) || [];
+
+    return childEntries.reduce((count, childEntry) => {
+      const childRef = getTimelineEntryRef(childEntry);
+      return (
+        count +
+        1 +
+        (childRef ? countDescendants(childRef) : 0)
+      );
+    }, 0);
+  };
+
+  return countDescendants(rootRef);
+};
+
+const getTimelineDescendantTree = (entryOrRef, entries = [], maxDepth = 2) => {
+  const rootRef = getTimelineEntryRef(entryOrRef);
+  const normalizedMaxDepth = Number.isFinite(Number(maxDepth))
+    ? Math.max(0, Math.floor(Number(maxDepth)))
+    : 0;
+
+  if (!rootRef || normalizedMaxDepth < 1) return [];
+
+  const childMap = buildTimelineChildMap(entries);
+  const buildNodes = (parentRef, depthRemaining) => {
+    const childEntries = childMap.get(parentRef) || [];
+
+    return childEntries.map((childEntry) => {
+      const childRef = getTimelineEntryRef(childEntry);
+      const directChildren = childRef ? childMap.get(childRef) || [] : [];
+
+      if (depthRemaining <= 1) {
+        return {
+          entry: childEntry,
+          children: [],
+          continues: directChildren.length > 0,
+        };
+      }
+
+      return {
+        entry: childEntry,
+        children: childRef ? buildNodes(childRef, depthRemaining - 1) : [],
+        continues: false,
+      };
+    });
+  };
+
+  return buildNodes(rootRef, normalizedMaxDepth);
 };
 
 const getTimelineEntryLabel = (entry) => {
@@ -787,6 +862,15 @@ export default function (eleventyConfig) {
   eleventyConfig.addFilter(
     'timelineAncestorEntries',
     (entryOrRef, entries = []) => getTimelineAncestorEntries(entryOrRef, entries),
+  );
+  eleventyConfig.addFilter(
+    'timelineDescendantCount',
+    (entryOrRef, entries = []) => getTimelineDescendantCount(entryOrRef, entries),
+  );
+  eleventyConfig.addFilter(
+    'timelineDescendantTree',
+    (entryOrRef, entries = [], maxDepth = 2) =>
+      getTimelineDescendantTree(entryOrRef, entries, maxDepth),
   );
   eleventyConfig.addFilter('timelineEntryLabel', (entry) =>
     getTimelineEntryLabel(entry),

@@ -152,14 +152,47 @@
     .timeline-thread__stack .timeline-entry:last-child {
       margin-bottom: 0;
     }
+
+    .timeline-thread__node + .timeline-thread__node {
+      margin-top: 1rem;
+    }
+
+    .timeline-thread__stack--nested {
+      margin-top: 0.75rem;
+      margin-left: 1.1rem;
+      padding-left: 0.85rem;
+    }
+
+    .timeline-thread__stack--nested::before {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .timeline-thread__continues {
+      margin: 0.45rem 0 0 2.25rem;
+      font-size: 0.78rem;
+      line-height: 1.4;
+      opacity: 0.55;
+      font-style: italic;
+    }
+
+    .timeline-thread__continues a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dotted currentColor;
+    }
+
+    .timeline-thread__continues a:hover,
+    .timeline-thread__continues a:focus {
+      opacity: 1;
+      text-decoration: underline;
+    }
   </style>
 {% endmacro %}
 
 {% macro renderTimelineEntry(entry, timelineEntries=[], compact=false, showRelationships=true, showTags=true, muted=false) %}
   {% set entryTags = (entry.data.tags | default([])) | filterTags %}
   {% set parentEntry = entry | timelineParentEntry(timelineEntries) %}
-  {% set childEntries = entry | timelineChildEntries(timelineEntries) %}
-  {% set relationshipCount = childEntries | length %}
+  {% set relationshipCount = entry | timelineDescendantCount(timelineEntries) %}
   {% set followUpText = "1 follow-up" if relationshipCount == 1 else (relationshipCount ~ " follow-ups") %}
   {% set entryClasses = "timeline-entry" %}
   {% if compact %}{% set entryClasses = entryClasses ~ " timeline-entry--compact" %}{% endif %}
