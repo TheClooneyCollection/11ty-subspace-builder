@@ -1,6 +1,7 @@
 ---
 layout: layouts/base.njk
 ---
+{% from "components/timeline-entry.njk" import renderTimelineEntry, renderTimelineStyles with context %}
 
 {% set siteThemeConfig = site.theme or {} %}
 {% set showThemeSelectors = siteThemeConfig.showSelectors if siteThemeConfig.showSelectors is defined else true %}
@@ -10,11 +11,20 @@ layout: layouts/base.njk
 {% set currentUrl = page.url or '/' %}
 {% set isPostPage = currentUrl.indexOf('/posts/') == 0 %}
 {% set isNotePage = currentUrl.indexOf('/notes/') == 0 %}
+{% set isTimelinePage = currentUrl.indexOf('/timeline/') == 0 %}
 {% set isPostDetailPage = isPostPage and currentUrl != '/posts/' %}
 {% set isNoteDetailPage = isNotePage and currentUrl != '/notes/' %}
+{% set isTimelineDetailPage = isTimelinePage and currentUrl != '/timeline/' %}
 {% set isArticlePage = isPostDetailPage or isNoteDetailPage %}
+{% set timelineEntries = collections.timeline | default([]) %}
+{% set currentTimelineEntry = page.url | timelineEntryByRef(timelineEntries) if isTimelineDetailPage else null %}
+{% set timelineAncestorChain = currentTimelineEntry | timelineAncestorEntries(timelineEntries) if currentTimelineEntry else [] %}
+{% set timelineChildEntries = currentTimelineEntry | timelineChildEntries(timelineEntries) if currentTimelineEntry else [] %}
 
 <div class="sans-serif">
+  {% if isTimelinePage %}
+    {{ renderTimelineStyles() }}
+  {% endif %}
   <style>
     /* Fade + Slide Keyframe Animations */
     @keyframes slideFadeIn {
@@ -206,6 +216,31 @@ layout: layouts/base.njk
       <heading-anchors>
         {{ content | safe }}
       </heading-anchors>
+      {% if isTimelineDetailPage and (timelineAncestorChain | length or timelineChildEntries | length) %}
+        <section class="timeline-thread">
+          {% if timelineAncestorChain | length %}
+            <div class="timeline-thread__branch timeline-thread__branch--parent">
+              <p class="timeline-thread__label">Earlier in thread</p>
+              <div class="timeline-thread__stack">
+                {% for ancestorEntry in timelineAncestorChain %}
+                  {{ renderTimelineEntry(ancestorEntry, timelineEntries, true, false, true, true) | safe }}
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+          {% if timelineChildEntries | length %}
+            <div id="timeline-children" class="timeline-thread__branch timeline-thread__branch--children">
+              <p class="timeline-thread__label">Follow-ups</p>
+              <div class="timeline-thread__stack">
+                {% for childEntry in timelineChildEntries %}
+                  {{ renderTimelineEntry(childEntry, timelineEntries, true, false, true, false) | safe }}
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+        </section>
+      {% endif %}
       {% if isArticlePage and giscusConfig.repo %}
         <script src="https://giscus.app/client.js"
                 data-repo="{{ giscusConfig.repo }}"

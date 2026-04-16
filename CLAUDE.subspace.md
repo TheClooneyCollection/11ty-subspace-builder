@@ -53,6 +53,7 @@ draft: true     # hidden in production, visible in dev
 title:          # optional
 date: "YYYY-MM-DD" # required; keep quoted so YAML treats it as a string
 time: "HH:MM"      # required; keep quoted, 24-hour HH:MM (e.g. "15:42")
+parent: "/timeline/2026-04-14-example-entry/" # optional; use the target entry's URL path
 tags:
   - timeline    # always present (set by timeline/timeline.json)
   - shipped     # green  — something released
@@ -64,6 +65,7 @@ tags:
 ```
 
 Timeline `date` and `time` values must stay quoted strings. Unquoted YAML dates are parsed as JavaScript `Date` objects before Eleventy collection sorting runs, which can break within-day ordering.
+Timeline parent references use the entry URL path (`page.url`), including the trailing slash.
 
 ## Theme system
 
@@ -77,6 +79,7 @@ Use `var(--accent)` for theme-aware accent color in custom CSS. Use the `theme-t
 
 - **The build validates all internal links.** A link to a page that does not exist fails the build.
 - **The build validates timeline front matter.** `timeline/*.md` entries must quote `date` and `time`.
+- **The build validates timeline parent refs.** `parent` must point at an existing `/timeline/.../` entry URL and may not create cycles.
 - Never add a nav entry to `sidebarNav.yaml` before the target page is built.
 - Never add cross-page links before both pages exist.
 - Always run `npm run build` to verify before committing.

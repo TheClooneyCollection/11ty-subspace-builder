@@ -194,6 +194,203 @@ const renderMarkdownCodeBlock = (code, language = '') => {
 const slugify = (value) =>
   encodeURIComponent(String(value).trim().toLowerCase().replace(/\s+/g, '-'));
 
+const toIsoDatePart = (value) => {
+  if (typeof value === 'string') {
+    return value.split('T')[0];
+  }
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toISOString().split('T')[0];
+  }
+  return '';
+};
+
+const getTimelineSortKey = (entry) => {
+  const date = toIsoDatePart(entry?.data?.date) || toIsoDatePart(entry?.date);
+  const time =
+    typeof entry?.data?.time === 'string' && entry.data.time.trim()
+      ? entry.data.time.trim()
+      : '00:00';
+  return `${date}T${time}`;
+};
+
+const normalizeTimelineRef = (value) => {
+  if (typeof value !== 'string') return '';
+
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+
+  let pathname = trimmed;
+  if (/^[a-z]+:\/\//i.test(trimmed)) {
+    try {
+      pathname = new URL(trimmed).pathname;
+    } catch {
+      return '';
+    }
+  }
+
+  if (!pathname.startsWith('/')) pathname = `/${pathname}`;
+  pathname = pathname.replace(/\/{2,}/g, '/');
+
+  return pathname.endsWith('/') ? pathname : `${pathname}/`;
+};
+
+const getTimelineEntryRef = (entryOrRef) => {
+  if (typeof entryOrRef === 'string') {
+    return normalizeTimelineRef(entryOrRef);
+  }
+  return normalizeTimelineRef(entryOrRef?.url || entryOrRef?.page?.url);
+};
+
+const getTimelineParentRef = (entry) =>
+  normalizeTimelineRef(entry?.data?.parent);
+
+const buildTimelineEntryMap = (entries = []) => {
+  const entryMap = new Map();
+
+  for (const entry of Array.isArray(entries) ? entries : []) {
+    const ref = getTimelineEntryRef(entry);
+    if (ref) entryMap.set(ref, entry);
+  }
+
+  return entryMap;
+};
+
+const getTimelineEntryByRef = (ref, entries = []) => {
+  const normalizedRef = getTimelineEntryRef(ref);
+  if (!normalizedRef) return null;
+  return buildTimelineEntryMap(entries).get(normalizedRef) || null;
+};
+
+const getTimelineChildEntries = (entryOrRef, entries = []) => {
+  const parentRef = getTimelineEntryRef(entryOrRef);
+  if (!parentRef) return [];
+
+  return (Array.isArray(entries) ? entries : [])
+    .filter((entry) => getTimelineParentRef(entry) === parentRef)
+    .sort((a, b) => getTimelineSortKey(a).localeCompare(getTimelineSortKey(b)));
+};
+
+const getTimelineAncestorEntries = (entryOrRef, entries = []) => {
+  const timelineEntries = Array.isArray(entries) ? entries : [];
+  const entryMap = buildTimelineEntryMap(timelineEntries);
+  const currentEntry =
+    typeof entryOrRef === 'string'
+      ? entryMap.get(getTimelineEntryRef(entryOrRef))
+      : entryOrRef;
+
+  if (!currentEntry) return [];
+
+  const ancestors = [];
+  let parentRef = getTimelineParentRef(currentEntry);
+
+  while (parentRef) {
+    const parentEntry = entryMap.get(parentRef);
+    if (!parentEntry) break;
+
+    ancestors.push(parentEntry);
+    parentRef = getTimelineParentRef(parentEntry);
+  }
+
+  return ancestors;
+};
+
+const getTimelineEntryLabel = (entry) => {
+  const title = entry?.data?.title;
+  if (typeof title === 'string' && title.trim()) return title.trim();
+
+  return (
+    getTimelineEntryRef(entry) ||
+    entry?.page?.fileSlug ||
+    entry?.fileSlug ||
+    'Untitled timeline entry'
+  );
+};
+
+const getTimelineEntrySource = (entry) =>
+  entry?.inputPath
+    ? path.relative(process.cwd(), entry.inputPath)
+    : getTimelineEntryRef(entry) || '(unknown timeline entry)';
+
+const validateTimelineEntryRelationships = (entries = []) => {
+  const timelineEntries = Array.isArray(entries) ? entries : [];
+  const entryMap = buildTimelineEntryMap(timelineEntries);
+  const failures = [];
+
+  for (const entry of timelineEntries) {
+    const rawParent = entry?.data?.parent;
+    if (rawParent === undefined || rawParent === null || rawParent === '') {
+      continue;
+    }
+
+    if (typeof rawParent !== 'string') {
+      failures.push(
+        `${getTimelineEntrySource(entry)}: parent must be a string URL path like "/timeline/example-entry/"`,
+      );
+      continue;
+    }
+
+    const entryRef = getTimelineEntryRef(entry);
+    const parentRef = normalizeTimelineRef(rawParent);
+
+    if (!parentRef) {
+      failures.push(
+        `${getTimelineEntrySource(entry)}: parent must be a URL path like "/timeline/example-entry/"`,
+      );
+      continue;
+    }
+
+    if (!parentRef.startsWith('/timeline/')) {
+      failures.push(
+        `${getTimelineEntrySource(entry)}: parent "${rawParent}" must point to a timeline entry URL under /timeline/`,
+      );
+      continue;
+    }
+
+    if (parentRef === entryRef) {
+      failures.push(
+        `${getTimelineEntrySource(entry)}: parent cannot point to the entry itself (${parentRef})`,
+      );
+      continue;
+    }
+
+    if (!entryMap.has(parentRef)) {
+      failures.push(
+        `${getTimelineEntrySource(entry)}: parent "${rawParent}" does not match any timeline entry URL`,
+      );
+    }
+  }
+
+  for (const entry of timelineEntries) {
+    const seenRefs = new Set();
+    let currentEntry = entry;
+
+    while (currentEntry) {
+      const currentRef = getTimelineEntryRef(currentEntry);
+      if (!currentRef) break;
+
+      if (seenRefs.has(currentRef)) {
+        failures.push(
+          `${getTimelineEntrySource(entry)}: parent chain creates a cycle at "${currentRef}"`,
+        );
+        break;
+      }
+
+      seenRefs.add(currentRef);
+
+      const parentRef = getTimelineParentRef(currentEntry);
+      if (!parentRef) break;
+
+      currentEntry = entryMap.get(parentRef);
+    }
+  }
+
+  if (failures.length > 0) {
+    throw new Error(
+      `Invalid timeline parent relationships:\n  - ${failures.join('\n  - ')}`,
+    );
+  }
+};
+
 const loadSiteData = () => {
   try {
     const stats = fs.statSync(SITE_DATA_URL);
@@ -567,31 +764,33 @@ export default function (eleventyConfig) {
       .map((tag) => (typeof tag === 'string' ? tag : null))
       .filter((tag) => tag && !excludedTags.has(tag));
 
-  const toIsoDatePart = (value) => {
-    if (typeof value === 'string') {
-      return value.split('T')[0];
-    }
-    if (value instanceof Date && !Number.isNaN(value.getTime())) {
-      return value.toISOString().split('T')[0];
-    }
-    return '';
-  };
-
-  const getTimelineSortKey = (entry) => {
-    const date = toIsoDatePart(entry?.data?.date) || toIsoDatePart(entry?.date);
-    const time =
-      typeof entry?.data?.time === 'string' && entry.data.time.trim()
-        ? entry.data.time.trim()
-        : '00:00';
-    return `${date}T${time}`;
-  };
-
   eleventyConfig.on('eleventy.after', ({ dir }) => {
     emitFingerprintedAssets(dir?.output || '_site');
   });
 
   eleventyConfig.addDataExtension('yaml', (contents) => yaml.load(contents));
   eleventyConfig.addFilter('assetUrl', buildAssetUrl);
+  eleventyConfig.addFilter('timelineRef', (entryOrRef) =>
+    getTimelineEntryRef(entryOrRef),
+  );
+  eleventyConfig.addFilter('timelineEntryByRef', (ref, entries = []) =>
+    getTimelineEntryByRef(ref, entries),
+  );
+  eleventyConfig.addFilter('timelineParentEntry', (entry, entries = []) => {
+    const parentRef = getTimelineParentRef(entry);
+    if (!parentRef) return null;
+    return getTimelineEntryByRef(parentRef, entries);
+  });
+  eleventyConfig.addFilter('timelineChildEntries', (entryOrRef, entries = []) =>
+    getTimelineChildEntries(entryOrRef, entries),
+  );
+  eleventyConfig.addFilter(
+    'timelineAncestorEntries',
+    (entryOrRef, entries = []) => getTimelineAncestorEntries(entryOrRef, entries),
+  );
+  eleventyConfig.addFilter('timelineEntryLabel', (entry) =>
+    getTimelineEntryLabel(entry),
+  );
 
   eleventyConfig.addGlobalData(
     'environment',
@@ -676,11 +875,14 @@ export default function (eleventyConfig) {
     collectionApi.getFilteredByTag('notes'),
   );
 
-  eleventyConfig.addCollection('timeline', (collectionApi) =>
-    collectionApi.getFilteredByTag('timeline').sort((a, b) => {
+  eleventyConfig.addCollection('timeline', (collectionApi) => {
+    const timelineEntries = collectionApi.getFilteredByTag('timeline');
+    validateTimelineEntryRelationships(timelineEntries);
+
+    return timelineEntries.sort((a, b) => {
       return getTimelineSortKey(a).localeCompare(getTimelineSortKey(b));
-    }),
-  );
+    });
+  });
 
   eleventyConfig.addAsyncShortcode(
     'github',
