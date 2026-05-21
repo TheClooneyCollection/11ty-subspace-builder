@@ -127,7 +127,7 @@ Markdown footnotes now work too, using standard `[^1]` references plus `[^1]: no
 
 ## Components & Enhancements
 
-- Use `{% from "components/post-list.njk" import renderPostList %}` inside a template to render a list of collection items with consistent styling.
+- Use `{% from "components/post-list.njk" import renderPostList with context %}` inside a template to render a list of collection items with consistent styling.
 - The `home.njk` layout wraps page content in a `<heading-anchors>` element to enable anchored headings and theme-aware typography.
 
 ## Deployment Tips

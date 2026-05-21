@@ -10,7 +10,7 @@ eleventyComputed:
   title: "{{ ui.pages.tags.taggedTitleTemplate | replace('{tag}', tag) }}"
 ---
 
-{% from "components/post-list.njk" import renderPostList %}
+{% from "components/post-list.njk" import renderPostList with context %}
 {% set tagItems = collections[tag] | default([]) %}
 {% set postCount = tagItems | length %}
 

@@ -9,7 +9,7 @@ eleventyComputed:
   title: "{% if pagination.pageNumber == 0 %}{{ ui.pages.home.title }}{% else %}{{ ui.pages.home.title }} {{ ui.shared.pagination.separator }} {{ ui.shared.pagination.page }} {{ pagination.pageNumber + 1 }}{% endif %}"
 ---
 
-{% from "components/post-list.njk" import renderPostList %}
+{% from "components/post-list.njk" import renderPostList with context %}
 
 <section class="mw7 center">
   <h1 class="f3 f2-ns lh-title mt0 mb0">{{ ui.pages.home.heading }}</h1>

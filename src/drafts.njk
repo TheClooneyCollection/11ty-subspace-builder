@@ -5,7 +5,7 @@ eleventyComputed:
   title: "{{ ui.pages.drafts.title }}"
 ---
 
-{% from "components/post-list.njk" import renderPostList %}
+{% from "components/post-list.njk" import renderPostList with context %}
 
 <section class="mw7 center">
   <h1 class="f3 f2-ns lh-title mt0 mb0">{{ ui.pages.drafts.heading }}</h1>
