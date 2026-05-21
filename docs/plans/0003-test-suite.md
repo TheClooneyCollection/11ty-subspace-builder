@@ -1,6 +1,6 @@
 # 0003 - Test Suite
 
-**Status:** Proposed
+**Status:** In Progress
 **Approach:** Layered tests (data invariants, contract, fixtures, snapshots, unit, smoke)
 
 ---
@@ -20,6 +20,13 @@ Tests are organized by what they verify, not by what they import:
 - **snapshots** — small, normalized HTML fragments for reusable components
 - **unit** — pure-function tests on helpers extracted from `eleventy.config.js`
 - **e2e smoke** — a thin Playwright layer for things only a real browser sees
+
+Current rollout status:
+
+- Phases 1 through 5 are substantially complete.
+- Phase 6 is in progress.
+- Phase 7 is blocked on further Phase 6 extraction work.
+- Phase 8 has not started.
 
 ---
 
@@ -162,72 +169,72 @@ tests provide the safety net.
 
 ### Phase 1 — Tooling bootstrap
 
-- [ ] Add `vitest` and `linkedom` to devDependencies.
-- [ ] Add `test`, `test:watch`, `test:e2e` scripts to `package.json`.
-- [ ] Create `vitest.config.js` (node environment, include `test/**`).
-- [ ] Add `test/helpers/build-once.js` (runs `npm run build` once per suite, caches result).
-- [ ] Add `test/helpers/parse.js` (linkedom wrapper for built HTML by URL).
-- [ ] Add `test/helpers/normalize-html.js` (strip asset fingerprints, today's date, OG filenames).
+- [x] Add `vitest` and `linkedom` to devDependencies.
+- [x] Add `test`, `test:watch`, `test:e2e` scripts to `package.json`.
+- [x] Create `vitest.config.js` (node environment, include `test/**`).
+- [x] Add `test/helpers/build-once.js` (runs `npm run build` once per suite, caches result).
+- [x] Add `test/helpers/parse.js` (linkedom wrapper for built HTML by URL).
+- [x] Add `test/helpers/normalize-html.js` (strip asset fingerprints, today's date, OG filenames).
 - [ ] Wire CI to run `npm run build && npm test`.
 
 ### Phase 2 — Data invariants
 
-- [ ] `test/data/invariants.test.js`:
-  - [ ] timeline category `tag` values are unique
-  - [ ] timeline category `color` matches `/^#[0-9a-f]{6}$/i`
-  - [ ] `featuredTags` is an array of strings (if present)
-  - [ ] `series.yaml` entries reference real post/note slugs
+- [x] `test/data/invariants.test.js`:
+  - [x] timeline category `tag` values are unique
+  - [x] timeline category `color` matches `/^#[0-9a-f]{6}$/i`
+  - [x] `featuredTags` is an array of strings (if present)
+  - [x] `series.yaml` entries reference real post/note slugs
 
 ### Phase 3 — Contract tests (against real build)
 
-- [ ] `home.test.js` — page 1 + page 2 render; post list items present; prev/next pagination works; titles stable.
-- [ ] `about.test.js` — `me.yaml` fields render; no unresolved template output.
-- [ ] `notes.test.js` — non-hidden notes listed; hidden notes absent.
-- [ ] `hidden-notes.test.js` — hidden notes listed; not present in `sidebarNav.yaml` nav.
-- [ ] `drafts.test.js` — drafts page exists in dev; (optionally) absent/empty in production.
-- [ ] `projects.test.js` — cards present; `Link` and `GitHub` anchors non-empty where data provides `url`/`repo`; no empty anchors.
-- [ ] `timeline-index.test.js` — entries render; category color rules applied; pagination titles stable.
-- [ ] `timeline-entry.test.js` — title/body/category badge for a known entry.
-- [ ] `timeline-months.test.js` — `/timeline/months/` index + a known month archive; entry counts match.
-- [ ] `timeline-weeks.test.js` — `/timeline/weeks/` index + a known week archive.
-- [ ] `timeline-calendar-weeks.test.js` — ISO week labels; year-boundary case if present.
-- [ ] `timeline-tag-archive.test.js` — topic-tag archive renders entries; reserved/excluded tags produce no archive.
-- [ ] `tags.test.js` — tag groups render with sane counts; excluded tags absent.
-- [ ] `all-tags.test.js` — full tag list renders.
-- [ ] `tag-pagination.test.js` — paginated tag archive for a known tag.
-- [ ] `series.test.js` — `/series/` index + a series page; declared entry order respected.
-- [ ] `feed.test.js` — `/feed.xml` is valid XML; latest N entries present; URLs absolute.
-- [ ] `no-unresolved-templates.test.js` — scan every generated HTML file; assert no literal `{{ ... }}` output.
-- [ ] `no-empty-anchors.test.js` — scan every generated HTML file; assert no `<a href="..."></a>` empties.
+- [x] `home.test.js` — page 1 + page 2 render; post list items present; prev/next pagination works; titles stable.
+- [x] `about.test.js` — `me.yaml` fields render; no unresolved template output.
+- [x] `notes.test.js` — non-hidden notes listed; hidden notes absent.
+- [x] `hidden-notes.test.js` — hidden notes listed; not present in `sidebarNav.yaml` nav.
+- [x] `drafts.test.js` — drafts page exists in dev; (optionally) absent/empty in production.
+- [x] `projects.test.js` — cards present; `Link` and `GitHub` anchors non-empty where data provides `url`/`repo`; no empty anchors.
+- [x] `timeline-index.test.js` — entries render; category color rules applied; pagination titles stable.
+- [x] `timeline-entry.test.js` — title/body/category badge for a known entry.
+- [x] `timeline-months.test.js` — `/timeline/months/` index + a known month archive; entry counts match.
+- [x] `timeline-weeks.test.js` — `/timeline/weeks/` index + a known week archive.
+- [x] `timeline-calendar-weeks.test.js` — ISO week labels; year-boundary case if present.
+- [x] `timeline-tag-archive.test.js` — topic-tag archive renders entries; reserved/excluded tags produce no archive.
+- [x] `tags.test.js` — tag groups render with sane counts; excluded tags absent.
+- [x] `all-tags.test.js` — full tag list renders.
+- [x] `tag-pagination.test.js` — paginated tag archive for a known tag.
+- [x] `series.test.js` — `/series/` index + a series page; declared entry order respected.
+- [x] `feed.test.js` — `/feed.xml` is valid XML; latest N entries present; URLs absolute.
+- [x] `no-unresolved-templates.test.js` — scan every generated HTML file; assert no literal `{{ ... }}` output.
+- [x] `no-empty-anchors.test.js` — scan every generated HTML file; assert no `<a href="..."></a>` empties.
 
 ### Phase 4 — Snapshots
 
-- [ ] `project-card.test.js` — variants: `url`+`repo`, `url` only, `repo` only, neither.
-- [ ] `tag-chip.test.js` — plain, featured, with count.
-- [ ] `timeline-entry.test.js` — one per category for color coverage; one with parent badge; one with children badge.
-- [ ] `timeline-week-pill.test.js` — single week + multi-week range.
-- [ ] `post-list-item.test.js` — note variant, post variant, with/without excerpt.
-- [ ] `timeline-entry-body.test.js` — representative entry with parent + children + earlier-thread.
+- [x] `project-card.test.js` — variants: `url`+`repo`, `url` only, `repo` only, neither.
+- [x] `tag-chip.test.js` — plain, featured, with count.
+- [x] `timeline-entry.test.js` — one per category for color coverage; one with parent badge; one with children badge.
+- [x] `timeline-week-pill.test.js` — single week + multi-week range.
+- [x] `post-list-item.test.js` — note variant, post variant, with/without excerpt.
+- [x] `timeline-entry-body.test.js` — representative entry with parent + children + earlier-thread.
 - [ ] `post-body.test.js` — post with TOC, footnote, code block (collapsed + uncollapsed), `> TODO` blockquote, GitHub embed shortcode.
 
 ### Phase 5 — Fixtures (Eleventy programmatic API)
 
-- [ ] `timeline-linear-thread/` — A → B → C. Assert ancestors of C, descendants of A.
-- [ ] `timeline-branching/` — A with children B, C. Assert sibling sort order.
-- [ ] `timeline-deep-tree/` — exercises `maxDepth=2` and the `continues` flag.
-- [ ] `timeline-earlier-thread/` — "earlier in thread" section content + ordering.
-- [ ] `timeline-orphan-parent/` — build throws with expected message.
-- [ ] `timeline-cycle/` — build throws.
-- [ ] `timeline-self-parent/` — build throws.
-- [ ] `timeline-tag-collision/` — tag whose slug matches an entry slug; build throws.
-- [ ] `timeline-reserved-slug/` — tag named `months`/`weeks`; build throws.
-- [ ] `timeline-unquoted-date/` — `validateTimelineEntryDateTimeQuotes` throws.
-- [ ] `timeline-multi-category/` — entry with two category tags; first-match-wins.
-- [ ] `test/fixtures.test.js` — runs each fixture via programmatic API; asserts positive cases via DOM, negative cases via thrown error message.
+- [x] `timeline-linear-thread/` — A → B → C. Assert ancestors of C, descendants of A.
+- [x] `timeline-branching/` — A with children B, C. Assert sibling sort order.
+- [x] `timeline-deep-tree/` — exercises `maxDepth=2` and the `continues` flag.
+- [x] `timeline-earlier-thread/` — "earlier in thread" section content + ordering.
+- [x] `timeline-orphan-parent/` — build throws with expected message.
+- [x] `timeline-cycle/` — build throws.
+- [x] `timeline-self-parent/` — build throws.
+- [x] `timeline-tag-collision/` — tag whose slug matches an entry slug; build throws.
+- [x] `timeline-reserved-slug/` — tag named `months`/`weeks`; build throws.
+- [x] `timeline-unquoted-date/` — `validateTimelineEntryDateTimeQuotes` throws.
+- [x] `timeline-multi-category/` — entry with two category tags; first-match-wins.
+- [x] `test/fixtures.test.js` — runs each fixture via programmatic API; asserts positive cases via DOM, negative cases via thrown error message.
 
 ### Phase 6 — Refactor eleventy.config.js
 
-- [ ] Extract `lib/timeline/refs.js`.
+- [x] Extract `lib/timeline/refs.js`.
 - [ ] Extract `lib/timeline/graph.js`.
 - [ ] Extract `lib/timeline/validate.js`.
 - [ ] Extract `lib/timeline/sort.js`.
@@ -243,7 +250,7 @@ tests provide the safety net.
 
 ### Phase 7 — Unit tests (alongside each extraction)
 
-- [ ] `timeline-refs.test.js` — trailing slash, absolute URL, relative, empty, non-string.
+- [x] `timeline-refs.test.js` — trailing slash, absolute URL, relative, empty, non-string.
 - [ ] `timeline-graph.test.js` — linear, branching, deep tree with `maxDepth`/`continues`, missing parent ref.
 - [ ] `timeline-validate.test.js` — valid passes; self-parent, cycle, missing target, non-`/timeline/` ref, non-string each throw with useful messages.
 - [ ] `timeline-archives.test.js` — month/week keys; ISO week year-boundary; reserved slugs rejected; tag/entry slug collision rejected.
@@ -257,6 +264,10 @@ tests provide the safety net.
 - [ ] `fingerprint.test.js` — stable hash for unchanged file; new hash on size/mtime change; query/hash preserved.
 
 ### Phase 8 — Playwright smoke
+
+- [ ] Add `playwright.config.js`.
+- [ ] Add `test/e2e/smoke.spec.js`.
+- [ ] Cover a minimal browser-only smoke path for the built site.
 
 - [ ] Add `playwright` devDependency + `playwright.config.js` (uses `webServer` against pre-built `_site`).
 - [ ] `e2e/smoke.spec.js`:
