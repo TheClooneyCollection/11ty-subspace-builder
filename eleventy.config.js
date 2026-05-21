@@ -18,6 +18,11 @@ import MarkdownItTocDoneRight from 'markdown-it-toc-done-right';
 // Use yaml for data
 import yaml from 'js-yaml';
 import excerpt from './lib/excerpt.js';
+import {
+  normalizeTimelineRef,
+  getTimelineEntryRef,
+  getTimelineParentRef,
+} from './lib/timeline/refs.js';
 
 const OG_FORCE_ENV = process.env.OG_FORCE === 'true';
 const ELEVENTY_FETCH_CACHE_DIR = path.resolve('.cache');
@@ -565,37 +570,6 @@ const buildTimelineCalendarWeekArchives = (entries) => {
 
   return Array.from(archives.values()).sort((a, b) => a.weekStartDate.localeCompare(b.weekStartDate));
 };
-
-const normalizeTimelineRef = (value) => {
-  if (typeof value !== 'string') return '';
-
-  const trimmed = value.trim();
-  if (!trimmed) return '';
-
-  let pathname = trimmed;
-  if (/^[a-z]+:\/\//i.test(trimmed)) {
-    try {
-      pathname = new URL(trimmed).pathname;
-    } catch {
-      return '';
-    }
-  }
-
-  if (!pathname.startsWith('/')) pathname = `/${pathname}`;
-  pathname = pathname.replace(/\/{2,}/g, '/');
-
-  return pathname.endsWith('/') ? pathname : `${pathname}/`;
-};
-
-const getTimelineEntryRef = (entryOrRef) => {
-  if (typeof entryOrRef === 'string') {
-    return normalizeTimelineRef(entryOrRef);
-  }
-  return normalizeTimelineRef(entryOrRef?.url || entryOrRef?.page?.url);
-};
-
-const getTimelineParentRef = (entry) =>
-  normalizeTimelineRef(entry?.data?.parent);
 
 const buildTimelineEntryMap = (entries = []) => {
   const entryMap = new Map();
