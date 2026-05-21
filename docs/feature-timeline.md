@@ -24,10 +24,12 @@ Base data comes from:
 - `timeline/timeline.json`
 - `timeline/timeline.11tydata.js`
 - `_data/timeline.yaml`
+- `_data/ui.yaml`
 
 Timeline entries always carry the `timeline` tag through `timeline/timeline.json`.
-Timeline page copy, archive labels, relationship labels, featured tags, and
-category metadata are configured in `_data/timeline.yaml`.
+Timeline page copy, archive labels, relationship labels, and empty states live
+in `_data/ui.yaml` under `pages.timeline`.
+Timeline featured tags and category metadata live in `_data/timeline.yaml`.
 
 ## Timeline Entry Front Matter
 
@@ -53,20 +55,20 @@ Rules:
 
 ## Timeline Data Model
 
-`_data/timeline.yaml` is the source of truth for timeline presentation and
-category behavior.
+Timeline data is split between `_data/ui.yaml` and `_data/timeline.yaml`.
 
-It currently defines:
+`_data/ui.yaml` defines:
 - page and archive titles/descriptions
 - breadcrumb and section labels
 - empty-state copy
 - relationship and thread labels
+
+`_data/timeline.yaml` defines:
 - featured timeline tags
 - category metadata
 
 Category metadata is declared as an ordered `categories` array. Each item
 includes:
-- `id`
 - `tag`
 - `label`
 - `color`
@@ -171,8 +173,8 @@ Shared timeline entry rendering lives in:
 Shared week pill rendering lives in:
 - `_includes/components/timeline-week-pill.njk`
 
-`_includes/components/timeline-entry.njk` reads category ids and colors from
-`_data/timeline.yaml`.
+`_includes/components/timeline-entry.njk` reads category tags and colors from
+`_data/timeline.yaml`, and timeline copy from `_data/ui.yaml`.
 
 ## Social Preview Images
 

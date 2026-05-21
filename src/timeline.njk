@@ -4,12 +4,13 @@ ogImage: /assets/og/timeline.png
 showPostHeader: false
 permalink: /timeline/
 eleventyComputed:
-  title: "{{ timeline.title }}"
-  description: "{{ timeline.description }}"
+  title: "{{ ui.pages.timeline.title }}"
+  description: "{{ ui.pages.timeline.description }}"
 ---
 
 {% from "components/timeline-entry.njk" import renderTimelineEntry with context %}
 
+{% set timelineUi = ui.pages.timeline %}
 {% set timelineEntries = collections.timeline | default([]) %}
 {% set timelineTagArchives = collections.timelineTagArchives | default([]) %}
 {% set featuredTimelineTags = timeline.featuredTags | default([]) %}
@@ -17,11 +18,11 @@ eleventyComputed:
 
 <section class="mw7">
   <h1 class="f3 f2-ns lh-title mt0 mb4">
-    <a class="link dim theme-text" href="/timeline/">{{ timeline.labels.root }}</a>
+    <a class="link dim theme-text" href="/timeline/">{{ timelineUi.labels.root }}</a>
   </h1>
 
   {% if featuredTimelineTags | length and timelineTagArchives | length %}
-    <nav class="mb4" aria-label="{{ timeline.featuredTopicsAriaLabel }}">
+    <nav class="mb4" aria-label="{{ timelineUi.featuredTopicsAriaLabel }}">
       <div class="flex flex-wrap">
         {% for featuredTag in featuredTimelineTags %}
           {% for archive in timelineTagArchives %}
@@ -41,6 +42,6 @@ eleventyComputed:
       {% endfor %}
     </div>
   {% else %}
-    <p class="theme-midtone">{{ timeline.emptyMessages.mainHtml | safe }}</p>
+    <p class="theme-midtone">{{ timelineUi.emptyMessages.mainHtml | safe }}</p>
   {% endif %}
 </section>

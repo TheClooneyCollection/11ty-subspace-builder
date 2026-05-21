@@ -1,89 +1,19 @@
 featuredTags:
   - timeline-page
 
-title: Timeline
-description: A personal timeline log, color-coded by entry type.
-
-labels:
-  root: Timeline
-  months: Months
-  weeks: Weeks
-
-featuredTopicsAriaLabel: Featured timeline topics
-
-entryCount:
-  singular: entry
-  plural: entries
-
-relationships:
-  continuesFrom: Continues from
-  followUpSingularTemplate: "{count} follow-up"
-  followUpPluralTemplate: "{count} follow-ups"
-
-thread:
-  earlierInThread: Earlier in thread
-  followUps: Follow-ups
-  continues: continues...
-
-emptyMessages:
-  mainHtml: No entries yet. Add a markdown file to <code>timeline/</code> to get started.
-  monthsIndex: No timeline months yet.
-  monthArchive: No timeline entries for this month.
-  weeksIndex: No timeline weeks yet.
-  weekArchive: No timeline entries for this week.
-  calendarWeekArchive: No timeline entries for this calendar week.
-  tagArchive: No timeline entries for this topic yet.
-
-monthsIndex:
-  title: Timeline Months
-  description: Timeline entries grouped into monthly archive pages.
-  intro: Monthly archive pages for the timeline.
-
-monthArchive:
-  titleTemplate: "Timeline: {label}"
-  descriptionTemplate: "Timeline entries from {label}."
-  countSuffix: in this month.
-  monthBandedWeeksHeading: Month-banded weeks in this month
-  calendarWeeksNoteHtml: Calendar weeks also live under <code>/timeline/weeks/</code>, using keys like <code>2026-W16</code>.
-
-weeksIndex:
-  title: Timeline Weeks
-  description: Timeline entries grouped into both month-banded and ISO calendar weeks.
-  intro: Month-banded weeks and ISO calendar week pages grouped by month. ISO weeks that cross a month boundary appear in both months.
-  monthBandedWeeksHeading: Month-banded weeks
-  calendarWeeksHeading: ISO calendar weeks
-
-weekArchive:
-  titleTemplate: "Timeline: {label}"
-  descriptionTemplate: "Timeline entries from {rangeLabel}."
-
-calendarWeekArchive:
-  titleTemplate: "Timeline: {label}"
-  descriptionTemplate: "Timeline entries from {rangeLabel}."
-
-tagArchive:
-  titleTemplate: "Timeline: {tag}"
-  descriptionTemplate: "Timeline entries tagged {tag}, in chronological context."
-  countSuffix: following this thread through the timeline.
-
 categories:
-  - id: shipped
-    tag: shipped
+  - tag: shipped
     label: Shipped
     color: "#27ae60"
-  - id: published
-    tag: published
+  - tag: published
     label: Published
     color: "#2980b9"
-  - id: wip
-    tag: wip
+  - tag: wip
     label: WIP
     color: "#8e44ad"
-  - id: idea
-    tag: idea
+  - tag: idea
     label: Idea
     color: "#f1c40f"
-  - id: thinking
-    tag: thinking
+  - tag: thinking
     label: Thinking
     color: "#e67e22"

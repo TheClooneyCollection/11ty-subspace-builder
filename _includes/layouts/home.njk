@@ -354,10 +354,11 @@ layout: layouts/base.njk
         {{ content | safe }}
       </heading-anchors>
       {% if isTimelineDetailPage and (timelineEarlierThread | length or timelineFollowUpTree | length) %}
+        {% set timelineUi = ui.pages.timeline %}
         <section class="timeline-thread">
           {% if timelineEarlierThread | length %}
             <div class="timeline-thread__branch timeline-thread__branch--parent">
-              <p class="timeline-thread__label">{{ timeline.thread.earlierInThread }}</p>
+              <p class="timeline-thread__label">{{ timelineUi.thread.earlierInThread }}</p>
               <div class="timeline-thread__stack">
                 {% for earlierEntry in timelineEarlierThread %}
                   {{ renderTimelineEntry(earlierEntry, timelineEntries, true, false, true, true) | safe }}
@@ -368,7 +369,7 @@ layout: layouts/base.njk
 
           {% if timelineFollowUpTree | length %}
             <div id="timeline-children" class="timeline-thread__branch timeline-thread__branch--children">
-              <p class="timeline-thread__label">{{ timeline.thread.followUps }}</p>
+              <p class="timeline-thread__label">{{ timelineUi.thread.followUps }}</p>
               <div class="timeline-thread__stack">
                 {% for childNode in timelineFollowUpTree %}
                   <div class="timeline-thread__node">
@@ -380,7 +381,7 @@ layout: layouts/base.njk
                             {{ renderTimelineEntry(grandchildNode.entry, timelineEntries, true, false, true, false) | safe }}
                             {% if grandchildNode.continues %}
                               <p class="timeline-thread__continues">
-                                <a href="{{ grandchildNode.entry.url | url }}#timeline-children">{{ timeline.thread.continues }}</a>
+                                <a href="{{ grandchildNode.entry.url | url }}#timeline-children">{{ timelineUi.thread.continues }}</a>
                               </p>
                             {% endif %}
                           </div>

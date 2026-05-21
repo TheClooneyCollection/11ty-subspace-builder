@@ -341,9 +341,6 @@ const getTimelineTypeTags = () =>
         if (typeof category.tag === 'string' && category.tag.trim()) {
           return category.tag.trim();
         }
-        if (typeof category.id === 'string' && category.id.trim()) {
-          return category.id.trim();
-        }
         return null;
       })
       .filter(Boolean),
@@ -392,17 +389,13 @@ const getTimelineEntryType = (entry) => {
 
   for (const category of getTimelineCategories()) {
     if (!category || typeof category !== 'object') continue;
-    const categoryId =
-      typeof category.id === 'string' && category.id.trim()
-        ? category.id.trim()
-        : null;
     const categoryTag =
       typeof category.tag === 'string' && category.tag.trim()
         ? category.tag.trim()
-        : categoryId;
+        : null;
 
-    if (categoryId && categoryTag && tags.includes(categoryTag)) {
-      return categoryId;
+    if (categoryTag && tags.includes(categoryTag)) {
+      return categoryTag;
     }
   }
 

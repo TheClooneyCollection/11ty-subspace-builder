@@ -12,7 +12,7 @@
 
     /* Color driven by tag */
     {% for category in timeline.categories | default([]) %}
-      .timeline-entry[data-type="{{ category.id }}"] { --timeline-color: {{ category.color }}; }
+      .timeline-entry[data-type="{{ category.tag }}"] { --timeline-color: {{ category.color }}; }
     {% endfor %}
 
     .timeline-entry--compact {
@@ -180,7 +180,8 @@
   {% set entryTags = (entry.data.tags | default([])) | timelineTopicTags %}
   {% set parentEntry = entry | timelineParentEntry(timelineEntries) %}
   {% set relationshipCount = entry | timelineDescendantCount(timelineEntries) %}
-  {% set followUpText = (timeline.relationships.followUpSingularTemplate if relationshipCount == 1 else timeline.relationships.followUpPluralTemplate) | replace('{count}', relationshipCount) %}
+  {% set timelineUi = ui.pages.timeline %}
+  {% set followUpText = (timelineUi.relationships.followUpSingularTemplate if relationshipCount == 1 else timelineUi.relationships.followUpPluralTemplate) | replace('{count}', relationshipCount) %}
   {% set entryClasses = "timeline-entry" %}
   {% if compact %}{% set entryClasses = entryClasses ~ " timeline-entry--compact" %}{% endif %}
   {% if muted %}{% set entryClasses = entryClasses ~ " timeline-entry--muted" %}{% endif %}
@@ -201,7 +202,7 @@
             <div class="timeline-relationships">
               {% if parentEntry %}
                 <a class="timeline-relationship" href="{{ entry.url | url }}">
-                  <span class="timeline-relationship__label">{{ timeline.relationships.continuesFrom }}</span>
+                  <span class="timeline-relationship__label">{{ timelineUi.relationships.continuesFrom }}</span>
                   <span>{{ parentEntry | timelineEntryLabel }}</span>
                 </a>
               {% endif %}

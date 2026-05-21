@@ -3,22 +3,23 @@ layout: layouts/home.njk
 showPostHeader: false
 permalink: /timeline/weeks/
 eleventyComputed:
-  title: "{{ timeline.weeksIndex.title }}"
-  description: "{{ timeline.weeksIndex.description }}"
+  title: "{{ ui.pages.timeline.weeksIndex.title }}"
+  description: "{{ ui.pages.timeline.weeksIndex.description }}"
 ---
 
 {% from "components/timeline-week-pill.njk" import renderTimelineWeekPill %}
 
+{% set timelineUi = ui.pages.timeline %}
 {% set timelineMonthArchives = collections.timelineMonths | default([]) | reverse %}
 {% set calendarWeekArchives = collections.timelineCalendarWeeks | default([]) | reverse %}
 
 <section class="mw7">
   <h1 class="f3 f2-ns lh-title mt0 mb4">
-    <a class="link dim theme-text" href="/timeline/">{{ timeline.labels.root }}</a>
+    <a class="link dim theme-text" href="/timeline/">{{ timelineUi.labels.root }}</a>
   </h1>
-  <h2 class="f3 f2-ns lh-title mt0 mb2">{{ timeline.weeksIndex.title }}</h2>
+  <h2 class="f3 f2-ns lh-title mt0 mb2">{{ timelineUi.weeksIndex.title }}</h2>
   <p class="f6 f5-ns theme-midtone mt0 mb4">
-    {{ timeline.weeksIndex.intro }}
+    {{ timelineUi.weeksIndex.intro }}
   </p>
 
   {% if timelineMonthArchives | length %}
@@ -31,7 +32,7 @@ eleventyComputed:
 
           {% if month.weeks | length %}
             <div class="mb3">
-              <p class="f6 theme-midtone mt0 mb2">{{ timeline.weeksIndex.monthBandedWeeksHeading }}</p>
+              <p class="f6 theme-midtone mt0 mb2">{{ timelineUi.weeksIndex.monthBandedWeeksHeading }}</p>
               <div class="flex flex-wrap">
                 {% for week in month.weeks | reverse %}
                   {{ renderTimelineWeekPill(week, week.entryCount) }}
@@ -41,7 +42,7 @@ eleventyComputed:
           {% endif %}
 
           <div>
-            <p class="f6 theme-midtone mt0 mb2">{{ timeline.weeksIndex.calendarWeeksHeading }}</p>
+            <p class="f6 theme-midtone mt0 mb2">{{ timelineUi.weeksIndex.calendarWeeksHeading }}</p>
             <div class="flex flex-wrap">
               {% for week in calendarWeekArchives %}
                 {% if week.startMonthKey == month.key or week.endMonthKey == month.key %}
@@ -54,6 +55,6 @@ eleventyComputed:
       {% endfor %}
     </div>
   {% else %}
-    <p class="theme-midtone">{{ timeline.emptyMessages.weeksIndex }}</p>
+    <p class="theme-midtone">{{ timelineUi.emptyMessages.weeksIndex }}</p>
   {% endif %}
 </section>

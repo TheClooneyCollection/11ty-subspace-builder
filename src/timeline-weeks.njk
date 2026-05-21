@@ -7,24 +7,25 @@ pagination:
   alias: archive
 permalink: /timeline/weeks/{{ archive.key }}/
 eleventyComputed:
-  title: "{{ timeline.weekArchive.titleTemplate | replace('{label}', archive.label) }}"
-  description: "{{ timeline.weekArchive.descriptionTemplate | replace('{rangeLabel}', archive.rangeLabel) }}"
+  title: "{{ ui.pages.timeline.weekArchive.titleTemplate | replace('{label}', archive.label) }}"
+  description: "{{ ui.pages.timeline.weekArchive.descriptionTemplate | replace('{rangeLabel}', archive.rangeLabel) }}"
 ---
 
 {% from "components/timeline-entry.njk" import renderTimelineEntry with context %}
 
+{% set timelineUi = ui.pages.timeline %}
 {% set timelineEntries = collections.timeline | default([]) %}
 {% set logItems = archive.entries | reverse %}
 
 <section class="mw7">
   <p class="f6 theme-midtone mt0 mb3">
-    <a href="/timeline/">{{ timeline.labels.root }}</a> /
+    <a href="/timeline/">{{ timelineUi.labels.root }}</a> /
     <a href="/timeline/months/{{ archive.monthKey }}/">{{ archive.monthLabel }}</a>
   </p>
   <h1 class="f3 f2-ns lh-title mt0 mb2">{{ archive.label }}</h1>
   <p class="f6 f5-ns theme-midtone mt0 mb4">
     {{ archive.rangeLabel }} ·
-    {{ archive.entries | length }} {{ timeline.entryCount.singular if archive.entries | length == 1 else timeline.entryCount.plural }}
+    {{ archive.entries | length }} {{ timelineUi.entryCount.singular if archive.entries | length == 1 else timelineUi.entryCount.plural }}
   </p>
 
   {% if logItems | length %}
@@ -34,6 +35,6 @@ eleventyComputed:
       {% endfor %}
     </div>
   {% else %}
-    <p class="theme-midtone">{{ timeline.emptyMessages.weekArchive }}</p>
+    <p class="theme-midtone">{{ timelineUi.emptyMessages.weekArchive }}</p>
   {% endif %}
 </section>

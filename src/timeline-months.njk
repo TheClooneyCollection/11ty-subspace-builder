@@ -7,37 +7,38 @@ pagination:
   alias: archive
 permalink: /timeline/months/{{ archive.key }}/
 eleventyComputed:
-  title: "{{ timeline.monthArchive.titleTemplate | replace('{label}', archive.label) }}"
-  description: "{{ timeline.monthArchive.descriptionTemplate | replace('{label}', archive.label) }}"
+  title: "{{ ui.pages.timeline.monthArchive.titleTemplate | replace('{label}', archive.label) }}"
+  description: "{{ ui.pages.timeline.monthArchive.descriptionTemplate | replace('{label}', archive.label) }}"
 ---
 
 {% from "components/timeline-entry.njk" import renderTimelineEntry with context %}
 {% from "components/timeline-week-pill.njk" import renderTimelineWeekPill %}
 
+{% set timelineUi = ui.pages.timeline %}
 {% set timelineEntries = collections.timeline | default([]) %}
 {% set logItems = archive.entries | reverse %}
 
 <section class="mw7">
   <p class="f6 theme-midtone mt0 mb3">
-    <a href="/timeline/">{{ timeline.labels.root }}</a> /
-    <a href="/timeline/months/">{{ timeline.labels.months }}</a>
+    <a href="/timeline/">{{ timelineUi.labels.root }}</a> /
+    <a href="/timeline/months/">{{ timelineUi.labels.months }}</a>
   </p>
   <h1 class="f3 f2-ns lh-title mt0 mb2">{{ archive.label }}</h1>
   <p class="f6 f5-ns theme-midtone mt0 mb4">
-    {{ archive.entries | length }} {{ timeline.entryCount.singular if archive.entries | length == 1 else timeline.entryCount.plural }}
-    {{ timeline.monthArchive.countSuffix }}
+    {{ archive.entries | length }} {{ timelineUi.entryCount.singular if archive.entries | length == 1 else timelineUi.entryCount.plural }}
+    {{ timelineUi.monthArchive.countSuffix }}
   </p>
 
   {% if archive.weeks | length %}
     <nav class="mb4">
-      <p class="f6 theme-midtone mt0 mb2">{{ timeline.monthArchive.monthBandedWeeksHeading }}</p>
+      <p class="f6 theme-midtone mt0 mb2">{{ timelineUi.monthArchive.monthBandedWeeksHeading }}</p>
       <div class="flex flex-wrap">
         {% for week in archive.weeks %}
           {{ renderTimelineWeekPill(week, week.entryCount) }}
         {% endfor %}
       </div>
       <p class="f7 theme-midtone mt2 mb0">
-        {{ timeline.monthArchive.calendarWeeksNoteHtml | safe }}
+        {{ timelineUi.monthArchive.calendarWeeksNoteHtml | safe }}
       </p>
     </nav>
   {% endif %}
@@ -49,6 +50,6 @@ eleventyComputed:
       {% endfor %}
     </div>
   {% else %}
-    <p class="theme-midtone">{{ timeline.emptyMessages.monthArchive }}</p>
+    <p class="theme-midtone">{{ timelineUi.emptyMessages.monthArchive }}</p>
   {% endif %}
 </section>

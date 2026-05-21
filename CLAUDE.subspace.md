@@ -69,7 +69,8 @@ Timeline parent references use the entry URL path (`page.url`), including the tr
 Timeline feature documentation lives in `docs/feature-timeline.md`.
 If you change any timeline implementation detail, update `docs/feature-timeline.md` in the same change.
 Timeline archive indexes currently exist at `/timeline/weeks/` and `/timeline/months/`.
-Timeline page copy, relationship labels, archive labels, featured tags, and category metadata live in `_data/timeline.yaml`.
+Timeline page copy, relationship labels, and archive labels live in `_data/ui.yaml` under `pages.timeline`.
+Timeline featured tags and category metadata live in `_data/timeline.yaml`.
 
 ## Theme system
 
@@ -156,8 +157,8 @@ New gated nav items follow the same hardcoded pattern (matching how drafts are h
 | `_data/me.yaml` | author profile (`me.profile.name`, contacts, about text) |
 | `_data/themes.yaml` | theme definitions (id, label, classes, accent) |
 | `_data/series.yaml` | series metadata |
-| `_data/timeline.yaml` | timeline copy, labels, featured tags, and category metadata |
-| `_data/ui.yaml` | shared UI copy for templates and components |
+| `_data/timeline.yaml` | timeline featured tags and category metadata |
+| `_data/ui.yaml` | shared UI copy for templates and components, including `pages.timeline` |
 
 ## Skills
 

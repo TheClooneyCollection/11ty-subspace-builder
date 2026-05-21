@@ -3,21 +3,22 @@ layout: layouts/home.njk
 showPostHeader: false
 permalink: /timeline/months/
 eleventyComputed:
-  title: "{{ timeline.monthsIndex.title }}"
-  description: "{{ timeline.monthsIndex.description }}"
+  title: "{{ ui.pages.timeline.monthsIndex.title }}"
+  description: "{{ ui.pages.timeline.monthsIndex.description }}"
 ---
 
 {% from "components/timeline-week-pill.njk" import renderTimelineWeekPill %}
 
+{% set timelineUi = ui.pages.timeline %}
 {% set timelineMonthArchives = collections.timelineMonths | default([]) | reverse %}
 
 <section class="mw7">
   <h1 class="f3 f2-ns lh-title mt0 mb4">
-    <a class="link dim theme-text" href="/timeline/">{{ timeline.labels.root }}</a>
+    <a class="link dim theme-text" href="/timeline/">{{ timelineUi.labels.root }}</a>
   </h1>
-  <h2 class="f3 f2-ns lh-title mt0 mb2">{{ timeline.monthsIndex.title }}</h2>
+  <h2 class="f3 f2-ns lh-title mt0 mb2">{{ timelineUi.monthsIndex.title }}</h2>
   <p class="f6 f5-ns theme-midtone mt0 mb4">
-    {{ timeline.monthsIndex.intro }}
+    {{ timelineUi.monthsIndex.intro }}
   </p>
 
   {% if timelineMonthArchives | length %}
@@ -26,7 +27,7 @@ eleventyComputed:
         <section class="{% if not loop.first %}mt5{% endif %}">
           <h2 class="f4 f3-ns lh-title mt0 mb2">{{ month.label }}</h2>
           <p class="f6 theme-midtone mt0 mb3">
-            {{ month.entries | length }} {{ timeline.entryCount.singular if month.entries | length == 1 else timeline.entryCount.plural }}
+            {{ month.entries | length }} {{ timelineUi.entryCount.singular if month.entries | length == 1 else timelineUi.entryCount.plural }}
           </p>
 
           <div class="mb3">
@@ -46,6 +47,6 @@ eleventyComputed:
       {% endfor %}
     </div>
   {% else %}
-    <p class="theme-midtone">{{ timeline.emptyMessages.monthsIndex }}</p>
+    <p class="theme-midtone">{{ timelineUi.emptyMessages.monthsIndex }}</p>
   {% endif %}
 </section>
