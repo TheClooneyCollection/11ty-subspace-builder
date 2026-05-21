@@ -7,8 +7,8 @@ pagination:
   alias: archive
 permalink: /timeline/weeks/{{ archive.key }}/
 eleventyComputed:
-  title: "Timeline: {{ archive.label }}"
-  description: "Timeline entries from {{ archive.rangeLabel }}."
+  title: "{{ timeline.weekArchive.titleTemplate | replace('{label}', archive.label) }}"
+  description: "{{ timeline.weekArchive.descriptionTemplate | replace('{rangeLabel}', archive.rangeLabel) }}"
 ---
 
 {% from "components/timeline-entry.njk" import renderTimelineEntry with context %}
@@ -18,13 +18,13 @@ eleventyComputed:
 
 <section class="mw7">
   <p class="f6 theme-midtone mt0 mb3">
-    <a href="/timeline/">Timeline</a> /
+    <a href="/timeline/">{{ timeline.labels.root }}</a> /
     <a href="/timeline/months/{{ archive.monthKey }}/">{{ archive.monthLabel }}</a>
   </p>
   <h1 class="f3 f2-ns lh-title mt0 mb2">{{ archive.label }}</h1>
   <p class="f6 f5-ns theme-midtone mt0 mb4">
     {{ archive.rangeLabel }} ·
-    {{ archive.entries | length }} entr{% if archive.entries | length == 1 %}y{% else %}ies{% endif %}
+    {{ archive.entries | length }} {{ timeline.entryCount.singular if archive.entries | length == 1 else timeline.entryCount.plural }}
   </p>
 
   {% if logItems | length %}
@@ -34,6 +34,6 @@ eleventyComputed:
       {% endfor %}
     </div>
   {% else %}
-    <p class="theme-midtone">No timeline entries for this week.</p>
+    <p class="theme-midtone">{{ timeline.emptyMessages.weekArchive }}</p>
   {% endif %}
 </section>

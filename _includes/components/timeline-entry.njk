@@ -1,14 +1,3 @@
-{%- macro timelineEntryType(entry) -%}
-  {%- set entryType = "default" -%}
-  {%- if "shipped" in (entry.data.tags | default([])) -%}{%- set entryType = "shipped" -%}
-  {%- elif "published" in (entry.data.tags | default([])) -%}{%- set entryType = "published" -%}
-  {%- elif "wip" in (entry.data.tags | default([])) -%}{%- set entryType = "wip" -%}
-  {%- elif "idea" in (entry.data.tags | default([])) -%}{%- set entryType = "idea" -%}
-  {%- elif "thinking" in (entry.data.tags | default([])) -%}{%- set entryType = "thinking" -%}
-  {%- endif -%}
-  {{- entryType -}}
-{%- endmacro %}
-
 {% macro renderTimelineStyles() %}
   <style>
     .timeline-entry {
@@ -22,11 +11,9 @@
     }
 
     /* Color driven by tag */
-    .timeline-entry[data-type="shipped"]    { --timeline-color: #27ae60; }
-    .timeline-entry[data-type="published"]  { --timeline-color: #2980b9; }
-    .timeline-entry[data-type="wip"]        { --timeline-color: #8e44ad; }
-    .timeline-entry[data-type="idea"]       { --timeline-color: #f1c40f; }
-    .timeline-entry[data-type="thinking"]   { --timeline-color: #e67e22; }
+    {% for category in timeline.categories | default([]) %}
+      .timeline-entry[data-type="{{ category.id }}"] { --timeline-color: {{ category.color }}; }
+    {% endfor %}
 
     .timeline-entry--compact {
       padding: 0.75rem 0.875rem;
@@ -193,11 +180,11 @@
   {% set entryTags = (entry.data.tags | default([])) | timelineTopicTags %}
   {% set parentEntry = entry | timelineParentEntry(timelineEntries) %}
   {% set relationshipCount = entry | timelineDescendantCount(timelineEntries) %}
-  {% set followUpText = "1 follow-up" if relationshipCount == 1 else (relationshipCount ~ " follow-ups") %}
+  {% set followUpText = (timeline.relationships.followUpSingularTemplate if relationshipCount == 1 else timeline.relationships.followUpPluralTemplate) | replace('{count}', relationshipCount) %}
   {% set entryClasses = "timeline-entry" %}
   {% if compact %}{% set entryClasses = entryClasses ~ " timeline-entry--compact" %}{% endif %}
   {% if muted %}{% set entryClasses = entryClasses ~ " timeline-entry--muted" %}{% endif %}
-  <article class="{{ entryClasses }}" data-type="{{ timelineEntryType(entry) }}">
+  <article class="{{ entryClasses }}" data-type="{{ entry | timelineEntryType }}">
     <div class="timeline-dot" aria-hidden="true"></div>
     <div class="timeline-body-wrap">
       <div class="timeline-topline">
@@ -214,7 +201,7 @@
             <div class="timeline-relationships">
               {% if parentEntry %}
                 <a class="timeline-relationship" href="{{ entry.url | url }}">
-                  <span class="timeline-relationship__label">Continues from</span>
+                  <span class="timeline-relationship__label">{{ timeline.relationships.continuesFrom }}</span>
                   <span>{{ parentEntry | timelineEntryLabel }}</span>
                 </a>
               {% endif %}

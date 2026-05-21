@@ -22,7 +22,12 @@ import excerpt from './lib/excerpt.js';
 const OG_FORCE_ENV = process.env.OG_FORCE === 'true';
 const ELEVENTY_FETCH_CACHE_DIR = path.resolve('.cache');
 const SITE_DATA_URL = new URL('./_data/site.yaml', import.meta.url);
+const TIMELINE_DATA_URL = new URL('./_data/timeline.yaml', import.meta.url);
 const siteDataCache = {
+  mtimeMs: null,
+  data: {},
+};
+const timelineDataCache = {
   mtimeMs: null,
   data: {},
 };
@@ -321,23 +326,40 @@ const formatCalendarWeekLabel = (isoYear, week) =>
   `Calendar Week ${String(week).padStart(2, '0')} · ${isoYear}`;
 
 const timelineReservedArchiveSlugs = new Set(['months', 'weeks']);
-const timelineTypeTags = new Set([
-  'shipped',
-  'published',
-  'wip',
-  'idea',
-  'thinking',
-]);
-const timelineArchiveExcludedTags = new Set([
-  'all',
-  'nav',
-  'post',
-  'posts',
-  'notes',
-  'timeline',
-  'testing',
-  ...timelineTypeTags,
-]);
+const getTimelineData = () => loadYamlData(TIMELINE_DATA_URL, timelineDataCache);
+
+const getTimelineCategories = () => {
+  const categories = getTimelineData()?.categories;
+  return Array.isArray(categories) ? categories : [];
+};
+
+const getTimelineTypeTags = () =>
+  new Set(
+    getTimelineCategories()
+      .map((category) => {
+        if (!category || typeof category !== 'object') return null;
+        if (typeof category.tag === 'string' && category.tag.trim()) {
+          return category.tag.trim();
+        }
+        if (typeof category.id === 'string' && category.id.trim()) {
+          return category.id.trim();
+        }
+        return null;
+      })
+      .filter(Boolean),
+  );
+
+const getTimelineArchiveExcludedTags = () =>
+  new Set([
+    'all',
+    'nav',
+    'post',
+    'posts',
+    'notes',
+    'timeline',
+    'testing',
+    ...getTimelineTypeTags(),
+  ]);
 
 const getTimelineSortKey = (entry) => {
   const date = toIsoDatePart(entry?.data?.date) || toIsoDatePart(entry?.date);
@@ -360,8 +382,32 @@ const getSortedTimelineEntries = (collectionApi) => {
 const getTimelineTopicTags = (tags = []) =>
   (Array.isArray(tags) ? tags : [tags])
     .map((tag) => (typeof tag === 'string' ? tag : null))
-    .filter((tag) => tag && !timelineArchiveExcludedTags.has(tag))
+    .filter((tag) => tag && !getTimelineArchiveExcludedTags().has(tag))
     .filter((tag, index, values) => values.indexOf(tag) === index);
+
+const getTimelineEntryType = (entry) => {
+  const tags = Array.isArray(entry?.data?.tags)
+    ? entry.data.tags
+    : [entry?.data?.tags].filter(Boolean);
+
+  for (const category of getTimelineCategories()) {
+    if (!category || typeof category !== 'object') continue;
+    const categoryId =
+      typeof category.id === 'string' && category.id.trim()
+        ? category.id.trim()
+        : null;
+    const categoryTag =
+      typeof category.tag === 'string' && category.tag.trim()
+        ? category.tag.trim()
+        : categoryId;
+
+    if (categoryId && categoryTag && tags.includes(categoryTag)) {
+      return categoryId;
+    }
+  }
+
+  return 'default';
+};
 
 const getTimelineEntrySlug = (entry) => {
   const url = typeof entry?.url === 'string' ? entry.url : '';
@@ -828,21 +874,23 @@ const validateTimelineEntryRelationships = (entries = []) => {
   }
 };
 
-const loadSiteData = () => {
+const loadYamlData = (fileUrl, cache) => {
   try {
-    const stats = fs.statSync(SITE_DATA_URL);
-    if (siteDataCache.mtimeMs === stats.mtimeMs) {
-      return siteDataCache.data;
+    const stats = fs.statSync(fileUrl);
+    if (cache.mtimeMs === stats.mtimeMs) {
+      return cache.data;
     }
-    const file = fs.readFileSync(SITE_DATA_URL, 'utf8');
+    const file = fs.readFileSync(fileUrl, 'utf8');
     const data = yaml.load(file);
-    siteDataCache.mtimeMs = stats.mtimeMs;
-    siteDataCache.data = data && typeof data === 'object' ? data : {};
-    return siteDataCache.data;
+    cache.mtimeMs = stats.mtimeMs;
+    cache.data = data && typeof data === 'object' ? data : {};
+    return cache.data;
   } catch {
     return {};
   }
 };
+
+const loadSiteData = () => loadYamlData(SITE_DATA_URL, siteDataCache);
 
 const assetFingerprintCache = new Map();
 const fingerprintedAssets = new Map();
@@ -1491,6 +1539,9 @@ export default function (eleventyConfig) {
   eleventyConfig.addFilter('filterTags', filterTagList);
   eleventyConfig.addFilter('timelineTopicTags', (tags = []) =>
     getTimelineTopicTags(filterTagList(tags)),
+  );
+  eleventyConfig.addFilter('timelineEntryType', (entry) =>
+    getTimelineEntryType(entry),
   );
 
   eleventyConfig.addFilter('slug', (value) => {

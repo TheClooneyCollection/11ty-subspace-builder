@@ -13,7 +13,7 @@
       <figure class="project-card__media">
         <img
           src="{{ image.src }}"
-          alt="{{ image.alt or (project.name ~ ' preview') }}"
+          alt="{{ image.alt or (project.name ~ ' ' ~ ui.shared.projectCard.imageAltSuffix) }}"
           loading="lazy"
           decoding="async"
         >
@@ -34,17 +34,17 @@
         <div class="project-card__links mt0 mb3">
           {% if project.url %}
             <div class="project-card__link-item">
-              <a class="project-card__url link dim" href="{{ project.url }}">Link</a>
+              <a class="project-card__url link dim" href="{{ project.url }}">{{ ui.shared.projectCard.links.external }}</a>
             </div>
           {% endif %}
           {% if project.timeline %}
             <div class="project-card__link-item">
-              <a class="project-card__timeline link dim" href="{{ project.timeline }}">Timeline</a>
+              <a class="project-card__timeline link dim" href="{{ project.timeline }}">{{ ui.shared.projectCard.links.timeline }}</a>
             </div>
           {% endif %}
           {% if project.repo %}
             <div class="project-card__link-item">
-              <a class="project-card__repo link dim" href="{{ project.repo }}">GitHub</a>
+              <a class="project-card__repo link dim" href="{{ project.repo }}">{{ ui.shared.projectCard.links.repository }}</a>
             </div>
           {% endif %}
         </div>

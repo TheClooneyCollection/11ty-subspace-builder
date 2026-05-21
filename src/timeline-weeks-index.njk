@@ -1,9 +1,10 @@
 ---
 layout: layouts/home.njk
-title: Timeline Weeks
-description: Timeline entries grouped into both month-banded and ISO calendar weeks.
 showPostHeader: false
 permalink: /timeline/weeks/
+eleventyComputed:
+  title: "{{ timeline.weeksIndex.title }}"
+  description: "{{ timeline.weeksIndex.description }}"
 ---
 
 {% from "components/timeline-week-pill.njk" import renderTimelineWeekPill %}
@@ -13,11 +14,11 @@ permalink: /timeline/weeks/
 
 <section class="mw7">
   <h1 class="f3 f2-ns lh-title mt0 mb4">
-    <a class="link dim theme-text" href="/timeline/">Timeline</a>
+    <a class="link dim theme-text" href="/timeline/">{{ timeline.labels.root }}</a>
   </h1>
-  <h2 class="f3 f2-ns lh-title mt0 mb2">Timeline Weeks</h2>
+  <h2 class="f3 f2-ns lh-title mt0 mb2">{{ timeline.weeksIndex.title }}</h2>
   <p class="f6 f5-ns theme-midtone mt0 mb4">
-    Month-banded weeks and ISO calendar week pages grouped by month. ISO weeks that cross a month boundary appear in both months.
+    {{ timeline.weeksIndex.intro }}
   </p>
 
   {% if timelineMonthArchives | length %}
@@ -30,7 +31,7 @@ permalink: /timeline/weeks/
 
           {% if month.weeks | length %}
             <div class="mb3">
-              <p class="f6 theme-midtone mt0 mb2">Month-banded weeks</p>
+              <p class="f6 theme-midtone mt0 mb2">{{ timeline.weeksIndex.monthBandedWeeksHeading }}</p>
               <div class="flex flex-wrap">
                 {% for week in month.weeks | reverse %}
                   {{ renderTimelineWeekPill(week, week.entryCount) }}
@@ -40,7 +41,7 @@ permalink: /timeline/weeks/
           {% endif %}
 
           <div>
-            <p class="f6 theme-midtone mt0 mb2">ISO calendar weeks</p>
+            <p class="f6 theme-midtone mt0 mb2">{{ timeline.weeksIndex.calendarWeeksHeading }}</p>
             <div class="flex flex-wrap">
               {% for week in calendarWeekArchives %}
                 {% if week.startMonthKey == month.key or week.endMonthKey == month.key %}
@@ -53,6 +54,6 @@ permalink: /timeline/weeks/
       {% endfor %}
     </div>
   {% else %}
-    <p class="theme-midtone">No timeline weeks yet.</p>
+    <p class="theme-midtone">{{ timeline.emptyMessages.weeksIndex }}</p>
   {% endif %}
 </section>

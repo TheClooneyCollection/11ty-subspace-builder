@@ -15,15 +15,15 @@ eleventyComputed:
 
 {% set seriesPosts = resolvedSeries.posts | default([]) %}
 {% set sortOptions = [
-  { id: 'curated', label: 'Curated' },
-  { id: 'reverse', label: 'Reverse' },
-  { id: 'date-asc', label: 'Oldest First' },
-  { id: 'date-desc', label: 'Newest First' }
+  { id: 'curated', label: ui.shared.series.sortOptions.curated },
+  { id: 'reverse', label: ui.shared.series.sortOptions.reverse },
+  { id: 'date-asc', label: ui.shared.series.sortOptions.dateAsc },
+  { id: 'date-desc', label: ui.shared.series.sortOptions.dateDesc }
 ] %}
 
 <section class="mw7 center" data-series-page>
   <header class="mb5">
-    <p class="f6 ttu tracked theme-midtone mt0 mb2">Series</p>
+    <p class="f6 ttu tracked theme-midtone mt0 mb2">{{ ui.shared.series.sectionLabel }}</p>
     <h1 class="f3 f2-ns lh-title mt0 mb3">{{ seriesItem.title }}</h1>
     {% if seriesItem.intro %}
       <p class="f5 f4-ns lh-copy mt0 mb4 theme-midtone">
@@ -32,7 +32,7 @@ eleventyComputed:
     {% endif %}
     <div class="flex items-center justify-between flex-wrap">
       <p class="f6 theme-midtone mt0 mb3 mb0-ns">
-        {{ seriesPosts | length }} post{% if (seriesPosts | length) != 1 %}s{% endif %}
+        {{ seriesPosts | length }} {{ ui.shared.counts.post.singular if (seriesPosts | length) == 1 else ui.shared.counts.post.plural }}
       </p>
       {% if seriesPosts | length > 1 %}
         <div class="flex flex-wrap" data-series-sort-controls>
@@ -52,7 +52,7 @@ eleventyComputed:
     </div>
     <p class="mt3 mb0">
       <a class="link dim fw5 underline theme-text" href="{{ '/series/' | url }}">
-        Back to all series
+        {{ ui.shared.series.backToAll }}
       </a>
     </p>
   </header>
@@ -100,6 +100,6 @@ eleventyComputed:
       {% endfor %}
     </ol>
   {% else %}
-    <p class="theme-midtone">This series does not have any published posts yet.</p>
+    <p class="theme-midtone">{{ ui.pages.series.detailEmptyMessage }}</p>
   {% endif %}
 </section>

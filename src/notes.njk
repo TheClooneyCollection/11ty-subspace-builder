@@ -1,13 +1,14 @@
 ---
 layout: layouts/home.njk
-title: Notes
-description: Shorter notes, references, and working ideas.
 permalink: /notes/
+eleventyComputed:
+  title: "{{ ui.pages.notes.title }}"
+  description: "{{ ui.pages.notes.description }}"
 ---
 
 {% from "components/post-list.njk" import renderPostList %}
 
 <section class="mw7 center">
-  <h1 class="f3 f2-ns lh-title mt0 mb0">Latest Notes</h1>
-  {{ renderPostList(collections.notes, "No notes published yet. Add one in /notes/ to get started.") | safe }}
+  <h1 class="f3 f2-ns lh-title mt0 mb0">{{ ui.pages.notes.heading }}</h1>
+  {{ renderPostList(collections.notes, ui.pages.notes.emptyMessage) | safe }}
 </section>

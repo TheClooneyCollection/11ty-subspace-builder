@@ -1,12 +1,13 @@
 ---
 layout: layouts/home.njk
-title: Drafts
 permalink: /drafts/
+eleventyComputed:
+  title: "{{ ui.pages.drafts.title }}"
 ---
 
 {% from "components/post-list.njk" import renderPostList %}
 
 <section class="mw7 center">
-  <h1 class="f3 f2-ns lh-title mt0 mb0">Drafts</h1>
-  {{ renderPostList(collections.drafts, "No drafts found. Ship something new!") | safe }}
+  <h1 class="f3 f2-ns lh-title mt0 mb0">{{ ui.pages.drafts.heading }}</h1>
+  {{ renderPostList(collections.drafts, ui.pages.drafts.emptyMessage) | safe }}
 </section>

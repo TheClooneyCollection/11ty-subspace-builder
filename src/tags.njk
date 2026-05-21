@@ -7,7 +7,7 @@ pagination:
   alias: tag
 permalink: /tags/{{ tag | slug }}/
 eleventyComputed:
-  title: Tagged “{{ tag }}”
+  title: "{{ ui.pages.tags.taggedTitleTemplate | replace('{tag}', tag) }}"
 ---
 
 {% from "components/post-list.njk" import renderPostList %}
@@ -15,9 +15,9 @@ eleventyComputed:
 {% set postCount = tagItems | length %}
 
 <section class="mw7 center">
-  <h1 class="f3 f2-ns lh-title mb2">Tagged “{{ tag }}”</h1>
+  <h1 class="f3 f2-ns lh-title mb2">{{ ui.pages.tags.taggedTitleTemplate | replace('{tag}', tag) }}</h1>
   <p class="f6 f5-ns theme-midtone mt0 mb4">
-    {{ postCount }} entr{% if postCount == 1 %}y{% else %}ies{% endif %}
+    {{ postCount }} {{ ui.shared.counts.entry.singular if postCount == 1 else ui.shared.counts.entry.plural }}
   </p>
-  {{ renderPostList(tagItems, "No entries found for this tag.") | safe }}
+  {{ renderPostList(tagItems, ui.pages.tags.emptyMessage) | safe }}
 </section>

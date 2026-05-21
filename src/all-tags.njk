@@ -1,19 +1,20 @@
 ---
 layout: layouts/home.njk
-title: All Tags
 eleventyNavigation:
   key: tags
 showPostHeader: false
 permalink: /tags/
+eleventyComputed:
+  title: "{{ ui.pages.allTags.title }}"
 ---
 
 <section class="mw7 center">
-  <h1 class="f3 f2-ns lh-title mt0 mb4">All Tags</h1>
+  <h1 class="f3 f2-ns lh-title mt0 mb4">{{ ui.pages.allTags.heading }}</h1>
   {% if collections.tagGroups | length %}
     {% for group in collections.tagGroups %}
       <div class="mb4">
         <h2 class="f6 ttu tracked theme-midtone mt0 mb2">
-          {{ group.count }} post{% if group.count != 1 %}s{% endif %}
+          {{ group.count }} {{ ui.shared.counts.post.singular if group.count == 1 else ui.shared.counts.post.plural }}
         </h2>
         <ul class="list pl0 ma0 flex flex-wrap">
           {% for tag in group.tags %}
@@ -28,6 +29,6 @@ permalink: /tags/
       </div>
     {% endfor %}
   {% else %}
-    <p class="theme-midtone">No tags found.</p>
+    <p class="theme-midtone">{{ ui.pages.allTags.emptyMessage }}</p>
   {% endif %}
 </section>

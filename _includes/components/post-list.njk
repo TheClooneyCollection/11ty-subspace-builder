@@ -1,4 +1,4 @@
-{% macro renderPostList(items=[], emptyMessage='No entries found.', reverse=true) %}
+{% macro renderPostList(items=[], emptyMessage=ui.shared.postList.emptyDefault, reverse=true) %}
   {% set list = items or [] %}
   {% if list | length %}
     <div class="flex flex-column">

@@ -1,0 +1,89 @@
+shared:
+  pagination:
+    previous: Previous
+    next: Next
+    page: Page
+    of: of
+    separator: "-"
+  counts:
+    entry:
+      singular: entry
+      plural: entries
+    post:
+      singular: post
+      plural: posts
+  projectCard:
+    imageAltSuffix: preview
+    links:
+      external: Link
+      timeline: Timeline
+      repository: GitHub
+  postList:
+    emptyDefault: No entries found.
+  series:
+    partOf: Part of a series
+    sectionLabel: Series
+    read: Read series
+    backToAll: Back to all series
+    sortOptions:
+      curated: Curated
+      reverse: Reverse
+      dateAsc: Oldest First
+      dateDesc: Newest First
+  theme:
+    previewAriaTemplate: "Preview {theme} theme"
+    modeLabelTemplate: "Theme mode: {mode}"
+    auto: Auto
+    custom: Custom
+
+pages:
+  home:
+    title: Home
+    heading: Latest Posts
+    emptyMessage: No posts published yet. Check back soon.
+  notes:
+    title: Notes
+    description: Shorter notes, references, and working ideas.
+    heading: Latest Notes
+    emptyMessage: No notes published yet. Add one in /notes/ to get started.
+  hiddenNotes:
+    title: Unlisted Notes
+    description: Notes that are public by URL but omitted from the main notes index.
+    heading: Unlisted Notes
+    emptyMessage: No unlisted notes found.
+  drafts:
+    title: Drafts
+    heading: Drafts
+    emptyMessage: No drafts found. Ship something new!
+  allTags:
+    title: All Tags
+    heading: All Tags
+    emptyMessage: No tags found.
+  tags:
+    taggedTitleTemplate: 'Tagged "{tag}"'
+    emptyMessage: No entries found for this tag.
+  about:
+    title: About
+    heading: About
+    siteHeadingFallback: About this site
+  projects:
+    title: Projects
+    description: Curated highlights from active builds and past experiments.
+    heading: Projects
+    intro: A look at current work plus past experiments that still spark ideas. Filter by technology to jump straight to the tools you care about.
+    filterHeading: Filter by technology
+    resetLabel: All projects
+    activeHeading: Active Projects
+    activeDescription: Currently maintained and frequently updated.
+    activeEmptyMessage: No active projects match that tag yet.
+    archivedHeading: Archive & Mentions
+    archivedDescription: Earlier builds and experiments that still influence newer work.
+    archivedEmptyMessage: No archived projects match that tag yet.
+    allEmptyMessage: No projects match that tag yet. Try resetting the filters.
+  series:
+    title: Series
+    description: Curated collections of related posts with editorial intros and flexible sorting.
+    heading: Series
+    intro: Curated reading paths through related posts. Each series starts in my recommended order, and the detail page can switch to reverse or date-based sorting.
+    emptyMessage: No series published yet.
+    detailEmptyMessage: This series does not have any published posts yet.

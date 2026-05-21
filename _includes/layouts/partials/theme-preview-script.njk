@@ -23,6 +23,9 @@
 		const storageKey = 'themePreference';
 		const previewResetDelay = {{ previewResetDelay }};
 		const previewHoverDelay = {{ siteThemeConfig.previewHoverDelay if siteThemeConfig.previewHoverDelay is defined else 120 }};
+		const themeModeLabelTemplate = {{ ui.shared.theme.modeLabelTemplate | dump | safe }};
+		const themeModeAutoLabel = {{ ui.shared.theme.auto | dump | safe }};
+		const themeModeCustomLabel = {{ ui.shared.theme.custom | dump | safe }};
 		const modePreferenceMap = {
 			auto: 'auto',
 			light: autoLightThemeId,
@@ -60,10 +63,15 @@
 		function updateModeToggle(preference) {
 			if (!modeToggleButton) return;
 			const mode = getModeForPreference(preference);
-			const label = mode ? mode.charAt(0).toUpperCase() + mode.slice(1) : 'Custom';
+			const label = mode === 'auto'
+				? themeModeAutoLabel
+				: mode
+					? mode.charAt(0).toUpperCase() + mode.slice(1)
+					: themeModeCustomLabel;
+			const modeLabel = themeModeLabelTemplate.replace('{mode}', label);
 			modeToggleButton.dataset.themeMode = mode || 'custom';
-			modeToggleButton.setAttribute('aria-label', `Theme mode: ${label}`);
-			modeToggleButton.setAttribute('title', `Theme mode: ${label}`);
+			modeToggleButton.setAttribute('aria-label', modeLabel);
+			modeToggleButton.setAttribute('title', modeLabel);
 			modeToggleButton.setAttribute('aria-pressed', String(Boolean(mode)));
 			modeToggleButton.classList.toggle('o-60', !mode);
 			if (mode) {

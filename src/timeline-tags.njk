@@ -7,8 +7,8 @@ pagination:
   alias: archive
 permalink: /timeline/{{ archive.slug }}/
 eleventyComputed:
-  title: 'Timeline: {{ archive.tag }}'
-  description: 'Timeline entries tagged {{ archive.tag }}, in chronological context.'
+  title: "{{ timeline.tagArchive.titleTemplate | replace('{tag}', archive.tag) }}"
+  description: "{{ timeline.tagArchive.descriptionTemplate | replace('{tag}', archive.tag) }}"
 ---
 
 {% from "components/timeline-entry.njk" import renderTimelineEntry with context %}
@@ -18,12 +18,12 @@ eleventyComputed:
 
 <section class="mw7">
   <h1 class="f3 f2-ns lh-title mt0 mb4">
-    <a class="link dim theme-text" href="/timeline/">Timeline</a>
+    <a class="link dim theme-text" href="/timeline/">{{ timeline.labels.root }}</a>
   </h1>
   <h2 class="f3 f2-ns lh-title mt0 mb2">#{{ archive.tag }}</h2>
   <p class="f6 f5-ns theme-midtone mt0 mb4">
-    {{ archive.entries | length }} entr{% if archive.entries | length == 1 %}y{% else %}ies{% endif %}
-    following this thread through the timeline.
+    {{ archive.entries | length }} {{ timeline.entryCount.singular if archive.entries | length == 1 else timeline.entryCount.plural }}
+    {{ timeline.tagArchive.countSuffix }}
   </p>
 
   {% if logItems | length %}
@@ -33,6 +33,6 @@ eleventyComputed:
       {% endfor %}
     </div>
   {% else %}
-    <p class="theme-midtone">No timeline entries for this topic yet.</p>
+    <p class="theme-midtone">{{ timeline.emptyMessages.tagArchive }}</p>
   {% endif %}
 </section>

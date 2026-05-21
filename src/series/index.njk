@@ -1,20 +1,19 @@
 ---
 layout: layouts/home.njk
-title: Series
-description: Curated collections of related posts with editorial intros and flexible sorting.
 showPostHeader: false
 permalink: /series/
+eleventyComputed:
+  title: "{{ ui.pages.series.title }}"
+  description: "{{ ui.pages.series.description }}"
 ---
 
 {% set seriesList = series | default([]) %}
 
 <section class="mw7 center">
   <header class="mb5">
-    <h1 class="f3 f2-ns lh-title mt0 mb3">Series</h1>
+    <h1 class="f3 f2-ns lh-title mt0 mb3">{{ ui.pages.series.heading }}</h1>
     <p class="f5 f4-ns lh-copy mt0 mb0 theme-midtone">
-      Curated reading paths through related posts. Each series starts in my
-      recommended order, and the detail page can switch to reverse or date-based
-      sorting.
+      {{ ui.pages.series.intro }}
     </p>
   </header>
 
@@ -28,7 +27,7 @@ permalink: /series/
             </a>
           </h2>
           <p class="f6 theme-midtone mt0 mb3">
-            {{ item.posts | length }} post{% if (item.posts | length) != 1 %}s{% endif %}
+            {{ item.posts | length }} {{ ui.shared.counts.post.singular if (item.posts | length) == 1 else ui.shared.counts.post.plural }}
           </p>
           {% if item.intro %}
             <p class="lh-copy mt0 mb3">
@@ -37,13 +36,13 @@ permalink: /series/
           {% endif %}
           <p class="mt0 mb0">
             <a class="link dim fw5 theme-text underline" href="{{ ('/series/' ~ item.id ~ '/') | url }}">
-              Read series
+              {{ ui.shared.series.read }}
             </a>
           </p>
         </article>
       {% endfor %}
     </div>
   {% else %}
-    <p class="theme-midtone">No series published yet.</p>
+    <p class="theme-midtone">{{ ui.pages.series.emptyMessage }}</p>
   {% endif %}
 </section>

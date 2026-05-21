@@ -1,8 +1,9 @@
 ---
 layout: layouts/home.njk
-title: About
 showPostHeader: false
 permalink: /about/
+eleventyComputed:
+  title: "{{ ui.pages.about.title }}"
 ---
 
 {% set profile = me.profile or {} %}
@@ -14,7 +15,7 @@ permalink: /about/
 <section class="mw8 center">
   <div class="flex flex-column flex-row-l">
     <div class="w-100 w-two-thirds-l pr0 pr5-l">
-      <h1 class="f3 f2-ns lh-title mt0 mb3">About</h1>
+      <h1 class="f3 f2-ns lh-title mt0 mb3">{{ ui.pages.about.heading }}</h1>
       {% for paragraph in introCopy %}
         <p class="f5 lh-copy mt0{% if not loop.first %} mt3{% endif %}">
           {{ paragraph | safe }}
@@ -60,7 +61,7 @@ permalink: /about/
 
 <section class="mw7 center mt5">
   <h2 class="f3 f2-ns lh-title mt0">
-    {{ aboutSite.heading | default('About this site') }}
+    {{ aboutSite.heading | default(ui.pages.about.siteHeadingFallback) }}
   </h2>
   {% for paragraph in aboutSiteParagraphs %}
     <p class="f5 lh-copy mt3">

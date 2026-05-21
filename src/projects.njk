@@ -1,13 +1,14 @@
 ---
 layout: layouts/home.njk
-title: Projects
-description: Curated highlights from active builds and past experiments.
 showPostHeader: false
 permalink: /projects/
 stylesheets:
   - /assets/css/projects.css
 scripts:
   - /assets/js/projects-filter.js
+eleventyComputed:
+  title: "{{ ui.pages.projects.title }}"
+  description: "{{ ui.pages.projects.description }}"
 ---
 
 {% from "components/project-card.njk" import renderProjectCard %}
@@ -19,24 +20,23 @@ scripts:
 
 <section class="projects-shell mw8 center" data-projects>
   <header class="projects-header">
-    <h1 class="f3 f2-ns lh-title mt0 mb3">Projects</h1>
+    <h1 class="f3 f2-ns lh-title mt0 mb3">{{ ui.pages.projects.heading }}</h1>
     <p class="f5 f4-ns lh-copy mt0 mb4 theme-midtone">
-      A look at current work plus past experiments that still spark ideas.
-      Filter by technology to jump straight to the tools you care about.
+      {{ ui.pages.projects.intro }}
     </p>
   </header>
 
   {% if hasTags %}
     <section class="projects-filter ba b--black-10 br3 pa3 pa4-ns mb5" data-project-filter-bar>
       <div class="flex items-center justify-between flex-wrap mb3">
-        <h2 class="f6 ttu tracked mv0 theme-midtone">Filter by technology</h2>
+        <h2 class="f6 ttu tracked mv0 theme-midtone">{{ ui.pages.projects.filterHeading }}</h2>
         <button
           type="button"
           class="project-tag project-tag--filter mr2 mb2"
           data-project-filter-reset
           aria-pressed="true"
         >
-          <span class="project-tag__label">All projects</span>
+          <span class="project-tag__label">{{ ui.pages.projects.resetLabel }}</span>
         </button>
       </div>
       <div class="flex flex-wrap">
@@ -55,9 +55,9 @@ scripts:
     {% if hasActive %}
       <section class="projects-section mb5" data-project-section="active">
         <header class="projects-section__header mb3">
-          <h2 class="f4 f3-ns lh-title mv0">Active Projects</h2>
+          <h2 class="f4 f3-ns lh-title mv0">{{ ui.pages.projects.activeHeading }}</h2>
           <p class="f6 f5-ns lh-copy mt2 mb0 theme-midtone">
-            Currently maintained and frequently updated.
+            {{ ui.pages.projects.activeDescription }}
           </p>
         </header>
         <div class="projects-grid" data-project-list>
@@ -66,7 +66,7 @@ scripts:
           {% endfor %}
         </div>
         <p class="projects-section__empty theme-midtone dn" data-project-section-empty>
-          No active projects match that tag yet.
+          {{ ui.pages.projects.activeEmptyMessage }}
         </p>
       </section>
     {% endif %}
@@ -74,9 +74,9 @@ scripts:
     {% if hasArchived %}
       <section class="projects-section mb5" data-project-section="archived">
         <header class="projects-section__header mb3">
-          <h2 class="f4 f3-ns lh-title mv0">Archive &amp; Mentions</h2>
+          <h2 class="f4 f3-ns lh-title mv0">{{ ui.pages.projects.archivedHeading }}</h2>
           <p class="f6 f5-ns lh-copy mt2 mb0 theme-midtone">
-            Earlier builds and experiments that still influence newer work.
+            {{ ui.pages.projects.archivedDescription }}
           </p>
         </header>
         <div class="projects-grid" data-project-list>
@@ -85,13 +85,13 @@ scripts:
           {% endfor %}
         </div>
         <p class="projects-section__empty theme-midtone dn" data-project-section-empty>
-          No archived projects match that tag yet.
+          {{ ui.pages.projects.archivedEmptyMessage }}
         </p>
       </section>
     {% endif %}
   </div>
 
   <p class="projects-empty theme-midtone dn" data-projects-empty>
-    No projects match that tag yet. Try resetting the filters.
+    {{ ui.pages.projects.allEmptyMessage }}
   </p>
 </section>

@@ -246,10 +246,10 @@ layout: layouts/base.njk
       {% if showThemeSelectors %}
       <div class="flex items-center flex-nowrap ml3-ns ml2" data-theme-selector>
         {% for theme in themes | reverse %}
-          <button type="button"
+                  <button type="button"
                   class="theme-preview-button w2 h2 bn pointer br2 mr2 mb2 pa0 ba b--transparent bg-transparent flex items-center justify-center"
                   data-theme-preview="{{ theme.id }}"
-                  aria-label="Preview {{ theme.label }} theme">
+                  aria-label="{{ ui.shared.theme.previewAriaTemplate | replace('{theme}', theme.label) }}">
             <span class="w-100 h-100 br2 flex items-center justify-center {{ theme.classes | join(' ') }}">
               Aa
             </span>
@@ -260,15 +260,15 @@ layout: layouts/base.njk
                 data-theme-mode-toggle
                 data-active
                 data-theme-mode="auto"
-                title="Theme mode: Auto"
-                aria-label="Theme mode: Auto">
+                title="{{ ui.shared.theme.modeLabelTemplate | replace('{mode}', ui.shared.theme.auto) }}"
+                aria-label="{{ ui.shared.theme.modeLabelTemplate | replace('{mode}', ui.shared.theme.auto) }}">
           <span class="theme-mode-surface w-100 h-100 br2 flex items-center justify-center">
             <span class="theme-mode-icon theme-mode-icon--auto" aria-hidden="true">
               <span class="theme-auto-icon"></span>
             </span>
             <span class="theme-mode-icon theme-mode-icon--light" aria-hidden="true">☀</span>
             <span class="theme-mode-icon theme-mode-icon--dark" aria-hidden="true">☾</span>
-            <span class="theme-mode-label">Auto</span>
+            <span class="theme-mode-label">{{ ui.shared.theme.auto }}</span>
           </span>
         </button>
       </div>
@@ -333,7 +333,7 @@ layout: layouts/base.njk
           {% set seriesLinks = postSeries | default([]) %}
           {% if isPostPage and seriesLinks | length %}
             <div class="pa3 ba b--black-10 br3 bg-white-20">
-              <p class="f6 ttu tracked theme-midtone mt0 mb2">Part of a series</p>
+              <p class="f6 ttu tracked theme-midtone mt0 mb2">{{ ui.shared.series.partOf }}</p>
               <ul class="list pl0 ma0">
                 {% for seriesItem in seriesLinks %}
                   <li{% if not loop.last %} class="mb2"{% endif %}>
@@ -341,7 +341,7 @@ layout: layouts/base.njk
                       {{ seriesItem.title }}
                     </a>
                     <span class="theme-midtone">
-                      ({{ seriesItem.position }} of {{ seriesItem.total }})
+                      ({{ seriesItem.position }} {{ ui.shared.pagination.of }} {{ seriesItem.total }})
                     </span>
                   </li>
                 {% endfor %}
@@ -357,7 +357,7 @@ layout: layouts/base.njk
         <section class="timeline-thread">
           {% if timelineEarlierThread | length %}
             <div class="timeline-thread__branch timeline-thread__branch--parent">
-              <p class="timeline-thread__label">Earlier in thread</p>
+              <p class="timeline-thread__label">{{ timeline.thread.earlierInThread }}</p>
               <div class="timeline-thread__stack">
                 {% for earlierEntry in timelineEarlierThread %}
                   {{ renderTimelineEntry(earlierEntry, timelineEntries, true, false, true, true) | safe }}
@@ -368,7 +368,7 @@ layout: layouts/base.njk
 
           {% if timelineFollowUpTree | length %}
             <div id="timeline-children" class="timeline-thread__branch timeline-thread__branch--children">
-              <p class="timeline-thread__label">Follow-ups</p>
+              <p class="timeline-thread__label">{{ timeline.thread.followUps }}</p>
               <div class="timeline-thread__stack">
                 {% for childNode in timelineFollowUpTree %}
                   <div class="timeline-thread__node">
@@ -380,7 +380,7 @@ layout: layouts/base.njk
                             {{ renderTimelineEntry(grandchildNode.entry, timelineEntries, true, false, true, false) | safe }}
                             {% if grandchildNode.continues %}
                               <p class="timeline-thread__continues">
-                                <a href="{{ grandchildNode.entry.url | url }}#timeline-children">continues...</a>
+                                <a href="{{ grandchildNode.entry.url | url }}#timeline-children">{{ timeline.thread.continues }}</a>
                               </p>
                             {% endif %}
                           </div>
