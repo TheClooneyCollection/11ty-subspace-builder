@@ -23,7 +23,7 @@ src/              page templates (njk)
 _includes/
   layouts/        base.njk, home.njk + partials
   components/     reusable Nunjucks macros
-_data/            site.yaml, sidebarNav.yaml, themes.yaml, me.yaml, series.yaml, projects.yaml
+ _data/            site.yaml, sidebarNav.yaml, themes.yaml, me.yaml, series.yaml, projects.yaml, timeline.yaml, ui.yaml
 assets/css/       custom CSS (code-embeds, highlight, projects, codex-logbook)
 scripts/          OG image generation
 ```
@@ -60,11 +60,7 @@ time: "HH:MM"      # required; keep quoted, 24-hour HH:MM (e.g. "15:42")
 parent: "/timeline/2026-04-14-example-entry/" # optional; use the target entry's URL path
 tags:
   - timeline    # always present (set by timeline/timeline.json)
-  - shipped     # green  — something released
-  - published   # blue   — post or writing went out
-  - wip         # purple — work in progress
-  - idea        # yellow — rough concept worth tracking
-  - thinking    # amber  — idea, musing, planning
+  - shipped     # category tags and colors are defined in _data/timeline.yaml
   # any other tags are topic tags and get archive pages
 ```
 
@@ -73,6 +69,7 @@ Timeline parent references use the entry URL path (`page.url`), including the tr
 Timeline feature documentation lives in `docs/feature-timeline.md`.
 If you change any timeline implementation detail, update `docs/feature-timeline.md` in the same change.
 Timeline archive indexes currently exist at `/timeline/weeks/` and `/timeline/months/`.
+Timeline page copy, relationship labels, archive labels, featured tags, and category metadata live in `_data/timeline.yaml`.
 
 ## Theme system
 
@@ -159,6 +156,8 @@ New gated nav items follow the same hardcoded pattern (matching how drafts are h
 | `_data/me.yaml` | author profile (`me.profile.name`, contacts, about text) |
 | `_data/themes.yaml` | theme definitions (id, label, classes, accent) |
 | `_data/series.yaml` | series metadata |
+| `_data/timeline.yaml` | timeline copy, labels, featured tags, and category metadata |
+| `_data/ui.yaml` | shared UI copy for templates and components |
 
 ## Skills
 

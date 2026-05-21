@@ -23,8 +23,11 @@ Timeline entries live in `timeline/` as Markdown files.
 Base data comes from:
 - `timeline/timeline.json`
 - `timeline/timeline.11tydata.js`
+- `_data/timeline.yaml`
 
 Timeline entries always carry the `timeline` tag through `timeline/timeline.json`.
+Timeline page copy, archive labels, relationship labels, featured tags, and
+category metadata are configured in `_data/timeline.yaml`.
 
 ## Timeline Entry Front Matter
 
@@ -38,10 +41,8 @@ parent: "/timeline/example-entry/"
 tags:
   - timeline
   - shipped
-  - published
-  - wip
-  - idea
-  - thinking
+  # one optional category tag from _data/timeline.yaml
+  # any other tags are topic tags and get archive pages
 ```
 
 Rules:
@@ -49,6 +50,29 @@ Rules:
 - `time` must be a quoted string.
 - `parent` is optional, but when present it must be a valid `/timeline/.../` URL.
 - Timeline parent URLs must use trailing slashes.
+
+## Timeline Data Model
+
+`_data/timeline.yaml` is the source of truth for timeline presentation and
+category behavior.
+
+It currently defines:
+- page and archive titles/descriptions
+- breadcrumb and section labels
+- empty-state copy
+- relationship and thread labels
+- featured timeline tags
+- category metadata
+
+Category metadata is declared as an ordered `categories` array. Each item
+includes:
+- `id`
+- `tag`
+- `label`
+- `color`
+
+The order of `categories` defines precedence if an entry carries more than one
+category tag.
 
 ## Collection Model
 
@@ -71,6 +95,8 @@ Route pattern:
 - `/timeline/{tag-slug}/`
 
 Reserved or excluded tags are not promoted into topic archives. That includes content-type tags like `timeline` and timeline status tags like `shipped`, `published`, `wip`, `idea`, and `thinking`.
+Those reserved category tags are read from `_data/timeline.yaml` rather than
+being hardcoded in the templates.
 
 ### `collections.timelineMonths`
 
@@ -145,6 +171,9 @@ Shared timeline entry rendering lives in:
 Shared week pill rendering lives in:
 - `_includes/components/timeline-week-pill.njk`
 
+`_includes/components/timeline-entry.njk` reads category ids and colors from
+`_data/timeline.yaml`.
+
 ## Social Preview Images
 
 The Open Graph image pipeline generates cards for:
@@ -177,6 +206,7 @@ Current validation guarantees:
 - `parent` references must resolve to existing timeline entries
 - parent references may not create cycles
 - invalid topic archive slugs are rejected when they would collide with reserved timeline routes or entry URLs
+- category tags excluded from topic archives are taken from `_data/timeline.yaml`
 
 ## Navigation and Discoverability
 
@@ -195,6 +225,7 @@ Always update `docs/feature-timeline.md` when any timeline implementation change
 That includes changes to:
 - entry front matter requirements
 - tag handling
+- `_data/timeline.yaml` copy or category structure
 - collection shapes
 - route patterns
 - page templates
