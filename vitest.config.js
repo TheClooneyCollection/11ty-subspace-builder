@@ -7,5 +7,6 @@ export default defineConfig({
     exclude: ['test/e2e/**', 'test/fixtures/**', 'node_modules/**'],
     testTimeout: 60_000,
     hookTimeout: 120_000,
+    globalSetup: ['./test/helpers/global-setup.js'],
   },
 });

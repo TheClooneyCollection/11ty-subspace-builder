@@ -1,35 +1,12 @@
-import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
 const SITE_DIR = path.resolve('_site');
 
-let buildPromise = null;
-
-const runBuild = () =>
-  new Promise((resolve, reject) => {
-    const child = spawn('npx', ['@11ty/eleventy'], {
-      env: { ...process.env, ELEVENTY_ENV: 'production' },
-      stdio: ['ignore', 'pipe', 'pipe'],
-    });
-
-    let stderr = '';
-    child.stderr.on('data', (chunk) => {
-      stderr += chunk.toString();
-    });
-    child.on('error', reject);
-    child.on('exit', (code) => {
-      if (code === 0) resolve();
-      else reject(new Error(`Eleventy build failed (exit ${code}):\n${stderr}`));
-    });
-  });
-
-export const ensureSiteBuilt = () => {
-  if (!buildPromise) {
-    buildPromise = runBuild();
-  }
-  return buildPromise;
-};
+// _site is built once by test/helpers/global-setup.js before any worker
+// starts. This function exists for backward compatibility with test files
+// that call it inside beforeAll; it is a no-op.
+export const ensureSiteBuilt = async () => {};
 
 export const getSiteDir = () => SITE_DIR;
 
