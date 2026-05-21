@@ -11,7 +11,7 @@ eleventyComputed:
   description: "{{ ui.pages.projects.description }}"
 ---
 
-{% from "components/project-card.njk" import renderProjectCard %}
+{% from "components/project-card.njk" import renderProjectCard with context %}
 {% from "components/tag-chip.njk" import renderTagChip %}
 
 {% set hasActive = activeProjects | length %}
