@@ -12,7 +12,9 @@
     "prod": "ELEVENTY_ENV=production eleventy --serve",
     "build": "ELEVENTY_ENV=production eleventy",
     "format": "prettier --write \"**/*.{js,css,md}\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "fix-lfs": "git lfs fetch upstream --all && git lfs push origin --all && git lfs pull",
     "og": "node ./scripts/generate-og-images.js",
     "tracker": "npm run --workspace post-share-tracker start"
@@ -42,8 +44,10 @@
     "@resvg/resvg-js": "^2.6.0",
     "gray-matter": "^4.0.3",
     "highlight.js": "^11.11.1",
+    "linkedom": "^0.18.12",
     "prettier": "^3.3.3",
     "satori": "^0.10.14",
-    "satori-html": "^0.3.2"
+    "satori-html": "^0.3.2",
+    "vitest": "^4.1.7"
   }
 }
