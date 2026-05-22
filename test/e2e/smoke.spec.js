@@ -75,22 +75,24 @@ test.describe('code block collapse', () => {
   test('Expand button toggles aria-expanded and grows the rendered height', async ({ page }) => {
     await page.goto(COLLAPSIBLE_POST_PATH);
 
-    const collapsed = page.locator('.code-block--collapsible.code-block--collapsed').first();
-    await expect(collapsed).toBeVisible();
+    // Locate against the stable parent class. .code-block--collapsed is a
+    // state modifier that the click handler removes, so chaining off it
+    // would invalidate the toggle locator mid-test.
+    const block = page.locator('.code-block--collapsible').first();
+    await expect(block).toBeVisible();
+    await expect(block).toHaveClass(/code-block--collapsed/);
 
-    const toggle = collapsed.locator('[data-collapse-toggle]').first();
+    const toggle = block.locator('[data-collapse-toggle]').first();
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
 
-    const beforeHeight = (await collapsed.boundingBox())?.height ?? 0;
+    const beforeHeight = (await block.boundingBox())?.height ?? 0;
 
     await toggle.click();
 
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(block).not.toHaveClass(/code-block--collapsed/);
 
-    // After expansion the element should no longer carry the collapsed modifier.
-    await expect(collapsed).not.toHaveClass(/code-block--collapsed/);
-
-    const afterHeight = (await collapsed.boundingBox())?.height ?? 0;
+    const afterHeight = (await block.boundingBox())?.height ?? 0;
     expect(afterHeight).toBeGreaterThan(beforeHeight);
   });
 });
