@@ -5,6 +5,37 @@
 
 ---
 
+## Current state (handoff snapshot)
+
+Latest commit: `refactor: extract timeline ref normalization into lib/timeline/refs.js`.
+
+- **30 test files, 111 tests passing.** Single shared `_site` build via vitest `globalSetup`. Run `npm test`.
+- Phases **1, 2, 3, 4, 5 complete** and merged linearly onto `main`.
+- Phase **6 refactor + Phase 7 unit tests in progress** — done so far: `lib/timeline/refs.js` + `test/unit/timeline-refs.test.js`. Remaining extractions are listed in the Phase 6 / Phase 7 sections below.
+- Phase **8 Playwright not started.**
+
+### Conventions for follow-up agents
+
+- **Linear git history only.** Bring worktree work in via `git cherry-pick` from `main` (not from the worktree). Never `git merge` a branch into main.
+- **No "Phase X" or plan numbering in commit subject lines.** They are meaningful only inside this plan. The plan number can appear in the body if it adds context, but the subject describes the change.
+- **Phase 6 must stay sequential.** Every extraction edits `eleventy.config.js`; parallel agents will conflict. Extract one module at a time. Refactor + its unit tests can land in the same commit if tightly coupled.
+- **Phase 7 unit tests** live in `test/unit/<module-name>.test.js` and import from `lib/...` — never from `eleventy.config.js`.
+- **Phase 8 Playwright** is one small spec file at the end; no benefit from parallelizing.
+- The shared `_site` build is performed once in `test/helpers/global-setup.js`. Test files should never spawn their own build; the existing `ensureSiteBuilt()` in `test/helpers/build-once.js` is preserved as a no-op for backward compatibility with `beforeAll(...)` blocks that still call it.
+
+### Quirks worth knowing
+
+- **`/all-tags/` permalinks to `/tags/`** — both `tags.test.js` and `all-tags.test.js` target `/tags/`.
+- **Calendar week archives** live under `/timeline/weeks/<YYYY-Www>/`, not `/timeline/calendar-weeks/`. Month-banded weeks use `YYYYMMWn`.
+- **Timeline category badge** is `data-type` + a CSS custom property, not visible text.
+- **`feed.xml` must be parsed via linkedom's `DOMParser` (XML mode)**, not `parseHTML`, because `<link>` is treated as a void element otherwise.
+- **Hidden notes URL** is `/notes/hidden/`, not `/hidden-notes/`.
+- **Production builds exclude `testing`-tagged content and drafts** via `eleventyExcludeFromCollections`; many relational fixture-like real entries are tagged `testing` and won't appear in `_site`.
+- **`series.yaml`** uses the `posts:` key, not `entries:`.
+- **Eleventy does not clean `_site` between builds.** `global-setup.js` `rmRf`s it first to avoid stale pages (e.g. an orphaned `/page/2/` from a prior build).
+
+---
+
 ## Overview
 
 The project has grown without an engineering test baseline. Before refactoring
@@ -215,7 +246,7 @@ tests provide the safety net.
 - [x] `timeline-week-pill.test.js` — single week + multi-week range.
 - [x] `post-list-item.test.js` — note variant, post variant, with/without excerpt.
 - [x] `timeline-entry-body.test.js` — representative entry with parent + children + earlier-thread.
-- [ ] `post-body.test.js` — post with TOC, footnote, code block (collapsed + uncollapsed), `> TODO` blockquote, GitHub embed shortcode.
+- [x] `post-body.test.js` — post with TOC, footnote, code block (collapsed + uncollapsed), `> TODO` blockquote, GitHub embed shortcode.
 
 ### Phase 5 — Fixtures (Eleventy programmatic API)
 
@@ -264,10 +295,6 @@ tests provide the safety net.
 - [ ] `fingerprint.test.js` — stable hash for unchanged file; new hash on size/mtime change; query/hash preserved.
 
 ### Phase 8 — Playwright smoke
-
-- [ ] Add `playwright.config.js`.
-- [ ] Add `test/e2e/smoke.spec.js`.
-- [ ] Cover a minimal browser-only smoke path for the built site.
 
 - [ ] Add `playwright` devDependency + `playwright.config.js` (uses `webServer` against pre-built `_site`).
 - [ ] `e2e/smoke.spec.js`:
