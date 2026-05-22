@@ -51,6 +51,12 @@ import {
   validateTimelineEntryRelationships,
   validateTimelineEntryDateTimeQuotes,
 } from './lib/timeline/validate.js';
+import {
+  TIMELINE_RESERVED_ARCHIVE_SLUGS,
+  extractCategoryTagSet,
+  getEntryType,
+  filterTopicTags,
+} from './lib/timeline/categories.js';
 
 const OG_FORCE_ENV = process.env.OG_FORCE === 'true';
 const ELEVENTY_FETCH_CACHE_DIR = path.resolve('.cache');
@@ -158,7 +164,6 @@ const formatCalendarWeekRangeLabel = (weekStart) => {
 const formatCalendarWeekLabel = (isoYear, week) =>
   `Calendar Week ${String(week).padStart(2, '0')} · ${isoYear}`;
 
-const timelineReservedArchiveSlugs = new Set(['months', 'weeks']);
 const getTimelineData = () => loadYamlData(TIMELINE_DATA_URL, timelineDataCache);
 
 const getTimelineCategories = () => {
@@ -166,18 +171,7 @@ const getTimelineCategories = () => {
   return Array.isArray(categories) ? categories : [];
 };
 
-const getTimelineTypeTags = () =>
-  new Set(
-    getTimelineCategories()
-      .map((category) => {
-        if (!category || typeof category !== 'object') return null;
-        if (typeof category.tag === 'string' && category.tag.trim()) {
-          return category.tag.trim();
-        }
-        return null;
-      })
-      .filter(Boolean),
-  );
+const getTimelineTypeTags = () => extractCategoryTagSet(getTimelineCategories());
 
 const getTimelineArchiveExcludedTags = () =>
   new Set([
@@ -201,30 +195,9 @@ const getSortedTimelineEntries = (collectionApi) => {
 };
 
 const getTimelineTopicTags = (tags = []) =>
-  (Array.isArray(tags) ? tags : [tags])
-    .map((tag) => (typeof tag === 'string' ? tag : null))
-    .filter((tag) => tag && !getTimelineArchiveExcludedTags().has(tag))
-    .filter((tag, index, values) => values.indexOf(tag) === index);
+  filterTopicTags(tags, getTimelineArchiveExcludedTags());
 
-const getTimelineEntryType = (entry) => {
-  const tags = Array.isArray(entry?.data?.tags)
-    ? entry.data.tags
-    : [entry?.data?.tags].filter(Boolean);
-
-  for (const category of getTimelineCategories()) {
-    if (!category || typeof category !== 'object') continue;
-    const categoryTag =
-      typeof category.tag === 'string' && category.tag.trim()
-        ? category.tag.trim()
-        : null;
-
-    if (categoryTag && tags.includes(categoryTag)) {
-      return categoryTag;
-    }
-  }
-
-  return 'default';
-};
+const getTimelineEntryType = (entry) => getEntryType(entry, getTimelineCategories());
 
 const getTimelineEntrySlug = (entry) => {
   const url = typeof entry?.url === 'string' ? entry.url : '';
@@ -245,7 +218,7 @@ const buildTimelineTagArchives = (entries) => {
     for (const tag of tags) {
       const slug = slugify(tag);
 
-      if (timelineReservedArchiveSlugs.has(slug)) {
+      if (TIMELINE_RESERVED_ARCHIVE_SLUGS.has(slug)) {
         conflictingTags.push(
           `"${tag}" resolves to reserved timeline path "/timeline/${slug}/"`,
         );
