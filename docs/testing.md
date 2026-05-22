@@ -157,15 +157,15 @@ Current visible progress:
 - `lib/timeline/dates.js` extracted (shared by sort and archive helpers)
 - `lib/timeline/sort.js` extracted, with `test/unit/timeline-sort.test.js` (also covers `dates.js`)
 - `lib/timeline/graph.js` extracted, with `test/unit/timeline-graph.test.js`
+- `lib/timeline/validate.js` extracted, with `test/unit/timeline-validate.test.js`
+- `lib/timeline/categories.js` extracted, with `test/unit/timeline-categories.test.js`
+- `lib/markdown/code-block.js` extracted, with `test/unit/code-block.test.js`
+- `lib/markdown/todo-blockquote.js` extracted, with `test/unit/todo-blockquote.test.js`
+- `lib/markdown/github-embed.js` extracted, with `test/unit/github-embed.test.js`
 
 Planned unit coverage still to add:
-- timeline relationship validation
 - timeline archive generation
-- timeline category resolution
 - excerpt generation
-- markdown code block behavior
-- TODO blockquote transformation
-- GitHub embed parsing helpers
 - link checking
 - excluded-content rules
 - asset fingerprinting

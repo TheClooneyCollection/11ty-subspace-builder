@@ -7,11 +7,11 @@
 
 ## Current state (handoff snapshot)
 
-Latest commit: `refactor: extract timeline validation into lib/timeline/validate.js`.
+Latest commit: `test(e2e): add Playwright smoke spec for theme, code blocks, and navigation` (Phase 8 landed) on top of the categories/code-block/todo-blockquote/github-embed extractions.
 
-- **33 test files, 164 vitest tests passing.** Single shared `_site` build via vitest `globalSetup`. Run `npm test`.
+- **37 test files, 216 vitest tests passing.** Single shared `_site` build via vitest `globalSetup`. Run `npm test`.
 - Phases **1, 2, 3, 4, 5 complete** on the working branch.
-- Phase **6 refactor + Phase 7 unit tests in progress** — extracted so far: `lib/timeline/refs.js`, `lib/timeline/dates.js`, `lib/timeline/sort.js`, `lib/timeline/graph.js`, `lib/timeline/validate.js` with matching `test/unit/*` files where applicable. Remaining extractions are listed in the Phase 6 / Phase 7 sections below.
+- Phase **6 refactor + Phase 7 unit tests in progress** — extracted so far: `lib/timeline/refs.js`, `lib/timeline/dates.js`, `lib/timeline/sort.js`, `lib/timeline/graph.js`, `lib/timeline/validate.js`, `lib/timeline/categories.js`, `lib/markdown/code-block.js`, `lib/markdown/todo-blockquote.js`, `lib/markdown/github-embed.js`, each with a matching `test/unit/*` file. Remaining extractions: `lib/timeline/archives.js`, `lib/assets/fingerprint.js`, `lib/build/link-check.js`, `lib/eleventy/excluded-content.js`.
 - Phase **8 Playwright implemented** as a single `test/e2e/smoke.spec.js` (chromium only) with `playwright.config.js` and a `webServer` that serves prebuilt `_site` via `npx http-server`. Run `npm run test:e2e` (after `npm run test:e2e:install` to fetch Chromium and after `npm test` or `npm run build` to populate `_site`).
 
 ### Conventions for follow-up agents
@@ -269,12 +269,12 @@ tests provide the safety net.
 - [x] Extract `lib/timeline/dates.js` (not in original plan; added because `toIsoDatePart` / `parseIsoDateAsUtc` are shared by sort + archives).
 - [x] Extract `lib/timeline/sort.js`.
 - [x] Extract `lib/timeline/graph.js`.
-- [ ] Extract `lib/timeline/validate.js`.
+- [x] Extract `lib/timeline/validate.js`.
 - [ ] Extract `lib/timeline/archives.js`.
-- [ ] Extract `lib/timeline/categories.js`.
-- [ ] Extract `lib/markdown/code-block.js`.
-- [ ] Extract `lib/markdown/todo-blockquote.js`.
-- [ ] Extract `lib/markdown/github-embed.js`.
+- [x] Extract `lib/timeline/categories.js`.
+- [x] Extract `lib/markdown/code-block.js`.
+- [x] Extract `lib/markdown/todo-blockquote.js`.
+- [x] Extract `lib/markdown/github-embed.js`.
 - [ ] Extract `lib/assets/fingerprint.js`.
 - [ ] Extract `lib/build/link-check.js`.
 - [ ] Extract `lib/eleventy/excluded-content.js`.
@@ -285,13 +285,13 @@ tests provide the safety net.
 - [x] `timeline-refs.test.js` — trailing slash, absolute URL, relative, empty, non-string.
 - [x] `timeline-sort.test.js` — sort key date/time defaulting, fallback to entry.date, lexicographic ordering invariant; covers `dates.js` helpers too.
 - [x] `timeline-graph.test.js` — linear, branching, deep tree with `maxDepth`/`continues`, missing parent ref.
-- [ ] `timeline-validate.test.js` — valid passes; self-parent, cycle, missing target, non-`/timeline/` ref, non-string each throw with useful messages.
+- [x] `timeline-validate.test.js` — valid passes; self-parent, cycle, missing target, non-`/timeline/` ref, non-string each throw with useful messages.
 - [ ] `timeline-archives.test.js` — month/week keys; ISO week year-boundary; reserved slugs rejected; tag/entry slug collision rejected.
-- [ ] `timeline-categories.test.js` — first match wins; no match returns `default`.
+- [x] `timeline-categories.test.js` — first match wins; no match returns `default`; topic-tag dedup + excluded filtering.
 - [ ] `excerpt.test.js` — empty, plain prose, prose with code, length limits.
-- [ ] `code-block.test.js` — copy button threshold; collapse threshold; language class normalization; unknown language fallback.
-- [ ] `todo-blockquote.test.js` — production vs dev class; only blockquotes containing `TODO` tagged; case-insensitive.
-- [ ] `github-embed.test.js` — blob URL with `#L10`, `#L10-L20`, no range; indent trimming preserves blank lines.
+- [x] `code-block.test.js` — copy button threshold; collapse threshold; language class normalization; unknown language fallback.
+- [x] `todo-blockquote.test.js` — production vs dev class; only blockquotes containing `TODO` tagged; case-insensitive.
+- [x] `github-embed.test.js` — blob URL with `#L10`, `#L10-L20`, no range; indent trimming preserves blank lines.
 - [ ] `link-check.test.js` — detects broken internal links; ignores `mailto:`, hash-only, external, files with extensions.
 - [ ] `excluded-content.test.js` — testing-tagged content excluded in production, included in dev; drafts excluded in production.
 - [ ] `fingerprint.test.js` — stable hash for unchanged file; new hash on size/mtime change; query/hash preserved.
