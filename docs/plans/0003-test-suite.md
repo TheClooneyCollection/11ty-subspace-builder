@@ -7,12 +7,12 @@
 
 ## Current state (handoff snapshot)
 
-Latest commit: `refactor: extract timeline graph helpers into lib/timeline/graph.js`.
+Latest commit: `refactor: extract timeline validation into lib/timeline/validate.js`.
 
-- **32 test files, 145 tests passing.** Single shared `_site` build via vitest `globalSetup`. Run `npm test`.
+- **33 test files, 164 vitest tests passing.** Single shared `_site` build via vitest `globalSetup`. Run `npm test`.
 - Phases **1, 2, 3, 4, 5 complete** on the working branch.
-- Phase **6 refactor + Phase 7 unit tests in progress** — extracted so far: `lib/timeline/refs.js`, `lib/timeline/dates.js`, `lib/timeline/sort.js`, `lib/timeline/graph.js` with matching `test/unit/*` files. Remaining extractions are listed in the Phase 6 / Phase 7 sections below.
-- Phase **8 Playwright not started.**
+- Phase **6 refactor + Phase 7 unit tests in progress** — extracted so far: `lib/timeline/refs.js`, `lib/timeline/dates.js`, `lib/timeline/sort.js`, `lib/timeline/graph.js`, `lib/timeline/validate.js` with matching `test/unit/*` files where applicable. Remaining extractions are listed in the Phase 6 / Phase 7 sections below.
+- Phase **8 Playwright implemented** as a single `test/e2e/smoke.spec.js` (chromium only) with `playwright.config.js` and a `webServer` that serves prebuilt `_site` via `npx http-server`. Run `npm run test:e2e` (after `npm run test:e2e:install` to fetch Chromium and after `npm test` or `npm run build` to populate `_site`).
 
 ### Conventions for follow-up agents
 
@@ -57,7 +57,7 @@ Current rollout status:
 - Phases 1 through 5 are substantially complete.
 - Phase 6 is in progress.
 - Phase 7 is blocked on further Phase 6 extraction work.
-- Phase 8 has not started.
+- Phase 8 (Playwright smoke) is implemented.
 
 ---
 
@@ -298,14 +298,18 @@ tests provide the safety net.
 
 ### Phase 8 — Playwright smoke
 
-- [ ] Add `playwright` devDependency + `playwright.config.js` (uses `webServer` against pre-built `_site`).
-- [ ] `e2e/smoke.spec.js`:
-  - [ ] homepage loads; zero failed network requests; no console errors.
-  - [ ] theme toggle flips `data-theme` and persists across reload via localStorage.
-  - [ ] code block above collapse threshold shows Expand; click toggles `aria-expanded` + visible height.
-  - [ ] code block Wrap toggle flips `aria-pressed` and class.
-  - [ ] project card `Link` anchor navigates to expected URL.
-  - [ ] timeline detail page renders parent + child relationship sections.
+- [x] Add `@playwright/test` devDependency + `playwright.config.js` (uses `webServer` against pre-built `_site` via `npx http-server`). Chromium only.
+- [x] `e2e/smoke.spec.js`:
+  - [x] homepage loads; zero failed network requests; no console errors.
+  - [x] theme toggle flips `data-theme-preference` on `<html>` and persists across reload via `localStorage.themePreference`. (Selector: `[data-theme-mode-toggle]`; the persisted preference is the storage source of truth, not `data-theme`.)
+  - [x] code block above collapse threshold shows Expand; click toggles `aria-expanded` + visible height.
+  - [x] code block Wrap toggle flips `aria-pressed` and class.
+  - [x] project card `Link` anchor navigates to expected URL. (All shipped project Link anchors are external; the test asserts the href is reachable rather than driving a cross-origin navigation.)
+  - [x] timeline detail page renders parent + child relationship sections. (Target: `/timeline/2026-04-16-published-relational-timeline-entry/`, the one production-built entry with a parent reference; selector `.timeline-thread__branch--parent`.)
+
+Notes:
+- Browser binaries are not installed automatically. Run `npm run test:e2e:install` once to fetch the Chromium build Playwright uses.
+- The `webServer` block reuses an existing server on `localhost:5173` when present, so iterative runs are quick.
 
 ---
 

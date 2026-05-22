@@ -29,13 +29,13 @@ Current state:
 - fixture tests cover timeline relationship and negative-path scenarios
 - `eleventy.config.js` extraction into `lib/` has started
 - unit tests have started alongside extraction work
-- Playwright smoke coverage is still planned, not finished
+- Playwright smoke coverage is implemented as a single `test/e2e/smoke.spec.js` spec
 
 In plan terms:
 - phases 1 through 5 are substantially complete
 - phase 6 is in progress
 - phase 7 is in progress but depends on more phase 6 extraction
-- phase 8 is still open
+- phase 8 (Playwright smoke) is implemented
 
 ## Test Philosophy
 
@@ -172,14 +172,21 @@ Planned unit coverage still to add:
 
 ### Browser Smoke
 
-A thin Playwright layer is planned for browser-only behavior.
+A thin Playwright smoke layer covers behavior that only a real browser can
+prove. It is intentionally small and is not the primary test strategy for the
+site.
 
-This layer is expected to stay small. It is not intended to become the primary
-test strategy for the site.
+Implemented in `test/e2e/smoke.spec.js` (Chromium only):
+- homepage loads with no console errors and no failed network requests
+- theme mode toggle flips `data-theme-preference` on `<html>` and persists across reload via `localStorage.themePreference`
+- collapsible code block (`.code-block--collapsible.code-block--collapsed`) Expand button flips `aria-expanded` and grows the rendered height
+- code block Wrap toggle (`[data-wrap-toggle]`) flips `aria-pressed` and toggles the `code-block--wrap` class on the parent
+- project card `Link` anchor on `/projects/` has a reachable href
+- timeline detail page renders a parent / earlier-thread relationship section
 
-Planned scope:
-- one smoke spec
-- only behaviors that require a real browser to prove
+Configuration lives in `playwright.config.js` at the project root. Playwright's
+`webServer` serves the prebuilt `_site` via `npx http-server _site -p 5173` and
+the suite navigates against `http://localhost:5173`.
 
 ## Tooling
 
@@ -224,7 +231,15 @@ Expected local workflow:
 - run `npm run build` as the first gate
 - run `npm test` for the Vitest suite
 - use `npm run test:watch` during local iteration
-- use `npm run test:e2e` once the Playwright layer is in place
+- run `npm run test:e2e` for the Playwright smoke suite
+
+The Playwright suite serves `_site` directly, so the directory must exist
+before running `npm run test:e2e`. `npm test` builds `_site` via its
+`globalSetup` and `npm run build` produces it directly — either is sufficient.
+
+Browsers are downloaded separately from the npm dependency. Run
+`npm run test:e2e:install` once after installing dependencies to fetch the
+Chromium build Playwright uses.
 
 While phases 6 through 8 are still underway, some parts of the documented
 structure are ahead of the completed implementation. Treat this document and
