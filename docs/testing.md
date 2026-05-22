@@ -27,15 +27,13 @@ Current state:
 - contract tests cover the main rendered page types
 - snapshot tests cover several reusable components and selected full-body output
 - fixture tests cover timeline relationship and negative-path scenarios
-- `eleventy.config.js` extraction into `lib/` has started
-- unit tests have started alongside extraction work
+- `eleventy.config.js` has been split into focused modules under `lib/`
+- unit tests cover every extracted module
 - Playwright smoke coverage is implemented as a single `test/e2e/smoke.spec.js` spec
 
-In plan terms:
-- phases 1 through 5 are substantially complete
-- phase 6 is in progress
-- phase 7 is in progress but depends on more phase 6 extraction
-- phase 8 (Playwright smoke) is implemented
+In plan terms, all eight phases are substantially landed. The remaining
+follow-ups are infrastructure rather than test-design: CI wiring and
+optional further consolidation of shared constants.
 
 ## Test Philosophy
 
@@ -152,23 +150,16 @@ This layer is intentionally downstream of refactoring work. The suite should not
 invent artificial seams just to unit test code that is better covered through
 contract, snapshot, or fixture tests.
 
-Current visible progress:
-- `lib/timeline/refs.js` extracted, with `test/unit/timeline-refs.test.js`
-- `lib/timeline/dates.js` extracted (shared by sort and archive helpers)
-- `lib/timeline/sort.js` extracted, with `test/unit/timeline-sort.test.js` (also covers `dates.js`)
-- `lib/timeline/graph.js` extracted, with `test/unit/timeline-graph.test.js`
-- `lib/timeline/validate.js` extracted, with `test/unit/timeline-validate.test.js`
-- `lib/timeline/categories.js` extracted, with `test/unit/timeline-categories.test.js`
-- `lib/markdown/code-block.js` extracted, with `test/unit/code-block.test.js`
-- `lib/markdown/todo-blockquote.js` extracted, with `test/unit/todo-blockquote.test.js`
-- `lib/markdown/github-embed.js` extracted, with `test/unit/github-embed.test.js`
+Current visible progress (Phase 6 + Phase 7 complete):
+- `lib/excerpt.js` covered by `test/unit/excerpt.test.js`
+- `lib/slugify.js` (small shared helper)
+- `lib/timeline/refs.js`, `dates.js`, `sort.js`, `graph.js`, `validate.js`, `categories.js`, `archives.js` — each with a matching `test/unit/timeline-*.test.js`
+- `lib/markdown/code-block.js`, `todo-blockquote.js`, `github-embed.js` — each with a matching `test/unit/*.test.js`
+- `lib/assets/fingerprint.js` covered by `test/unit/fingerprint.test.js`
+- `lib/build/link-check.js` covered by `test/unit/link-check.test.js`
+- `lib/eleventy/excluded-content.js` covered by `test/unit/excluded-content.test.js`
 
-Planned unit coverage still to add:
-- timeline archive generation
-- excerpt generation
-- link checking
-- excluded-content rules
-- asset fingerprinting
+`eleventy.config.js` is down from ~1633 lines to ~586 lines, and now mostly wires extracted helpers into Eleventy's plugin, collection, filter, and lifecycle hooks rather than implementing logic inline.
 
 ### Browser Smoke
 

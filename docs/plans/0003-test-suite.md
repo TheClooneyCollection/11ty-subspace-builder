@@ -1,18 +1,29 @@
 # 0003 - Test Suite
 
-**Status:** In Progress
+**Status:** Substantially Complete
 **Approach:** Layered tests (data invariants, contract, fixtures, snapshots, unit, smoke)
 
 ---
 
 ## Current state (handoff snapshot)
 
-Latest commit: `test(e2e): add Playwright smoke spec for theme, code blocks, and navigation` (Phase 8 landed) on top of the categories/code-block/todo-blockquote/github-embed extractions.
+Latest commit: `test(unit): cover lib/excerpt.js`. Phases 1 through 8 are landed on the working branch.
 
-- **37 test files, 216 vitest tests passing.** Single shared `_site` build via vitest `globalSetup`. Run `npm test`.
-- Phases **1, 2, 3, 4, 5 complete** on the working branch.
-- Phase **6 refactor + Phase 7 unit tests in progress** — extracted so far: `lib/timeline/refs.js`, `lib/timeline/dates.js`, `lib/timeline/sort.js`, `lib/timeline/graph.js`, `lib/timeline/validate.js`, `lib/timeline/categories.js`, `lib/markdown/code-block.js`, `lib/markdown/todo-blockquote.js`, `lib/markdown/github-embed.js`, each with a matching `test/unit/*` file. Remaining extractions: `lib/timeline/archives.js`, `lib/assets/fingerprint.js`, `lib/build/link-check.js`, `lib/eleventy/excluded-content.js`.
+- **42 test files, 296 vitest tests passing.** Single shared `_site` build via vitest `globalSetup`. Run `npm test`.
+- Phases **1, 2, 3, 4, 5 complete**.
+- Phase **6 complete**. `eleventy.config.js` was ~1633 lines pre-refactor; it is now **586 lines**. Extracted modules:
+  - `lib/excerpt.js`, `lib/slugify.js`
+  - `lib/timeline/{refs,dates,sort,graph,validate,categories,archives}.js`
+  - `lib/markdown/{code-block,todo-blockquote,github-embed}.js`
+  - `lib/assets/fingerprint.js`
+  - `lib/build/link-check.js`
+  - `lib/eleventy/excluded-content.js`
+- Phase **7 complete**. Each extracted module has a matching `test/unit/*.test.js`.
 - Phase **8 Playwright implemented** as a single `test/e2e/smoke.spec.js` (chromium only) with `playwright.config.js` and a `webServer` that serves prebuilt `_site` via `npx http-server`. Run `npm run test:e2e` (after `npm run test:e2e:install` to fetch Chromium and after `npm test` or `npm run build` to populate `_site`).
+
+Optional follow-ups not yet done:
+- CI wiring for `npm run build && npm test` (and the Playwright job).
+- Move `BLOG_EXCLUDED_TAGS` and the reserved-slug constants into a single `lib/constants.js` if it starts to make sense.
 
 ### Conventions for follow-up agents
 
@@ -270,15 +281,16 @@ tests provide the safety net.
 - [x] Extract `lib/timeline/sort.js`.
 - [x] Extract `lib/timeline/graph.js`.
 - [x] Extract `lib/timeline/validate.js`.
-- [ ] Extract `lib/timeline/archives.js`.
+- [x] Extract `lib/timeline/archives.js`.
 - [x] Extract `lib/timeline/categories.js`.
+- [x] Extract `lib/slugify.js` (small shared helper used by archives and other route generators).
 - [x] Extract `lib/markdown/code-block.js`.
 - [x] Extract `lib/markdown/todo-blockquote.js`.
 - [x] Extract `lib/markdown/github-embed.js`.
-- [ ] Extract `lib/assets/fingerprint.js`.
-- [ ] Extract `lib/build/link-check.js`.
-- [ ] Extract `lib/eleventy/excluded-content.js`.
-- [ ] Confirm contract + snapshot + fixture suites stay green after each extraction.
+- [x] Extract `lib/assets/fingerprint.js`.
+- [x] Extract `lib/build/link-check.js`.
+- [x] Extract `lib/eleventy/excluded-content.js`.
+- [x] Contract + snapshot + fixture suites stayed green after every extraction.
 
 ### Phase 7 — Unit tests (alongside each extraction)
 
@@ -286,15 +298,15 @@ tests provide the safety net.
 - [x] `timeline-sort.test.js` — sort key date/time defaulting, fallback to entry.date, lexicographic ordering invariant; covers `dates.js` helpers too.
 - [x] `timeline-graph.test.js` — linear, branching, deep tree with `maxDepth`/`continues`, missing parent ref.
 - [x] `timeline-validate.test.js` — valid passes; self-parent, cycle, missing target, non-`/timeline/` ref, non-string each throw with useful messages.
-- [ ] `timeline-archives.test.js` — month/week keys; ISO week year-boundary; reserved slugs rejected; tag/entry slug collision rejected.
+- [x] `timeline-archives.test.js` — month/week keys; ISO week year-boundary; reserved slugs rejected; tag/entry slug collision rejected.
 - [x] `timeline-categories.test.js` — first match wins; no match returns `default`; topic-tag dedup + excluded filtering.
-- [ ] `excerpt.test.js` — empty, plain prose, prose with code, length limits.
+- [x] `excerpt.test.js` — empty, plain prose, prose with code, length limits.
 - [x] `code-block.test.js` — copy button threshold; collapse threshold; language class normalization; unknown language fallback.
 - [x] `todo-blockquote.test.js` — production vs dev class; only blockquotes containing `TODO` tagged; case-insensitive.
 - [x] `github-embed.test.js` — blob URL with `#L10`, `#L10-L20`, no range; indent trimming preserves blank lines.
-- [ ] `link-check.test.js` — detects broken internal links; ignores `mailto:`, hash-only, external, files with extensions.
-- [ ] `excluded-content.test.js` — testing-tagged content excluded in production, included in dev; drafts excluded in production.
-- [ ] `fingerprint.test.js` — stable hash for unchanged file; new hash on size/mtime change; query/hash preserved.
+- [x] `link-check.test.js` — detects broken internal links; ignores `mailto:`, hash-only, external, files with extensions.
+- [x] `excluded-content.test.js` — testing-tagged content excluded in production, included in dev; drafts excluded in production.
+- [x] `fingerprint.test.js` — stable hash for unchanged file; new hash on size/mtime change; query/hash preserved.
 
 ### Phase 8 — Playwright smoke
 
