@@ -153,12 +153,12 @@ invent artificial seams just to unit test code that is better covered through
 contract, snapshot, or fixture tests.
 
 Current visible progress:
-- `lib/timeline/refs.js` has been extracted
-- `test/unit/timeline-refs.test.js` has been added
+- `lib/timeline/refs.js` extracted, with `test/unit/timeline-refs.test.js`
+- `lib/timeline/dates.js` extracted (shared by sort and archive helpers)
+- `lib/timeline/sort.js` extracted, with `test/unit/timeline-sort.test.js` (also covers `dates.js`)
+- `lib/timeline/graph.js` extracted, with `test/unit/timeline-graph.test.js`
 
-Planned unit coverage includes:
-- timeline refs
-- timeline graph traversal and descendant helpers
+Planned unit coverage still to add:
 - timeline relationship validation
 - timeline archive generation
 - timeline category resolution

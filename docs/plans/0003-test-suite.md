@@ -7,11 +7,11 @@
 
 ## Current state (handoff snapshot)
 
-Latest commit: `refactor: extract timeline ref normalization into lib/timeline/refs.js`.
+Latest commit: `refactor: extract timeline graph helpers into lib/timeline/graph.js`.
 
-- **30 test files, 111 tests passing.** Single shared `_site` build via vitest `globalSetup`. Run `npm test`.
-- Phases **1, 2, 3, 4, 5 complete** and merged linearly onto `main`.
-- Phase **6 refactor + Phase 7 unit tests in progress** — done so far: `lib/timeline/refs.js` + `test/unit/timeline-refs.test.js`. Remaining extractions are listed in the Phase 6 / Phase 7 sections below.
+- **32 test files, 145 tests passing.** Single shared `_site` build via vitest `globalSetup`. Run `npm test`.
+- Phases **1, 2, 3, 4, 5 complete** on the working branch.
+- Phase **6 refactor + Phase 7 unit tests in progress** — extracted so far: `lib/timeline/refs.js`, `lib/timeline/dates.js`, `lib/timeline/sort.js`, `lib/timeline/graph.js` with matching `test/unit/*` files. Remaining extractions are listed in the Phase 6 / Phase 7 sections below.
 - Phase **8 Playwright not started.**
 
 ### Conventions for follow-up agents
@@ -266,9 +266,10 @@ tests provide the safety net.
 ### Phase 6 — Refactor eleventy.config.js
 
 - [x] Extract `lib/timeline/refs.js`.
-- [ ] Extract `lib/timeline/graph.js`.
+- [x] Extract `lib/timeline/dates.js` (not in original plan; added because `toIsoDatePart` / `parseIsoDateAsUtc` are shared by sort + archives).
+- [x] Extract `lib/timeline/sort.js`.
+- [x] Extract `lib/timeline/graph.js`.
 - [ ] Extract `lib/timeline/validate.js`.
-- [ ] Extract `lib/timeline/sort.js`.
 - [ ] Extract `lib/timeline/archives.js`.
 - [ ] Extract `lib/timeline/categories.js`.
 - [ ] Extract `lib/markdown/code-block.js`.
@@ -282,7 +283,8 @@ tests provide the safety net.
 ### Phase 7 — Unit tests (alongside each extraction)
 
 - [x] `timeline-refs.test.js` — trailing slash, absolute URL, relative, empty, non-string.
-- [ ] `timeline-graph.test.js` — linear, branching, deep tree with `maxDepth`/`continues`, missing parent ref.
+- [x] `timeline-sort.test.js` — sort key date/time defaulting, fallback to entry.date, lexicographic ordering invariant; covers `dates.js` helpers too.
+- [x] `timeline-graph.test.js` — linear, branching, deep tree with `maxDepth`/`continues`, missing parent ref.
 - [ ] `timeline-validate.test.js` — valid passes; self-parent, cycle, missing target, non-`/timeline/` ref, non-string each throw with useful messages.
 - [ ] `timeline-archives.test.js` — month/week keys; ISO week year-boundary; reserved slugs rejected; tag/entry slug collision rejected.
 - [ ] `timeline-categories.test.js` — first match wins; no match returns `default`.
