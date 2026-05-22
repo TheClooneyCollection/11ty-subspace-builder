@@ -23,6 +23,8 @@ import {
   getTimelineEntryRef,
   getTimelineParentRef,
 } from './lib/timeline/refs.js';
+import { toIsoDatePart, parseIsoDateAsUtc } from './lib/timeline/dates.js';
+import { getTimelineSortKey } from './lib/timeline/sort.js';
 
 const OG_FORCE_ENV = process.env.OG_FORCE === 'true';
 const ELEVENTY_FETCH_CACHE_DIR = path.resolve('.cache');
@@ -229,23 +231,6 @@ const renderMarkdownCodeBlock = (code, language = '') => {
 const slugify = (value) =>
   encodeURIComponent(String(value).trim().toLowerCase().replace(/\s+/g, '-'));
 
-const toIsoDatePart = (value) => {
-  if (typeof value === 'string') {
-    return value.split('T')[0];
-  }
-  if (value instanceof Date && !Number.isNaN(value.getTime())) {
-    return value.toISOString().split('T')[0];
-  }
-  return '';
-};
-
-const parseIsoDateAsUtc = (value) => {
-  const isoDate = toIsoDatePart(value);
-  if (!isoDate) return null;
-  const date = new Date(`${isoDate}T00:00:00Z`);
-  return Number.isNaN(date.getTime()) ? null : date;
-};
-
 const formatTimelineMonthKey = (date) =>
   `${date.getUTCFullYear()}${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
 
@@ -362,15 +347,6 @@ const getTimelineArchiveExcludedTags = () =>
     'testing',
     ...getTimelineTypeTags(),
   ]);
-
-const getTimelineSortKey = (entry) => {
-  const date = toIsoDatePart(entry?.data?.date) || toIsoDatePart(entry?.date);
-  const time =
-    typeof entry?.data?.time === 'string' && entry.data.time.trim()
-      ? entry.data.time.trim()
-      : '00:00';
-  return `${date}T${time}`;
-};
 
 const getSortedTimelineEntries = (collectionApi) => {
   const timelineEntries = collectionApi.getFilteredByTag('timeline');
