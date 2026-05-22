@@ -68,6 +68,10 @@ import {
   emitFingerprintedAssets,
 } from './lib/assets/fingerprint.js';
 import { assertNoBrokenInternalLinks } from './lib/build/link-check.js';
+import {
+  filterTagList,
+  isExcludedFromCollections,
+} from './lib/eleventy/excluded-content.js';
 
 const OG_FORCE_ENV = process.env.OG_FORCE === 'true';
 const ELEVENTY_FETCH_CACHE_DIR = path.resolve('.cache');
@@ -273,26 +277,7 @@ md.renderer.rules.code_block = (tokens, idx) => {
 };
 
 export default function (eleventyConfig) {
-  const excludedTags = new Set([
-    'all',
-    'nav',
-    'post',
-    'posts',
-    'notes',
-    'timeline',
-    'testing',
-  ]);
-  const filterTagList = (tags = []) =>
-    (Array.isArray(tags) ? tags : [tags])
-      .map((tag) => (typeof tag === 'string' ? tag : null))
-      .filter((tag) => tag && !excludedTags.has(tag));
   const productionEnvironment = process.env.ELEVENTY_ENV === 'production';
-  const hasTag = (data, targetTag) =>
-    (Array.isArray(data?.tags) ? data.tags : [data?.tags]).some(
-      (tag) => typeof tag === 'string' && tag === targetTag,
-    );
-  const isTestingOnlyContent = (data) =>
-    productionEnvironment && hasTag(data, 'testing');
 
   eleventyConfig.on('eleventy.after', ({ dir }) => {
     emitFingerprintedAssets(dir?.output || '_site');
@@ -341,7 +326,7 @@ export default function (eleventyConfig) {
   );
   eleventyConfig.addGlobalData('eleventyComputed', {
     eleventyExcludeFromCollections(data) {
-      return isTestingOnlyContent(data) || (data.draft && productionEnvironment);
+      return isExcludedFromCollections(data, productionEnvironment);
     },
     title(data) {
       const prefix = '🚧 DRAFT - ';
