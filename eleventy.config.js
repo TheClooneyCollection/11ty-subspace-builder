@@ -5,7 +5,6 @@ import eleventyPluginRss from '@11ty/eleventy-plugin-rss';
 // 11ty Img
 import { eleventyImageTransformPlugin } from '@11ty/eleventy-img';
 import EleventyFetch from '@11ty/eleventy-fetch';
-import hljs from 'highlight.js';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -18,6 +17,12 @@ import MarkdownItTocDoneRight from 'markdown-it-toc-done-right';
 // Use yaml for data
 import yaml from 'js-yaml';
 import excerpt from './lib/excerpt.js';
+import {
+  normalizeLanguage,
+  highlightCode,
+  getNumericSetting,
+  renderMarkdownCodeBlock,
+} from './lib/markdown/code-block.js';
 import {
   normalizeTimelineRef,
   getTimelineEntryRef,
@@ -83,13 +88,6 @@ const parseBlobUrl = (githubBlobUrl) => {
   };
 };
 
-const escapeHtml = (value) =>
-  value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-
 const trimSharedIndent = (value) => {
   if (typeof value !== 'string' || value.length === 0) return value;
   const lines = value.split('\n');
@@ -154,94 +152,11 @@ const guessLanguageByExt = (filePath) => {
   return map[ext] || 'plaintext';
 };
 
-const normalizeLanguage = (value) => {
-  if (typeof value !== 'string') return '';
-  return value
-    .trim()
-    .split(/\s+/, 1)[0]
-    .toLowerCase()
-    .replace(/[^a-z0-9-]+/g, '');
-};
-
-const highlightCode = (code, language) => {
-  if (language && hljs.getLanguage(language)) {
-    try {
-      return hljs.highlight(code, { language }).value;
-    } catch {
-      return escapeHtml(code);
-    }
-  }
-
-  try {
-    return hljs.highlightAuto(code).value;
-  } catch {
-    return escapeHtml(code);
-  }
-};
-
-const countCodeLines = (value) => {
-  if (typeof value !== 'string' || value.length === 0) return 0;
-  const normalized = value.endsWith('\n') ? value.slice(0, -1) : value;
-  return normalized.length === 0 ? 0 : normalized.split('\n').length;
-};
-
-const getNumericSetting = (value, fallback) => {
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return value;
-  }
-  const parsed = Number.parseInt(value, 10);
-  return Number.isFinite(parsed) ? parsed : fallback;
-};
-
 const getCodeBlockCopyLineThreshold = () =>
   getNumericSetting(loadSiteData()?.codeBlock?.copyButtonLineThreshold, 10);
 
 const getCodeBlockCollapseLineThreshold = () =>
   getNumericSetting(loadSiteData()?.codeBlock?.collapseLineThreshold, 0);
-
-const renderMarkdownCodeBlock = (code, language = '') => {
-  const normalizedLanguage = normalizeLanguage(language);
-  const highlighted = highlightCode(code, normalizedLanguage);
-  const lineCount = countCodeLines(code);
-  const shouldShowCopy = lineCount > getCodeBlockCopyLineThreshold();
-  const collapseThreshold = getCodeBlockCollapseLineThreshold();
-  const shouldCollapse =
-    Number.isFinite(collapseThreshold) &&
-    collapseThreshold > 0 &&
-    lineCount > collapseThreshold;
-  const languageClass = normalizedLanguage
-    ? ` language-${normalizedLanguage}`
-    : '';
-  const codeClass = `hljs${languageClass}`;
-  const collapseClasses = shouldCollapse
-    ? ' code-block--collapsible code-block--collapsed'
-    : '';
-  const wrapClass = ' code-block--wrap';
-  const collapseAttributes = shouldCollapse
-    ? ` data-collapse-threshold="${collapseThreshold}" data-line-count="${lineCount}"`
-    : '';
-  const toggleButton = shouldCollapse
-    ? `
-\t<button class="code-block__toggle gh-embed__toggle" type="button" data-collapse-toggle aria-expanded="false" data-expand-label="Expand" data-collapse-label="Collapse">
-\t\tExpand
-\t</button>`
-    : '';
-  const pre = `<pre class="code-block__pre"><code class="${codeClass.trim()}">${highlighted}</code></pre>`;
-  const copyButton = shouldShowCopy
-    ? `
-\t\t<button class="code-block__copy gh-embed__copy" type="button" data-clipboard>Copy</button>`
-    : '';
-  const actions = `
-\t<div class="code-block__actions">
-\t\t<button class="code-block__wrap gh-embed__copy" type="button" data-wrap-toggle aria-pressed="true" data-wrap-label="Wrap" data-wrapped-label="Wrapped">Wrapped</button>${copyButton}
-\t</div>`;
-
-  return `<div class="code-block${wrapClass}${collapseClasses}"${collapseAttributes}>
-\t${actions}
-\t${pre}
-\t${toggleButton}
-</div>`;
-};
 
 const slugify = (value) =>
   encodeURIComponent(String(value).trim().toLowerCase().replace(/\s+/g, '-'));
@@ -816,14 +731,23 @@ md.core.ruler.after('block', 'todo-blockquotes', (state) => {
   markTodoBlockquotes(state.tokens, isProductionBuild);
 });
 
+const getCodeBlockThresholds = () => ({
+  copyLineThreshold: getCodeBlockCopyLineThreshold(),
+  collapseLineThreshold: getCodeBlockCollapseLineThreshold(),
+});
+
 md.renderer.rules.fence = (tokens, idx) => {
   const token = tokens[idx];
-  return renderMarkdownCodeBlock(token.content, token.info);
+  return renderMarkdownCodeBlock(
+    token.content,
+    token.info,
+    getCodeBlockThresholds(),
+  );
 };
 
 md.renderer.rules.code_block = (tokens, idx) => {
   const token = tokens[idx];
-  return renderMarkdownCodeBlock(token.content);
+  return renderMarkdownCodeBlock(token.content, '', getCodeBlockThresholds());
 };
 
 export default function (eleventyConfig) {
