@@ -160,12 +160,6 @@ New gated nav items follow the same hardcoded pattern (matching how drafts are h
 | `_data/timeline.yaml` | timeline featured tags and category metadata |
 | `_data/ui.yaml` | shared UI copy for templates and components, including `pages.timeline` |
 
-## Skills
-
-| Skill | Trigger |
-|-------|---------|
-| `/release` | Prepare or inspect the `release-please` release flow — see `.claude/skills/release/SKILL.md` for the repo convention. |
-
 ## Active feature branches
 
 - `feature/timeline` — production timeline feed (use this for merging)
