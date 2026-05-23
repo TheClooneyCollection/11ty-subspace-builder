@@ -6,7 +6,7 @@ layout: null
 {%- set baseUrl = site.url or 'http://localhost:8080' -%}
 {%- set feedTitle = site.title or 'Feed' -%}
 {%- set feedDescription = site.description or site.tagline or feedTitle -%}
-{%- set posts = collections.posts | reverse -%}
+{%- set posts = collections.posts -%}
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
@@ -18,7 +18,7 @@ layout: null
     {% if posts and posts | length %}
     <lastBuildDate>{{ posts | getNewestCollectionItemDate | dateToRfc822 }}</lastBuildDate>
     {% endif %}
-    {% for post in posts %}
+    {% for post in posts | reverse %}
       {% if not post.data.draft %}
       <item>
         <title>{{ post.data.title }}</title>

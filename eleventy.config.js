@@ -67,6 +67,7 @@ import {
   buildAssetUrl,
   emitFingerprintedAssets,
 } from './lib/assets/fingerprint.js';
+import { sortCollectionByDateAndTime } from './lib/content/sort.js';
 import { assertNoBrokenInternalLinks } from './lib/build/link-check.js';
 import {
   filterTagList,
@@ -94,14 +95,16 @@ const getCodeBlockCopyLineThreshold = () =>
 const getCodeBlockCollapseLineThreshold = () =>
   getNumericSetting(loadSiteData()?.codeBlock?.collapseLineThreshold, 0);
 
-const getTimelineData = () => loadYamlData(TIMELINE_DATA_URL, timelineDataCache);
+const getTimelineData = () =>
+  loadYamlData(TIMELINE_DATA_URL, timelineDataCache);
 
 const getTimelineCategories = () => {
   const categories = getTimelineData()?.categories;
   return Array.isArray(categories) ? categories : [];
 };
 
-const getTimelineTypeTags = () => extractCategoryTagSet(getTimelineCategories());
+const getTimelineTypeTags = () =>
+  extractCategoryTagSet(getTimelineCategories());
 
 const getTimelineArchiveExcludedTags = () =>
   new Set([
@@ -124,10 +127,20 @@ const getSortedTimelineEntries = (collectionApi) => {
   );
 };
 
+const getSortedCollectionEntries = (
+  collectionApi,
+  tag,
+  predicate = () => true,
+) =>
+  sortCollectionByDateAndTime(
+    collectionApi.getFilteredByTag(tag).filter(predicate),
+  );
+
 const getTimelineTopicTags = (tags = []) =>
   filterTopicTags(tags, getTimelineArchiveExcludedTags());
 
-const getTimelineEntryType = (entry) => getEntryType(entry, getTimelineCategories());
+const getTimelineEntryType = (entry) =>
+  getEntryType(entry, getTimelineCategories());
 
 const loadYamlData = (fileUrl, cache) => {
   try {
@@ -304,15 +317,18 @@ export default function (eleventyConfig) {
   );
   eleventyConfig.addFilter(
     'timelineAncestorEntries',
-    (entryOrRef, entries = []) => getTimelineAncestorEntries(entryOrRef, entries),
+    (entryOrRef, entries = []) =>
+      getTimelineAncestorEntries(entryOrRef, entries),
   );
   eleventyConfig.addFilter(
     'timelineEarlierThreadEntries',
-    (entryOrRef, entries = []) => getTimelineEarlierThreadEntries(entryOrRef, entries),
+    (entryOrRef, entries = []) =>
+      getTimelineEarlierThreadEntries(entryOrRef, entries),
   );
   eleventyConfig.addFilter(
     'timelineDescendantCount',
-    (entryOrRef, entries = []) => getTimelineDescendantCount(entryOrRef, entries),
+    (entryOrRef, entries = []) =>
+      getTimelineDescendantCount(entryOrRef, entries),
   );
   eleventyConfig.addFilter(
     'timelineDescendantTree',
@@ -417,16 +433,24 @@ export default function (eleventyConfig) {
     collectionApi.getAllSorted().filter((item) => item?.data?.draft),
   );
 
+  eleventyConfig.addCollection('posts', (collectionApi) =>
+    getSortedCollectionEntries(collectionApi, 'posts'),
+  );
+
   eleventyConfig.addCollection('notes', (collectionApi) =>
-    collectionApi
-      .getFilteredByTag('notes')
-      .filter((item) => !item?.data?.hidden),
+    getSortedCollectionEntries(
+      collectionApi,
+      'notes',
+      (item) => !item?.data?.hidden,
+    ),
   );
 
   eleventyConfig.addCollection('hiddenNotes', (collectionApi) =>
-    collectionApi
-      .getFilteredByTag('notes')
-      .filter((item) => item?.data?.hidden),
+    getSortedCollectionEntries(
+      collectionApi,
+      'notes',
+      (item) => item?.data?.hidden,
+    ),
   );
 
   eleventyConfig.addCollection('timeline', (collectionApi) =>
@@ -511,7 +535,8 @@ export default function (eleventyConfig) {
       const collapseClasses = shouldCollapse
         ? ' gh-embed--collapsible gh-embed--collapsed'
         : '';
-      const wrapClass = normalizedLanguage === 'markdown' ? ' gh-embed--wrap' : '';
+      const wrapClass =
+        normalizedLanguage === 'markdown' ? ' gh-embed--wrap' : '';
       const shouldWrap = normalizedLanguage === 'markdown';
       const wrapPressed = shouldWrap ? 'true' : 'false';
       const wrapLabel = shouldWrap ? 'Wrapped' : 'Wrap';
@@ -596,9 +621,8 @@ export default function (eleventyConfig) {
 
   eleventyConfig.on('eleventy.before', async () => {
     validateTimelineEntryDateTimeQuotes();
-    const { generateOgImages } = await import(
-      './scripts/generate-og-images.js'
-    );
+    const { generateOgImages } =
+      await import('./scripts/generate-og-images.js');
     await generateOgImages({ force: OG_FORCE_ENV });
   });
 }

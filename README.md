@@ -112,6 +112,7 @@ Create a new Markdown file in `posts/` with front matter similar to:
 ---
 title: My Next Adventure
 date: 2025-02-01
+time: '09:30'
 eleventyNavigation:
   key: my-next-adventure
   parent: posts
@@ -122,7 +123,7 @@ excerpt: |
 Your post content starts here. Eleventy handles Markdown -> HTML conversion.
 ```
 
-Posts automatically pick up the layout defined in `posts/posts.json`. The `excerpt` field is optional; without it, the `excerpt` filter trims the rendered HTML.
+Posts automatically pick up the layout defined in `posts/posts.json`. The optional `time` field lets you order posts or notes published on the same date. The `excerpt` field is optional; without it, the `excerpt` filter trims the rendered HTML.
 Markdown footnotes now work too, using standard `[^1]` references plus `[^1]: note text` definitions, or inline `^[note text]` syntax.
 
 ## Components & Enhancements
@@ -143,7 +144,7 @@ The home page runs `renderPostList(collections.posts, ...)` and Eleventy only ad
 
 ### Why are posts ordered oldest-first?
 
-Eleventy builds `collections.posts` in ascending date order by default (oldest first). The homepage reverses that list inside `renderPostList`, but any other consumer—like the navigation tree fed by `collections.all | eleventyNavigation`—will keep the oldest-first ordering unless you reverse it or define a custom collection that sorts newest-to-oldest.
+`collections.posts`, `collections.notes`, and `collections.hiddenNotes` are kept in ascending chronological order so the existing templates and pagination can reverse them for newest-first views. When you add `time: "HH:MM"` to post or note front matter, same-day items are sorted by time before those UI-level reversals run.
 
 ## License
 
