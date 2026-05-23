@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "11ty-subspace-builder",
+      "include-v-in-tag": true,
+      "pull-request-title-pattern": "chore: release v${version}"
+    }
+  }
+}

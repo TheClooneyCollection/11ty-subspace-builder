@@ -3,64 +3,37 @@ name: release
 description: Cut a new versioned release for 11ty-subspace-builder. Use when the user says "create a release", "cut a release", or "release following convention".
 ---
 
-Cut a new release for this repo following the established convention.
+Run the repo's `release-please` release flow following the established convention.
 
 ## Steps
 
-1. **Synchronize release state before choosing a version.**
-   - Run `git pull --ff-only` on the release branch.
+1. **Synchronize release state before inspecting the next release.**
+   - Run `git pull --ff-only` on the current branch if you are preparing changes locally.
    - Run `git fetch origin --tags`.
-   - Check the latest local tags after fetching, because some releases may have been created directly with `gh release create` or other GitHub release commands.
-   - If local release metadata and remote tags disagree, use the fetched remote tags as the source of truth before determining the next version.
+   - Check the latest local tags after fetching, because the latest published release is still represented by Git tags.
 
-2. **Determine the next version** using semver:
-   - Patch (`x.x.N`) — bug fixes, copy changes, dependency bumps
-   - Minor (`x.N.0`) — new features or visible additions (most common)
-   - Major (`N.0.0`) — breaking changes
+2. **Determine the expected next version** from Conventional Commits:
+   - Patch (`x.x.N`) — `fix:` commits
+   - Minor (`x.N.0`) — `feat:` commits
+   - Major (`N.0.0`) — `feat!:` commits or a `BREAKING CHANGE:` footer
 
-3. **Bump every repo-owned release version reference** to the new version.
-   - Always update `package.json`
-   - Always update the mirrored root version fields in `package-lock.json`
-     - top-level `"version"`
-     - `packages[""].version`
-   - If more repo files mirror the release version in future, update those too
+3. **Do not cut the release manually.**
+   - `release-please` manages the release PR and updates `package.json`, the mirrored root version fields in `package-lock.json`, and `CHANGELOG.md`.
+   - Do not hand-edit those version files just to force a routine release. Land the implementation commits with correct Conventional Commit messages instead.
 
-   Verify with a search for the old version before committing so you do not leave stale release numbers behind.
+4. **Watch for the release PR** opened by `.github/workflows/release-please.yml` on `main`.
+   - The release PR title should follow:
 
-4. **Keep the implementation commit separate from the release commit.**
-   - Feature, bug fix, refactor, and content changes should already be committed with their own intentional commit message before starting the release step.
-   - The release commit should contain only the version bump and any repo-owned release metadata changes.
-
-5. **Commit the version bump** on the current branch:
    ```
    chore: release vX.Y.Z
    ```
 
-6. **Push** the commit.
+   - Review the changelog and version bump for correctness before merging.
 
-7. **Create a GitHub release** via `gh release create`:
-   - Tag: `vX.Y.Z`
-   - Title: `11ty Subspace Builder: vX.Y.Z - <short feature name>`
-   - Body: bullet points describing what changed (imperative, concise), followed by a compare URL:
-     ```
-     https://github.com/TheClooneyCollection/11ty-subspace-builder/compare/vPREV...vNEW
-     ```
+5. **Keep implementation commits separate from the release PR.**
+   - Feature, bug fix, refactor, and content changes should already be committed with their own intentional commit message before starting the release step.
+   - Do not bundle new implementation changes into the release PR branch.
 
-## Title convention
-
-```
-11ty Subspace Builder: v1.23.0 - Timeline time field
-```
-
-Short, sentence-case description of the headline change. No trailing period.
-
-## Body convention
-
-```
-- Add X to Y.
-- Update Z so that ...
-
-https://github.com/TheClooneyCollection/11ty-subspace-builder/compare/v1.22.0...v1.23.0
-```
-
-Bullet points only. Each starts with a capital verb (Add, Update, Fix, Remove). No markdown headers. Compare link on its own line at the end.
+6. **Merge the release PR** once validation passes.
+   - Merging the PR creates the `vX.Y.Z` tag and the GitHub release automatically.
+   - If the workflow does not open or publish correctly, inspect `.release-please-config.json`, `.release-please-manifest.json`, and the GitHub Actions run before falling back to a manual recovery.

@@ -164,7 +164,7 @@ New gated nav items follow the same hardcoded pattern (matching how drafts are h
 
 | Skill | Trigger |
 |-------|---------|
-| `/release` | Cut a new versioned release — see `.claude/skills/release/SKILL.md` for the full convention (semver, commit format, `gh release` title/body rules). |
+| `/release` | Prepare or inspect the `release-please` release flow — see `.claude/skills/release/SKILL.md` for the repo convention. |
 
 ## Active feature branches
 

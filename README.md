@@ -135,6 +135,14 @@ Markdown footnotes now work too, using standard `[^1]` references plus `[^1]: no
 - Set `ELEVENTY_ENV=production` when building for production to leverage Eleventy’s environment-based defaults.
 - Because Tachyons is loaded from a CDN, ensure outbound requests are allowed by your host or replace the `<link>` in `base.njk` with a bundled stylesheet.
 
+## Releases
+
+- Releases are managed by `release-please` via `.github/workflows/release-please.yml`.
+- Push Conventional Commits to `main`; `feat:` triggers a minor release, `fix:` triggers a patch release, and `feat!:` or a `BREAKING CHANGE:` footer triggers a major release.
+- When release-worthy commits land, `release-please` opens or updates a release PR that bumps `package.json`, updates `package-lock.json`, and maintains `CHANGELOG.md`.
+- Merging that release PR creates the Git tag and GitHub release automatically.
+- `docs:` and `chore:` commits can still appear in the generated changelog, but they do not bump the version on their own.
+
 ## FAQ
 
 ### Why does the homepage say "No posts published yet" even though posts exist?
