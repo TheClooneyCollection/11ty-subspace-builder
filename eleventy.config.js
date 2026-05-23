@@ -75,6 +75,8 @@ import {
 
 const OG_FORCE_ENV = process.env.OG_FORCE === 'true';
 const ELEVENTY_FETCH_CACHE_DIR = path.resolve('.cache');
+const ELEVENTY_IMAGE_CACHE_DIR = path.resolve('.cache/@11ty/img');
+const ELEVENTY_IMAGE_URL_PATH = '/img/';
 const SITE_DATA_URL = new URL('./_data/site.yaml', import.meta.url);
 const TIMELINE_DATA_URL = new URL('./_data/timeline.yaml', import.meta.url);
 const siteDataCache = {
@@ -230,6 +232,7 @@ const fetchTextWithCacheRecovery = async (url, options = {}, context = {}) => {
 };
 
 const isProductionBuild = process.env.ELEVENTY_ENV === 'production';
+const isServeMode = process.env.ELEVENTY_RUN_MODE === 'serve';
 
 const md = new MarkdownIt({
   html: true,
@@ -339,6 +342,8 @@ export default function (eleventyConfig) {
   eleventyConfig.addPlugin(eleventyNavigationPlugin);
   eleventyConfig.addPlugin(eleventyPluginRss);
   eleventyConfig.addPlugin(eleventyImageTransformPlugin, {
+    urlPath: ELEVENTY_IMAGE_URL_PATH,
+    outputDir: ELEVENTY_IMAGE_CACHE_DIR,
     formats: ['avif', 'webp', 'jpeg'],
     widths: [320, 640, 960, 1280],
     htmlOptions: {
@@ -349,6 +354,19 @@ export default function (eleventyConfig) {
       },
       pictureAttributes: {},
     },
+  });
+
+  eleventyConfig.on('eleventy.after', () => {
+    if (isServeMode || !fs.existsSync(ELEVENTY_IMAGE_CACHE_DIR)) {
+      return;
+    }
+
+    // Reuse cached derivatives across builds, then publish them into the final output.
+    fs.cpSync(
+      ELEVENTY_IMAGE_CACHE_DIR,
+      path.join(eleventyConfig.directories.output, ELEVENTY_IMAGE_URL_PATH),
+      { recursive: true },
+    );
   });
 
   // Tell 11ty to use our custom Markdown-it

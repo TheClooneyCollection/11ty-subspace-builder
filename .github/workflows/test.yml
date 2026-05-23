@@ -29,13 +29,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Cache eleventy-fetch
+      - name: Cache Eleventy data
         uses: actions/cache@v4
         with:
           path: .cache
-          key: eleventy-fetch-${{ runner.os }}-${{ hashFiles('posts/**/*.md', 'notes/**/*.md', 'timeline/**/*.md') }}
+          key: eleventy-cache-${{ runner.os }}-${{ hashFiles('package-lock.json', 'eleventy.config.js', 'posts/**/*.md', 'notes/**/*.md', 'timeline/**/*.md', 'assets/images/**/*', 'assets/og/**/*') }}
           restore-keys: |
-            eleventy-fetch-${{ runner.os }}-
+            eleventy-cache-${{ runner.os }}-
 
       - name: Cache Playwright browsers
         id: playwright-cache
