@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.36.1](https://github.com/TheClooneyCollection/11ty-subspace-builder/compare/v1.36.0...v1.36.1) (2026-05-24)
+
+
+### Bug Fixes
+
+* **release:** limit release-please to the canonical repo ([c82f48d](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/c82f48d53cab6b21796a549973252726d0bc437b))
+
 ## [1.36.0](https://github.com/TheClooneyCollection/11ty-subspace-builder/compare/v1.35.0...v1.36.0) (2026-05-24)
 
 
