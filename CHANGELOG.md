@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.38.0](https://github.com/TheClooneyCollection/11ty-subspace-builder/compare/v1.37.0...v1.38.0) (2026-05-25)
+
+
+### Features
+
+* add cloudflare pages deployment checker ([f076028](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/f076028b01731c1b27eed2376fc3db1b0f3a3f05))
+* animate cloudflare pages dashboard between api polls ([5bb0505](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/5bb05052e070119b90f8762ea7f6a73e2d3e0811))
+* redraw cloudflare dashboard in place at 100ms ([6e09b86](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/6e09b86a6ab1bd3df78260a51a95bc855416f953))
+
 ## [1.37.0](https://github.com/TheClooneyCollection/11ty-subspace-builder/compare/v1.36.1...v1.37.0) (2026-05-25)
 
 
