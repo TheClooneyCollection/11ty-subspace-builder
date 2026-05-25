@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.37.0](https://github.com/TheClooneyCollection/11ty-subspace-builder/compare/v1.36.1...v1.37.0) (2026-05-25)
+
+
+### Features
+
+* **series:** generalize series across content types ([f6b24c6](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/f6b24c6825f38caeaf49246741f2a99b309c96b6))
+
+
+### Bug Fixes
+
+* keep ordering fixtures as drafts ([9e35ff5](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/9e35ff56521f16c74c6cd212df88678e1576e36d))
+
 ## [1.36.1](https://github.com/TheClooneyCollection/11ty-subspace-builder/compare/v1.36.0...v1.36.1) (2026-05-24)
 
 
