@@ -1,3 +1,9 @@
+import {
+  describeSeries,
+  getVisibleSeriesList,
+  resolveSeriesEntries,
+} from '../../lib/series.js';
+
 const reportedMessages = new Set();
 
 const reportSeriesIssue = (message, { environment, failInProduction = false }) => {
@@ -12,77 +18,46 @@ const reportSeriesIssue = (message, { environment, failInProduction = false }) =
   reportedMessages.add(message);
   console.warn(message);
 };
-
-const toPostsByUrl = (posts = []) =>
-  new Map(
-    posts
-      .filter((post) => post && typeof post.url === 'string')
-      .map((post) => [post.url, post]),
-  );
-
-const toSeriesUrls = (value) =>
-  (Array.isArray(value) ? value : [])
-    .map((item) => (typeof item === 'string' ? item.trim() : ''))
-    .filter(Boolean);
-
-const describeSeries = (seriesItem = {}) =>
-  seriesItem.title || seriesItem.id || 'Untitled series';
-
 export default {
+  pagination: {
+    data: 'series',
+    size: 1,
+    alias: 'seriesItem',
+    before: (series) =>
+      getVisibleSeriesList(
+        series,
+        process.env.ELEVENTY_ENV === 'production'
+          ? 'production'
+          : 'development',
+      ),
+  },
   eleventyComputed: {
     resolvedSeries(data) {
       const seriesItem =
         data && typeof data.seriesItem === 'object' ? data.seriesItem : {};
       const environment = data.environment || 'development';
-      const posts = Array.isArray(data.collections?.posts)
-        ? data.collections.posts
-        : [];
-      const postsByUrl = toPostsByUrl(posts);
-      const seenUrls = new Set();
-      const duplicateUrls = [];
-      const draftUrls = [];
-      const missingUrls = [];
-      const resolvedPosts = [];
-
-      for (const postUrl of toSeriesUrls(seriesItem.posts)) {
-        if (seenUrls.has(postUrl)) {
-          duplicateUrls.push(postUrl);
-          continue;
-        }
-        seenUrls.add(postUrl);
-
-        const post = postsByUrl.get(postUrl);
-        if (!post) {
-          missingUrls.push(postUrl);
-          continue;
-        }
-
-        if (post.data?.draft) {
-          draftUrls.push(postUrl);
-        }
-
-        resolvedPosts.push(post);
-      }
+      const { duplicateUrls, draftUrls, missingUrls, entries } =
+        resolveSeriesEntries(seriesItem, data.collections);
 
       const seriesLabel = describeSeries(seriesItem);
 
       if (duplicateUrls.length) {
         reportSeriesIssue(
-          `[11ty/series] ${seriesLabel} contains duplicate post URLs: ${duplicateUrls.join(', ')}`,
+          `[11ty/series] ${seriesLabel} contains duplicate entry URLs: ${duplicateUrls.join(', ')}`,
           { environment },
         );
       }
 
       if (draftUrls.length && environment !== 'production') {
         reportSeriesIssue(
-          `[11ty/series] ${seriesLabel} references draft posts that will disappear in production: ${draftUrls.join(', ')}`,
+          `[11ty/series] ${seriesLabel} references draft entries that will disappear in production: ${draftUrls.join(', ')}`,
           { environment },
         );
       }
 
       if (missingUrls.length) {
         reportSeriesIssue(
-          `[11ty/series] ${seriesLabel} references missing post URLs: ${missingUrls.join(', ')}`,
+          `[11ty/series] ${seriesLabel} references missing entry URLs: ${missingUrls.join(', ')}`,
           { environment, failInProduction: true },
         );
       }
@@ -91,7 +66,7 @@ export default {
         duplicateUrls,
         draftUrls,
         missingUrls,
-        posts: resolvedPosts,
+        entries,
       };
     },
   },

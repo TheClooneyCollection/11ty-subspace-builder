@@ -4,7 +4,7 @@
   intro: >
     The full published build log for Subspace Builder, from the initial release
     through the tooling, workflow, and feature updates that shaped the site.
-  posts:
+  entries:
     - /posts/v1.0.0-release/
     - /posts/social-cards/
     - /posts/responsive-images-eleventy-img/
@@ -13,3 +13,14 @@
     - /posts/github-code-embeds/
     - /posts/v1.10-1.12-roundup/
     - /posts/v1.13-1.20-roundup/
+    - /posts/threaded-timeline-entries/
+- id: subspace-surfaces
+  title: Subspace Surfaces
+  devOnly: true
+  intro: >
+    A cross-section of the site's publishing surfaces: long-form posts, shorter
+    notes, and timeline updates in one curated path.
+  entries:
+    - /posts/v1.13-1.20-roundup/
+    - /notes/testing-the-notes-collection/
+    - /timeline/2026-04-14-shipped-timeline/

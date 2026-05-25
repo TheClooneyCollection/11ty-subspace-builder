@@ -82,11 +82,11 @@ pages:
     allEmptyMessage: No projects match that tag yet. Try resetting the filters.
   series:
     title: Series
-    description: Curated collections of related posts with editorial intros and flexible sorting.
+    description: Curated collections of related content with editorial intros and flexible sorting.
     heading: Series
-    intro: Curated reading paths through related posts. Each series starts in my recommended order, and the detail page can switch to reverse or date-based sorting.
+    intro: Curated reading paths through related content. Each series starts in my recommended order, and the detail page can switch to reverse or date-based sorting.
     emptyMessage: No series published yet.
-    detailEmptyMessage: This series does not have any published posts yet.
+    detailEmptyMessage: This series does not have any published entries yet.
   timeline:
     title: Timeline
     description: A personal timeline log, color-coded by entry type.

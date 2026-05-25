@@ -9,7 +9,7 @@ https://subspace-builder.nicholas.clooney.io/
 - Powered by Eleventy 3 with Markdown-it, footnotes, auto-generated heading anchors, and computed content metadata
 - Tachyons-based, theme-aware typography and color palettes with runtime switching for site chrome, code blocks, and GitHub embeds
 - Responsive navigation with a mobile hamburger menu, dark-theme-safe icon styling, and paginated home-page browsing
-- Dedicated content surfaces for posts, drafts, notes, tags, projects, and curated series pages with per-post series backlinks
+- Dedicated content surfaces for posts, drafts, notes, tags, projects, and curated series pages with cross-content series backlinks
 - Reusable post list rendering with excerpt trimming, readable dates, and build-time pagination support
 - Responsive image pipeline powered by `@11ty/eleventy-img` (see [Responsive Images with Eleventy Img](posts/subspace/responsive-images-eleventy-img.md))
 - YAML-driven site metadata, series definitions, notes config, theme presets, animation timing controls, and optional Umami analytics

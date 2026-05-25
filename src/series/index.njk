@@ -7,7 +7,7 @@ eleventyComputed:
   description: "{{ ui.pages.series.description }}"
 ---
 
-{% set seriesList = series | default([]) %}
+{% set seriesList = visibleSeries | default([]) %}
 
 <section class="mw7 center">
   <header class="mb5">
@@ -27,7 +27,7 @@ eleventyComputed:
             </a>
           </h2>
           <p class="f6 theme-midtone mt0 mb3">
-            {{ item.posts | length }} {{ ui.shared.counts.post.singular if (item.posts | length) == 1 else ui.shared.counts.post.plural }}
+            {{ item.entries | length }} {{ ui.shared.counts.entry.singular if (item.entries | length) == 1 else ui.shared.counts.entry.plural }}
           </p>
           {% if item.intro %}
             <p class="lh-copy mt0 mb3">

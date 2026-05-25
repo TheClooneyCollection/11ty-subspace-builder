@@ -24,7 +24,7 @@ If you only read one section, read this one. What we test, and how:
 | Layer | What it proves | How |
 | --- | --- | --- |
 | **Build gate** | Templates compile, data loads, timeline parents resolve, internal links resolve, timeline date/time front matter is quoted | `npm run build` — fails the whole pipeline if any of these break |
-| **Data invariants** | Hand-edited YAML stays internally consistent: timeline category tags unique, color hex shape, `featuredTags` is `string[]`, `series.yaml` refers to real posts/notes | [`test/data/invariants.test.js`](../test/data/invariants.test.js) |
+| **Data invariants** | Hand-edited YAML stays internally consistent: timeline category tags unique, color hex shape, `featuredTags` is `string[]`, `series.yaml` refers to real posts/notes/timeline entries | [`test/data/invariants.test.js`](../test/data/invariants.test.js) |
 | **Contract tests** | Every page type the site renders actually has the right shape in `_site/`: home + pagination, about, notes, hidden notes, drafts, projects, timeline index + entry, month/week/calendar-week archives, topic-tag archives, tag indexes, paginated tag archive, series, feed.xml; no unresolved `{{ }}` left in any HTML; no empty anchors anywhere | [`test/contract/`](../test/contract/) (19 files) running against the real built site |
 | **Snapshots** | Small reusable fragments render the same shape over time: project cards, tag chips, timeline entries (per-category color + parent/children badges), week pills, post list items, plus one full timeline entry body and one full post body with TOC + code blocks + GitHub embeds | [`test/snapshots/`](../test/snapshots/) |
 | **Fixtures** | Timeline relational logic and build-time failures, in isolation from real content: linear / branching / deep-tree threads, "earlier in thread" ordering, multi-category precedence; plus negative paths — orphan parent, cycle, self-parent, tag/entry slug collision, reserved slug, unquoted date | [`test/fixtures.test.js`](../test/fixtures.test.js) driving 11 tiny content sets in [`test/fixtures/`](../test/fixtures/) through the real [`eleventy.config.js`](../eleventy.config.js) via a recording harness |
@@ -92,7 +92,7 @@ Current coverage includes:
 - timeline category tag uniqueness
 - timeline category color format validation
 - `featuredTags` shape
-- `series.yaml` references resolving to real content
+- `series.yaml` references resolving to real supported content
 
 These tests are not meant to duplicate schema failures the build already
 surfaces for routine data loading.

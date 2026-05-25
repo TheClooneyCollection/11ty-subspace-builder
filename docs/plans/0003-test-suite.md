@@ -42,7 +42,7 @@ Optional follow-ups not yet done:
 - **`feed.xml` must be parsed via linkedom's `DOMParser` (XML mode)**, not `parseHTML`, because `<link>` is treated as a void element otherwise.
 - **Hidden notes URL** is `/notes/hidden/`, not `/hidden-notes/`.
 - **Production builds exclude `testing`-tagged content and drafts** via `eleventyExcludeFromCollections`; many relational fixture-like real entries are tagged `testing` and won't appear in `_site`.
-- **`series.yaml`** uses the `posts:` key, not `entries:`.
+- **`series.yaml`** uses the `entries:` key for mixed-content series membership.
 - **Eleventy does not clean `_site` between builds.** `global-setup.js` `rmRf`s it first to avoid stale pages (e.g. an orphaned `/page/2/` from a prior build).
 
 ---

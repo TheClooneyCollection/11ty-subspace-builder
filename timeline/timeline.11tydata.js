@@ -1,3 +1,5 @@
+import { computeContentSeries } from '../lib/series.js';
+
 export default {
   eleventyComputed: {
     permalink: (data) => {
@@ -24,5 +26,6 @@ export default {
 
       return `/assets/og/timeline--${slug}.png`;
     },
+    contentSeries: computeContentSeries,
   },
 };

@@ -2,9 +2,9 @@
   const root = document.querySelector('[data-series-page]');
   if (!root) return;
 
-  const list = root.querySelector('[data-series-posts]');
+  const list = root.querySelector('[data-series-entries]');
   const buttons = Array.from(root.querySelectorAll('[data-series-sort]'));
-  const items = Array.from(root.querySelectorAll('[data-series-post]'));
+  const items = Array.from(root.querySelectorAll('[data-series-entry]'));
 
   if (!list || buttons.length === 0 || items.length < 2) {
     return;

@@ -1,3 +1,5 @@
+import { computeContentSeries } from '../lib/series.js';
+
 export default {
   eleventyComputed: {
     ogImage: (data) => {
@@ -12,5 +14,6 @@ export default {
 
       return ogImages[slug];
     },
+    contentSeries: computeContentSeries,
   },
 };

@@ -55,12 +55,12 @@ describe('data invariants — series.yaml', () => {
   });
 
   // Series entries are referenced by URL path (e.g. /posts/foo/) under the
-  // `posts` key. Resolve each to the underlying markdown file in posts/ or
-  // notes/ — every referenced item must exist as a real source file.
+  // `entries` key. Resolve each to the underlying markdown file in posts/,
+  // notes/, or timeline/ — every referenced item must exist as a real source file.
   const findSourceForUrl = (url) => {
     // strip leading/trailing slashes
     const trimmed = url.replace(/^\/+/, '').replace(/\/+$/, '');
-    // /posts/<slug>/ or /notes/<slug>/
+    // /posts/<slug>/, /notes/<slug>/, or /timeline/<slug>/
     const parts = trimmed.split('/');
     if (parts.length < 2) return null;
     const kind = parts[0]; // posts | notes
@@ -96,6 +96,11 @@ describe('data invariants — series.yaml', () => {
       return candidates.find((c) => fs.existsSync(c)) || null;
     }
 
+    if (kind === 'timeline') {
+      const candidate = path.resolve('timeline', `${slug}.md`);
+      return fs.existsSync(candidate) ? candidate : null;
+    }
+
     return null;
   };
 
@@ -107,14 +112,14 @@ describe('data invariants — series.yaml', () => {
         expect(typeof item.title).toBe('string');
       });
 
-      it('every posts entry resolves to a real markdown file', () => {
-        const refs = item.posts || [];
+      it('every entries entry resolves to a real markdown file', () => {
+        const refs = item.entries || [];
         expect(Array.isArray(refs)).toBe(true);
         for (const ref of refs) {
           const resolved = findSourceForUrl(ref);
           expect(
             resolved,
-            `series "${item.id}" references "${ref}" but no matching markdown file was found under posts/ or notes/`,
+            `series "${item.id}" references "${ref}" but no matching markdown file was found under posts/, notes/, or timeline/`,
           ).toBeTruthy();
         }
       });

@@ -1,10 +1,6 @@
 ---
 layout: layouts/home.njk
 showPostHeader: false
-pagination:
-  data: series
-  size: 1
-  alias: seriesItem
 permalink: /series/{{ seriesItem.id }}/
 scripts:
   - /assets/js/series-sort.js
@@ -13,7 +9,7 @@ eleventyComputed:
   description: "{{ seriesItem.intro }}"
 ---
 
-{% set seriesPosts = resolvedSeries.posts | default([]) %}
+{% set seriesEntries = resolvedSeries.entries | default([]) %}
 {% set sortOptions = [
   { id: 'curated', label: ui.shared.series.sortOptions.curated },
   { id: 'reverse', label: ui.shared.series.sortOptions.reverse },
@@ -32,9 +28,9 @@ eleventyComputed:
     {% endif %}
     <div class="flex items-center justify-between flex-wrap">
       <p class="f6 theme-midtone mt0 mb3 mb0-ns">
-        {{ seriesPosts | length }} {{ ui.shared.counts.post.singular if (seriesPosts | length) == 1 else ui.shared.counts.post.plural }}
+        {{ seriesEntries | length }} {{ ui.shared.counts.entry.singular if (seriesEntries | length) == 1 else ui.shared.counts.entry.plural }}
       </p>
-      {% if seriesPosts | length > 1 %}
+      {% if seriesEntries | length > 1 %}
         <div class="flex flex-wrap" data-series-sort-controls>
           {% for option in sortOptions %}
             <button
@@ -57,26 +53,26 @@ eleventyComputed:
     </p>
   </header>
 
-  {% if seriesPosts | length %}
-    <ol class="pl3 mt0 mb0" data-series-posts>
-      {% for post in seriesPosts %}
+  {% if seriesEntries | length %}
+    <ol class="pl3 mt0 mb0" data-series-entries>
+      {% for entry in seriesEntries %}
         <li
           class="mb4 pb4 bb b--black-10"
-          data-series-post
+          data-series-entry
           data-curated-index="{{ loop.index0 }}"
           value="{{ loop.index }}"
-          data-date="{{ post.date | machineDate }}"
+          data-date="{{ entry.date | machineDate }}"
         >
           <article>
             <h2 class="f3 lh-title mb2 mt0">
-              <a class="link dim theme-text" href="{{ post.url | url }}">{{ post.data.title }}</a>
+              <a class="link dim theme-text" href="{{ entry.url | url }}">{{ entry.data.title }}</a>
             </h2>
-            {% if post.date %}
+            {% if entry.date %}
               <p class="f6 theme-midtone mt0 mb3">
-                <time datetime="{{ post.date | machineDate }}">{{ post.date | readableDate }}</time>
+                <time datetime="{{ entry.date | machineDate }}">{{ entry.date | readableDate }}</time>
               </p>
             {% endif %}
-            {% set itemTags = (post.data.tags | default([])) | filterTags %}
+            {% set itemTags = (entry.data.tags | default([])) | filterTags %}
             {% if itemTags | length %}
               <ul class="list pl0 ma0 mb3 flex flex-wrap">
                 {% for tag in itemTags %}
@@ -89,10 +85,10 @@ eleventyComputed:
               </ul>
             {% endif %}
             <div class="lh-copy">
-              {% if post.data.excerpt %}
-                {{ post.data.excerpt | safe }}
+              {% if entry.data.excerpt %}
+                {{ entry.data.excerpt | safe }}
               {% else %}
-                {{ post.templateContent | excerpt(2) | safe }}
+                {{ entry.templateContent | excerpt(2) | safe }}
               {% endif %}
             </div>
           </article>

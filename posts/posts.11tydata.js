@@ -1,9 +1,4 @@
-const toSeriesUrl = (id) => `/series/${id}/`;
-
-const normalizeSeriesList = (value) =>
-  (Array.isArray(value) ? value : []).filter(
-    (item) => item && typeof item === 'object',
-  );
+import { computeContentSeries } from '../lib/series.js';
 
 export default {
   eleventyComputed: {
@@ -19,26 +14,6 @@ export default {
 
       return ogImages[slug];
     },
-    postSeries: (data) => {
-      const pageUrl = data?.page?.url;
-      if (!pageUrl) return [];
-
-      return normalizeSeriesList(data?.series)
-        .map((seriesItem) => {
-          const posts = Array.isArray(seriesItem.posts) ? seriesItem.posts : [];
-          const position = posts.indexOf(pageUrl);
-          if (position === -1) return null;
-
-          return {
-            id: seriesItem.id,
-            title: seriesItem.title || seriesItem.id,
-            intro: seriesItem.intro,
-            url: toSeriesUrl(seriesItem.id),
-            position: position + 1,
-            total: posts.length,
-          };
-        })
-        .filter(Boolean);
-    },
+    contentSeries: computeContentSeries,
   },
 };
