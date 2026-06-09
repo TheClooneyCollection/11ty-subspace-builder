@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.39.0](https://github.com/TheClooneyCollection/11ty-subspace-builder/compare/v1.38.0...v1.39.0) (2026-06-09)
+
+
+### Features
+
+* add starter reset wizard ([2624240](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/26242404ac70a5e2761ef4bbaac401ce778ed81c))
+* support hidden flag on nav items and themes ([de75012](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/de75012ebef2d4ee3d70a872bfb34ea5bc2d2711))
+
 ## [1.38.0](https://github.com/TheClooneyCollection/11ty-subspace-builder/compare/v1.37.0...v1.38.0) (2026-05-25)
 
 
