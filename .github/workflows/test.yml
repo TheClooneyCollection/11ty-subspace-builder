@@ -31,7 +31,7 @@ jobs:
         run: npm ci
 
       - name: Cache Eleventy image derivatives
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .cache/@11ty/img
           key: eleventy-img-${{ runner.os }}-${{ hashFiles('package-lock.json', 'eleventy.config.js', 'assets/images/**/*') }}
@@ -39,7 +39,7 @@ jobs:
             eleventy-img-${{ runner.os }}-
 
       - name: Cache OG image artifacts
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .cache/og
           key: og-images-${{ runner.os }}-${{ hashFiles('package-lock.json', 'scripts/generate-og-images.js', '_data/site.yaml', 'posts/**/*.md', 'notes/**/*.md', 'timeline/**/*.md') }}
@@ -47,7 +47,7 @@ jobs:
             og-images-${{ runner.os }}-
 
       - name: Cache eleventy-fetch data
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .cache/eleventy-fetch-*
           key: eleventy-fetch-${{ runner.os }}-${{ hashFiles('package-lock.json', 'eleventy.config.js', 'posts/**/*.md', 'notes/**/*.md', 'timeline/**/*.md') }}
@@ -56,7 +56,7 @@ jobs:
 
       - name: Cache Playwright browsers
         id: playwright-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
