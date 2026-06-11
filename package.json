@@ -27,11 +27,11 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@11ty/eleventy": "^3.1.0",
+    "@11ty/eleventy": "^3.1.6",
     "@11ty/eleventy-img": "^6.0.4",
     "@11ty/eleventy-navigation": "^1.0.4",
-    "@11ty/eleventy-plugin-rss": "^2.0.4",
-    "js-yaml": "^4.1.0",
+    "@11ty/eleventy-plugin-rss": "^3.0.0",
+    "js-yaml": "^4.2.0",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.2.0",
     "markdown-it-footnote": "^4.0.0",
@@ -50,9 +50,9 @@
     "highlight.js": "^11.11.1",
     "http-server": "^14.1.1",
     "linkedom": "^0.18.12",
-    "prettier": "^3.3.3",
-    "satori": "^0.10.14",
+    "prettier": "^3.8.4",
+    "satori": "^0.26.0",
     "satori-html": "^0.3.2",
-    "vitest": "^4.1.7"
+    "vitest": "^4.1.8"
   }
 }
