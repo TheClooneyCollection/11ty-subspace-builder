@@ -44,6 +44,10 @@ giscus:
   categoryId: DIC_kwDOOtI2P84CwAOl
   mapping: og:title
 
+# choose which sidebarNav entry renders at /
+home:
+  target: blog # id matching a sidebarNav entry whose page should render at /
+
 timeline:
   showInNav: true  # set to true to show Timeline in the sidebar nav
 

@@ -290,9 +290,15 @@ layout: layouts/base.njk
     <!-- Sidebar nav: hidden on mobile until toggle; no background color -->
     <nav id="sidebar" class="dn db-ns w-100 w-25-ns pa4">
       <ul class="list pl0 ma0 pa0 flex flex-column lh-copy items-end">
+        {% set homeTargetId = site.home.target | default('blog') %}
         {% for item in sidebarNav %}
+          {% set isHomeTarget = item.id == homeTargetId %}
+          {% set itemUrl = '/' if isHomeTarget else item.url %}
           {% set activePatterns = item.activePatterns if item.activePatterns is defined else [{'type': 'equals', 'value': item.url}] %}
           {% set isActive = false %}
+          {% if isHomeTarget and currentUrl == '/' %}
+            {% set isActive = true %}
+          {% endif %}
           {% for rule in activePatterns %}
             {% if not isActive %}
               {% if rule.type == 'equals' and currentUrl == rule.value %}
@@ -309,7 +315,7 @@ layout: layouts/base.njk
               {% set displayLabel = item.label ~ ': ' ~ draftCount %}
             {% endif %}
             <li class="mb3 w-100">
-              <a href="{{ item.url }}"
+              <a href="{{ itemUrl }}"
                  class="db pa1 link dim f4 lh-copy tr tl-ns theme-text{% if isActive %} underline{% endif %}"
                  {% if isActive %}aria-current="page"{% endif %}>
                 {{ displayLabel }}

@@ -2,8 +2,8 @@
 layout: layouts/home.njk
 ogImage: /assets/og/timeline.png
 showPostHeader: false
-permalink: /timeline/
 eleventyComputed:
+  permalink: "{{ '/' if site.home.target == 'timeline' else '/timeline/' }}"
   title: "{{ ui.pages.timeline.title }}"
   description: "{{ ui.pages.timeline.description }}"
 ---

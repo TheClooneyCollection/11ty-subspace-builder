@@ -1,14 +1,14 @@
 ---
 - id: blog
   label: Blog
-  url: /
+  url: /blog/
   activePatterns:
     - type: equals
-      value: /
+      value: /blog/
+    - type: startsWith
+      value: /blog/
     - type: startsWith
       value: /posts/
-    - type: startsWith
-      value: /page/
 - id: notes
   label: Notes
   url: /notes/

@@ -1,7 +1,7 @@
 ---
 layout: layouts/home.njk
-permalink: /notes/
 eleventyComputed:
+  permalink: "{{ '/' if site.home.target == 'notes' else '/notes/' }}"
   title: "{{ ui.pages.notes.title }}"
   description: "{{ ui.pages.notes.description }}"
 ---
