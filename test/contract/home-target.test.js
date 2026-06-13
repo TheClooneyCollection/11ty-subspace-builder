@@ -48,6 +48,14 @@ describe('contract — site.home.target', () => {
     }
   });
 
+  it('sidebar nav lists the target item first', () => {
+    const { document } = parsePage('/');
+    const navLinks = selectAll(document, 'nav#sidebar a[href]');
+    expect(navLinks.length).toBeGreaterThan(0);
+    const firstHref = navLinks[0].getAttribute('href');
+    expect(firstHref).toBe('/');
+  });
+
   it('sidebar nav points the target item at / and others at their canonical urls', () => {
     const { document } = parsePage('/');
     const navLinks = selectAll(document, 'nav#sidebar a[href]');

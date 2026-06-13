@@ -11,12 +11,14 @@ layout: layouts/base.njk
 {% set autoDarkThemeId = siteThemeConfig.autoDarkId if siteThemeConfig.autoDarkId is defined else 'terminal' %}
 {% set giscusConfig = site.giscus or {} %}
 {% set currentUrl = page.url or '/' %}
-{% set isPostPage = currentUrl.indexOf('/posts/') == 0 %}
-{% set isNotePage = currentUrl.indexOf('/notes/') == 0 %}
-{% set isTimelinePage = currentUrl.indexOf('/timeline/') == 0 %}
-{% set isPostDetailPage = isPostPage and currentUrl != '/posts/' %}
-{% set isNoteDetailPage = isNotePage and currentUrl != '/notes/' %}
-{% set isTimelineDetailPage = isTimelinePage and currentUrl != '/timeline/' %}
+{% set homeTargetId = site.home.target | default('blog') %}
+{% set isHomeRoot = currentUrl == '/' %}
+{% set isPostPage = currentUrl.indexOf('/posts/') == 0 or (isHomeRoot and homeTargetId == 'blog') %}
+{% set isNotePage = currentUrl.indexOf('/notes/') == 0 or (isHomeRoot and homeTargetId == 'notes') %}
+{% set isTimelinePage = currentUrl.indexOf('/timeline/') == 0 or (isHomeRoot and homeTargetId == 'timeline') %}
+{% set isPostDetailPage = currentUrl.indexOf('/posts/') == 0 and currentUrl != '/posts/' %}
+{% set isNoteDetailPage = currentUrl.indexOf('/notes/') == 0 and currentUrl != '/notes/' %}
+{% set isTimelineDetailPage = currentUrl.indexOf('/timeline/') == 0 and currentUrl != '/timeline/' %}
 {% set isArticlePage = isPostDetailPage or isNoteDetailPage %}
 {% set showComments = comments if comments is defined else true %}
 {% set timelineEntries = collections.timeline | default([]) %}
@@ -289,39 +291,44 @@ layout: layouts/base.njk
   <div class="flex flex-column flex-row-ns">
     <!-- Sidebar nav: hidden on mobile until toggle; no background color -->
     <nav id="sidebar" class="dn db-ns w-100 w-25-ns pa4">
+      {% macro renderNavItem(item) %}
+        {% set isHomeTarget = item.id == homeTargetId %}
+        {% set itemUrl = '/' if isHomeTarget else item.url %}
+        {% set activePatterns = item.activePatterns if item.activePatterns is defined else [{'type': 'equals', 'value': item.url}] %}
+        {% set isActive = false %}
+        {% if isHomeTarget and currentUrl == '/' %}
+          {% set isActive = true %}
+        {% endif %}
+        {% for rule in activePatterns %}
+          {% if not isActive %}
+            {% if rule.type == 'equals' and currentUrl == rule.value %}
+              {% set isActive = true %}
+            {% elseif rule.type == 'startsWith' and rule.value and currentUrl.startsWith(rule.value) %}
+              {% set isActive = true %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% if not item.hidden and not (item.id == 'drafts' and environment == 'production') and not (item.id == 'timeline' and not site.timeline.showInNav) %}
+          {% set displayLabel = item.label %}
+          {% if item.id == 'drafts' %}
+            {% set draftCount = (collections.drafts | default([])) | length %}
+            {% set displayLabel = item.label ~ ': ' ~ draftCount %}
+          {% endif %}
+          <li class="mb3 w-100">
+            <a href="{{ itemUrl }}"
+               class="db pa1 link dim f4 lh-copy tr tl-ns theme-text{% if isActive %} underline{% endif %}"
+               {% if isActive %}aria-current="page"{% endif %}>
+              {{ displayLabel }}
+            </a>
+          </li>
+        {% endif %}
+      {% endmacro %}
       <ul class="list pl0 ma0 pa0 flex flex-column lh-copy items-end">
-        {% set homeTargetId = site.home.target | default('blog') %}
         {% for item in sidebarNav %}
-          {% set isHomeTarget = item.id == homeTargetId %}
-          {% set itemUrl = '/' if isHomeTarget else item.url %}
-          {% set activePatterns = item.activePatterns if item.activePatterns is defined else [{'type': 'equals', 'value': item.url}] %}
-          {% set isActive = false %}
-          {% if isHomeTarget and currentUrl == '/' %}
-            {% set isActive = true %}
-          {% endif %}
-          {% for rule in activePatterns %}
-            {% if not isActive %}
-              {% if rule.type == 'equals' and currentUrl == rule.value %}
-                {% set isActive = true %}
-              {% elseif rule.type == 'startsWith' and rule.value and currentUrl.startsWith(rule.value) %}
-                {% set isActive = true %}
-              {% endif %}
-            {% endif %}
-          {% endfor %}
-          {% if not item.hidden and not (item.id == 'drafts' and environment == 'production') and not (item.id == 'timeline' and not site.timeline.showInNav) %}
-            {% set displayLabel = item.label %}
-            {% if item.id == 'drafts' %}
-              {% set draftCount = (collections.drafts | default([])) | length %}
-              {% set displayLabel = item.label ~ ': ' ~ draftCount %}
-            {% endif %}
-            <li class="mb3 w-100">
-              <a href="{{ itemUrl }}"
-                 class="db pa1 link dim f4 lh-copy tr tl-ns theme-text{% if isActive %} underline{% endif %}"
-                 {% if isActive %}aria-current="page"{% endif %}>
-                {{ displayLabel }}
-              </a>
-            </li>
-          {% endif %}
+          {% if item.id == homeTargetId %}{{ renderNavItem(item) }}{% endif %}
+        {% endfor %}
+        {% for item in sidebarNav %}
+          {% if item.id != homeTargetId %}{{ renderNavItem(item) }}{% endif %}
         {% endfor %}
       </ul>
     </nav>

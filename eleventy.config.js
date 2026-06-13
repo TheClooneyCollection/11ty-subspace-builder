@@ -343,6 +343,13 @@ export default function (eleventyConfig) {
     'environment',
     process.env.ELEVENTY_ENV || 'development',
   );
+  eleventyConfig.addGlobalData('sectionUrls', () => {
+    const target = loadSiteData()?.home?.target || 'blog';
+    const sections = ['blog', 'timeline', 'notes'];
+    return Object.fromEntries(
+      sections.map((id) => [id, id === target ? '/' : `/${id}/`]),
+    );
+  });
   eleventyConfig.addGlobalData('eleventyComputed', {
     eleventyExcludeFromCollections(data) {
       return isExcludedFromCollections(data, productionEnvironment);
