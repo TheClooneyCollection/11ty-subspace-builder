@@ -4,6 +4,7 @@ pagination:
   data: collections.posts
   size: 10 # posts per page
   reverse: true
+  generatePageOnEmptyData: true
 permalink: "{% if pagination.pageNumber == 0 %}/{% else %}/page/{{ pagination.pageNumber + 1 }}/{% endif %}"
 eleventyComputed:
   title: "{% if pagination.pageNumber == 0 %}{{ ui.pages.home.title }}{% else %}{{ ui.pages.home.title }} {{ ui.shared.pagination.separator }} {{ ui.shared.pagination.page }} {{ pagination.pageNumber + 1 }}{% endif %}"

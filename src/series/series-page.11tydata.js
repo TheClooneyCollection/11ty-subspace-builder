@@ -20,12 +20,12 @@ const reportSeriesIssue = (message, { environment, failInProduction = false }) =
 };
 export default {
   pagination: {
-    data: 'series',
+    data: 'site',
     size: 1,
     alias: 'seriesItem',
-    before: (series) =>
+    before: (_, data) =>
       getVisibleSeriesList(
-        series,
+        data?.series,
         process.env.ELEVENTY_ENV === 'production'
           ? 'production'
           : 'development',

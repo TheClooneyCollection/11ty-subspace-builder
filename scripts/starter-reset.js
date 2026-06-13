@@ -28,6 +28,11 @@ const CONTENT_CHOICES = [
     paths: ['timeline'],
   },
   {
+    id: 'series',
+    label: 'Series data',
+    paths: ['_data/series.yaml'],
+  },
+  {
     id: 'projects',
     label: 'Project list data',
     paths: ['_data/projects.yaml'],
@@ -120,6 +125,28 @@ const clearImageReferences = () => {
     }
   }
   writeYaml('_data/projects.yaml', projects);
+};
+
+const starterSeriesData = [];
+
+const selectionIncludesSeriesLinkedContent = (selectedIds) =>
+  ['posts', 'notes', 'timeline'].some((id) => selectedIds.has(id));
+
+const withImplicitSeriesReset = (selection) => {
+  const selected = Array.isArray(selection) ? [...selection] : [];
+  const selectedIds = new Set(selected.map((item) => item.id));
+
+  if (
+    selectionIncludesSeriesLinkedContent(selectedIds) &&
+    !selectedIds.has('series')
+  ) {
+    const seriesChoice = CONTENT_CHOICES.find((item) => item.id === 'series');
+    if (seriesChoice) {
+      selected.push(seriesChoice);
+    }
+  }
+
+  return selected;
 };
 
 const formatMenu = (items) =>
@@ -253,6 +280,10 @@ const applyContentReset = (selected) => {
     removeMarkdownFiles('timeline');
   }
 
+  if (ids.has('series')) {
+    writeYaml('_data/series.yaml', starterSeriesData);
+  }
+
   if (ids.has('projects')) {
     writeYaml('_data/projects.yaml', { active: [], archive: [] });
   }
@@ -342,17 +373,30 @@ const main = async () => {
       );
     }
 
-    const contentSelection = await promptForSelection(
+    const requestedContentSelection = await promptForSelection(
       rl,
       'Choose what to clear:',
       filterChoices(CONTENT_CHOICES),
     );
+    const contentSelection = withImplicitSeriesReset(requestedContentSelection);
+    const requestedContentIds = new Set(
+      requestedContentSelection.map((item) => item.id),
+    );
+    const autoAddedSeries =
+      contentSelection.some((item) => item.id === 'series') &&
+      !requestedContentIds.has('series');
 
     const placeholderSelection = await promptForSelection(
       rl,
       'Choose which placeholders to add back:',
       filterChoices(PLACEHOLDER_CHOICES),
     );
+
+    if (autoAddedSeries) {
+      output.write(
+        '\nNote: series data will also be cleared. Series entries point at posts, notes, and timeline URLs, so removing content without clearing `_data/series.yaml` can leave broken references and fail the build.\n',
+      );
+    }
 
     printPreview(contentSelection, placeholderSelection);
     const confirm = (await rl.question('\nApply these changes? (`yes` to continue): '))
