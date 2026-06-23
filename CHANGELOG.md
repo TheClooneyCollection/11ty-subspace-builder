@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.40.0](https://github.com/TheClooneyCollection/11ty-subspace-builder/compare/v1.39.0...v1.40.0) (2026-06-23)
+
+
+### Features
+
+* configurable home target via site.home.target ([01072af](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/01072af70da8e516532da50cd418a873e3d032e2))
+
+
+### Bug Fixes
+
+* avoid template-path blog pagination links ([8da8752](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/8da8752696cc9816ce41604973aafdf6014f7987))
+* clear series data during starter reset ([8178685](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/8178685db831f14b733d04e49cd3848f83eb2a3a))
+* harden empty series and home pagination ([fe71092](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/fe71092778e4d328a2541ac7c4bab5da2a6aa372))
+* section styles, internal links, and nav order for home target ([4c09a3e](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/4c09a3ebe5815901a53d6d33f243e0137d6a0161))
+* support contain mode for project card images ([eb0df3b](https://github.com/TheClooneyCollection/11ty-subspace-builder/commit/eb0df3b89e4e283dbef06f9afcf1d45e08c690ab))
+
 ## [1.39.0](https://github.com/TheClooneyCollection/11ty-subspace-builder/compare/v1.38.0...v1.39.0) (2026-06-09)
 
 
