@@ -4,6 +4,7 @@
   {% set tagSlugs = project.tagSlugs or [] %}
   {% set tags = project.tags or [] %}
   {% set image = project.image or {} %}
+  {% set imageFit = image.fit or 'cover' %}
   {% set primaryLink = project.url or project.repo or project.timeline %}
   <article
     class="project-card"
@@ -11,7 +12,7 @@
     data-tags="{{ tagSlugs | join(',') }}"
   >
     {% if image.src %}
-      <figure class="project-card__media">
+      <figure class="project-card__media{% if imageFit == 'contain' %} project-card__media--contain{% endif %}">
         <img
           src="{{ image.src }}"
           alt="{{ image.alt or (project.name ~ ' ' ~ ui.shared.projectCard.imageAltSuffix) }}"

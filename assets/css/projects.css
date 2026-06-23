@@ -158,6 +158,10 @@ html.theme.near-white {
   object-fit: cover;
 }
 
+.project-card__media--contain img {
+  object-fit: contain;
+}
+
 .project-card__title {
   margin: 0;
   font-size: 1.15rem;
