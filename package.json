@@ -31,7 +31,7 @@
     "@11ty/eleventy-img": "^6.0.4",
     "@11ty/eleventy-navigation": "^1.0.4",
     "@11ty/eleventy-plugin-rss": "^3.0.0",
-    "js-yaml": "^4.2.0",
+    "js-yaml": "^5.1.0",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.2.0",
     "markdown-it-footnote": "^4.0.0",
@@ -44,7 +44,7 @@
     "@fontsource/lexend": "^5.0.18",
     "@fontsource/noto-sans-sc": "^5.2.9",
     "@fontsource/noto-sans-tc": "^5.2.9",
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "^1.61.1",
     "@resvg/resvg-js": "^2.6.0",
     "gray-matter": "^4.0.3",
     "highlight.js": "^11.11.1",
@@ -53,6 +53,6 @@
     "prettier": "^3.8.4",
     "satori": "^0.26.0",
     "satori-html": "^0.3.2",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.9"
   }
 }

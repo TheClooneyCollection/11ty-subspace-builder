@@ -16,16 +16,16 @@
   "dependencies": {
     "globby": "^16.2.0",
     "gray-matter": "^4.0.3",
-    "ink": "^7.0.5",
+    "ink": "^7.1.0",
     "react": "^19.2.0",
     "yaml": "^2.5.0"
   },
   "devDependencies": {
-    "@types/node": "^25.9.3",
+    "@types/node": "^26.0.1",
     "@types/react": "^19.2.17",
     "ts-node": "^10.9.2",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.9"
   }
 }
