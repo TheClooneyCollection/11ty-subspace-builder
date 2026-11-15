@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="{{ '/assets/css/highlight-github.css' | assetUrl }}"/>
 {% set defaultAccent = defaultTheme.accent if defaultTheme.accent is defined else '#00449E' %}
 <style>
+	{% if siteThemeConfig.fadeDuration %}html { --theme-fade-duration: {{ siteThemeConfig.fadeDuration }}; }{% endif %}
 	html.theme {
 		transition: background-color {{ transitionDuration }} {{ transitionTimingFunction }}, color {{ transitionDuration }} {{ transitionTimingFunction }};
 	}

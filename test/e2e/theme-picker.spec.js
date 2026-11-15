@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 
 const card = (page, id, palette = '') => page.locator(`.theme-picker-card[data-id="${id}"][data-palette="${palette}"]`);
 const mode = (page, value) => page.locator(`[data-theme-mode-toggle="${value}"]`);
-// Playwright scrolls the window when it clicks during a view transition, so wait out the 0.4 s crossfade.
+// Playwright scrolls the window when it clicks during a view transition, so wait out the crossfade.
 const settled = page => page.waitForFunction(() => !document.documentElement.matches(':active-view-transition'));
 const position = (page, id) => page.evaluate(id => {
   const body = document.querySelector('.theme-picker-body');
@@ -119,6 +119,8 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
     await mode(page, 'light').click();
     await expect(page.locator('html')).toHaveAttribute('data-scheme', 'light');
     expect(await page.evaluate(() => window.__fades)).toBe(reducedMotion === 'reduce' ? 0 : 2);
+    // site.theme.fadeDuration reaches the crossfade.
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement, '::view-transition-new(root)').animationDuration)).toBe('0.7s');
   });
 
   test('a tap during the crossfade still picks the tapped card', async ({ page }) => {
