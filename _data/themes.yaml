@@ -274,3 +274,33 @@
       display: Arial, Helvetica, 'Noto Sans SC', 'PingFang SC', sans-serif
       mono: '''Courier New'', Menlo, Consolas, ''Noto Sans SC'', ''PingFang SC'', sans-serif'
     radius: 0px
+- id: zine
+  label: Zine
+  scheme: both
+  replaces: []
+  tokens:
+    light:
+      bg: '#173cc9'
+      ink: '#161441'
+      muted: '#51496c'
+      accent: '#173cc9'
+      rule: '#161441'
+      surface: '#f4edd9'
+      paper: '#fffef3'
+      pink: '#ff9dce'
+      yellow: '#fff279'
+    dark:
+      bg: '#142370'
+      ink: '#f9f2ff'
+      muted: '#d4c7e5'
+      accent: '#b7c7ff'
+      rule: '#bfb0e2'
+      surface: '#333052'
+      paper: '#252342'
+      pink: '#ff9dce'
+      yellow: '#fff279'
+    font:
+      body: Verdana, 'Noto Sans SC', 'PingFang SC', sans-serif
+      display: Verdana, 'Noto Sans SC', 'PingFang SC', sans-serif
+      mono: '''Courier New'', Menlo, Consolas, ''Noto Sans SC'', ''PingFang SC'', sans-serif'
+    radius: 0px
