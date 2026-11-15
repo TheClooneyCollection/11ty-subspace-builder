@@ -93,6 +93,8 @@ const createRecordingConfig = () => {
     addLiquidFilter: noop,
     addJavaScriptFunction: noop,
     addTransform: noop,
+    addPreprocessor: noop,
+    addTemplate: noop,
     addLinter: noop,
     addPlugin(plugin, options) {
       // Plugins might register their own stuff. Try calling them but swallow
