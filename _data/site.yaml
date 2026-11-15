@@ -15,6 +15,7 @@ theme:
   # blur at the crossfade midpoint; fallback 0 (none)
   fadeBlur: 8px
   defaultId: paper
+  defaultStrategy: fun
   defaultMode: auto
 
 githubEmbed:
