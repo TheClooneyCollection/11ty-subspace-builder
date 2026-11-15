@@ -421,3 +421,29 @@
         field-two: '#343a77'
         glass-rgb: 18 24 43
         opaque: '#171f33'
+- id: starship
+  label: Starship
+  scheme: both
+  replaces: []
+  tokens:
+    light:
+      bg: '#f2f5f5'
+      ink: '#1d303b'
+      muted: '#526570'
+      accent: '#246578'
+      rule: '#bdcdd3'
+      surface: '#ffffff'
+      code: '#e6eef0'
+    dark:
+      bg: '#10212b'
+      ink: '#e2edf0'
+      muted: '#b0c5ce'
+      accent: '#94d0e0'
+      rule: '#45606e'
+      surface: '#192f3c'
+      code: '#0a1a23'
+    font:
+      body: '''Avenir Next'', Avenir, ''Segoe UI'', ''Noto Sans SC'', ''PingFang SC'', sans-serif'
+      display: '''Avenir Next'', Avenir, ''Segoe UI'', ''Noto Sans SC'', ''PingFang SC'', sans-serif'
+      mono: Menlo, Consolas, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 3px

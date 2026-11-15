@@ -1,0 +1,94 @@
+/* A reading skin over the shared document; all decoration is inert. */
+html[data-theme="starship"] {--project-tag-bg:var(--surface);--project-tag-border:var(--rule);--project-tag-color:var(--ink);--project-tag-count-bg:var(--bg);--project-card-bg:var(--surface);--project-card-border:var(--rule);--project-card-color:var(--ink);--project-card-shadow:none;--project-card-shadow-hover:none;--project-card-divider:var(--rule);--project-card-media-bg:var(--bg);--tag-font:var(--font-mono)}
+html[data-theme="starship"] .site-shell {max-width:75rem}
+html[data-theme="starship"] [data-region="masthead"] {padding:1.5rem 3rem 1rem}
+html[data-theme="starship"] [data-region="masthead"]>a {font-size:1.3rem;color:var(--ink);font-family:var(--font-display)}
+html[data-theme="starship"] [data-region="nav"] {padding:0 3rem 1.25rem}
+html[data-theme="starship"] [data-region="sidebar"] {gap:.5rem 1.5rem}
+html[data-theme="starship"] [data-region="sidebar"] a {color:var(--ink);text-underline-offset:.4em}
+html[data-theme="starship"] [data-region="sidebar"] a.underline {color:var(--accent);text-decoration-thickness:3px}
+html[data-theme="starship"] [data-region="main"] {padding:3.75rem 3rem 5rem;font-size:1.125rem}
+html[data-theme="starship"] h1 {font-size:clamp(2.25rem,4.7vw,4.1rem);letter-spacing:-.045em}
+html[data-theme="starship"] h2 {font-size:1.8rem}
+html[data-theme="starship"] a {text-underline-offset:.25em}
+html[data-theme="starship"] .home-posts {display:flex;flex-direction:column;position:relative;max-width:none}
+html[data-theme="starship"] .home-posts>h1 {order:-1;font-size:clamp(3.25rem,6.4vw,5.6rem);width:56%;margin-bottom:1.25rem}
+html[data-theme="starship"] .home-intro {position:relative;max-width:none;min-height:14rem;margin-bottom:3rem}
+html[data-theme="starship"] .home-intro>p {max-width:52%;font-size:1.3rem;line-height:1.65;margin-top:0}
+html[data-theme="starship"] .home-intro::before,
+html[data-theme="starship"] .home-intro::after {content:"";position:absolute;pointer-events:none}
+html[data-theme="starship"] .home-posts article {margin:0;padding:2rem 0;border-bottom:1px solid var(--rule)}
+html[data-theme="starship"] .home-posts article h2 {margin-top:0}
+html[data-theme="starship"] .home-posts article h2 a {color:var(--ink)}
+html[data-theme="starship"] .home-posts article:first-child {background:var(--surface);padding:2.5rem;margin-bottom:2rem}
+html[data-theme="starship"] .home-posts article:first-child h2 {font-size:2.25rem;max-width:28ch}
+html[data-theme="starship"] .article-body {max-width:70ch}
+html[data-theme="starship"] .article-body h2 {margin-top:3rem}
+html[data-theme="starship"] .article-body h3 {margin-top:2rem}
+html[data-theme="starship"] .article-toc {font-size:.95rem;padding:1.25rem;overscroll-behavior:contain}
+html[data-theme="starship"] .article-body pre {background:var(--code);font-size:.9rem}
+html[data-theme="starship"] .article-body :not(pre)>code {background:var(--code);padding:.12em .3em;font-size:.86em}
+html[data-theme="starship"] .timeline-entry {padding:2rem 0;border-radius:0;background:transparent;border-bottom:1px solid var(--rule)}
+html[data-theme="starship"] .timeline-title {font-size:1.45rem;margin:.8rem 0}
+html[data-theme="starship"] .timeline-content {font-size:1.05rem;line-height:1.75;max-width:70ch;overflow-wrap:anywhere}
+html[data-theme="starship"] .timeline-timestamp {opacity:1;color:var(--muted);white-space:normal;font-size:.85rem}
+html[data-theme="starship"] .timeline-handle {font-family:var(--font-mono);color:var(--muted);opacity:1}
+html[data-theme="starship"] .timeline-tags a {color:var(--muted);opacity:1}
+html[data-theme="starship"] .timeline-type {font-family:var(--tag-font);font-size:.85rem;padding:.25rem .75rem;letter-spacing:.035em}
+html[data-theme="starship"] [data-series-entry] {border-color:var(--rule);padding-top:1.5rem;padding-bottom:1.5rem}
+html[data-theme="starship"] [data-series-entry]::marker {color:var(--accent);font-family:var(--font-display);font-size:1.5rem}
+html[data-theme="starship"] .project-card {background:var(--surface);border-color:var(--rule);color:var(--ink);box-shadow:none;transition:none}
+html[data-theme="starship"] .project-card:hover {transform:none}
+html[data-theme="starship"] [data-region="footer"] {border-top:1px solid var(--rule);color:var(--muted)}
+html[data-theme="starship"][lang^="zh"] h1 {letter-spacing:0;line-height:1.35}
+html[data-theme="starship"][lang^="zh"] .article-body {max-width:36em}
+html[data-theme="starship"][lang^="zh"] .article-body p {line-height:1.95}
+/* The masthead slot stays compact so the sticky header never becomes a hero. */
+html[data-theme="starship"] .theme-art {display:block;position:relative;flex:0 0 3rem;width:3rem;height:2rem;margin:0 .75rem;overflow:hidden}
+html[data-theme="starship"] .theme-art::before,
+html[data-theme="starship"] .theme-art::after,
+html[data-theme="starship"] .theme-art span {position:absolute;pointer-events:none;content:""}
+@media(max-width:700px) {
+ html[data-theme="starship"] [data-region="masthead"] {padding:1rem 1.25rem}
+ html[data-theme="starship"] [data-region="nav"] {padding:0 1.25rem 1rem}
+ html[data-theme="starship"] [data-region="main"] {padding:2rem 1.25rem 3rem}
+ html[data-theme="starship"] .theme-art {display:none}
+ html[data-theme="starship"] .home-posts>h1 {width:100%;font-size:clamp(2.8rem,12vw,4rem)}
+ html[data-theme="starship"] .home-intro {min-height:0;padding-bottom:14rem;margin-bottom:1.5rem}
+ html[data-theme="starship"] .home-intro>p {max-width:100%;font-size:1.15rem}
+ html[data-theme="starship"] .home-posts article:first-child {padding:1.5rem}
+ html[data-theme="starship"] .home-posts article:first-child h2 {font-size:1.85rem}
+ html[data-theme="starship"] .article-body {font-size:1.125rem}
+}
+@media(prefers-reduced-motion:reduce) {
+ html[data-theme="starship"] *,html[data-theme="starship"] *::before,html[data-theme="starship"] *::after {animation:none!important;transition:none!important}
+}
+@media print {
+ html[data-theme="starship"] .home-intro::before,html[data-theme="starship"] .home-intro::after {display:none}
+ html[data-theme="starship"] .home-intro {min-height:0;padding-bottom:0}
+}
+
+html[data-theme="starship"] .site-header {border-bottom:1px solid var(--rule)}
+html[data-theme="starship"] .home-intro::before {width:11.25rem;height:11.25rem;right:12%;top:-2.25rem;border-radius:50%;background:linear-gradient(140deg,#e4eeed,#7f9eaf)}
+html[data-theme="starship"] .home-intro::after {width:38%;height:13rem;right:1%;top:-3rem;border:1px solid var(--accent);border-radius:50%;transform:rotate(-28deg);background:radial-gradient(circle at 85% 15%,var(--accent) 0 3px,transparent 4px)}
+html[data-theme="starship"] .theme-art::before {width:1.4rem;height:1.4rem;border-radius:50%;background:linear-gradient(140deg,#e4eeed,#7f9eaf);left:.8rem;top:.3rem}
+html[data-theme="starship"] .theme-art::after {inset:.25rem 0;border:1px solid var(--accent);border-radius:50%;transform:rotate(-28deg)}
+html[data-theme="starship"] .home-posts article:first-child {border-top:3px solid var(--accent);border-radius:3px 3px 4rem 3px}
+html[data-theme="starship"] .article-layout {background:var(--surface);padding:2.5rem;border-radius:4px 4px 3rem 4px}
+html[data-theme="starship"] .article-toc {background:var(--bg);border-radius:2px 2px 1rem 2px}
+html[data-theme="starship"] .timeline-entry {border-left:1px solid var(--rule);padding-left:1.75rem}
+html[data-theme="starship"] .timeline-type {border-left:4px solid var(--accent);border-radius:2px 2px 12px 2px}
+html[data-theme="starship"] .project-card {border-radius:3px 3px 2.2rem 3px;overflow:clip}
+@media(max-width:700px) {
+ html[data-theme="starship"] .home-intro::before {width:8rem;height:8rem;right:calc(50% - 4rem);top:auto;bottom:2.4rem}
+ html[data-theme="starship"] .home-intro::after {width:85%;right:7.5%;height:10rem;top:auto;bottom:1.5rem}
+ html[data-theme="starship"] .article-layout {padding:1.25rem 1rem}
+ html[data-theme="starship"] .timeline-entry {padding-left:1rem}
+}
+
+@media(min-width:900px) {
+ html[data-theme="starship"] .timeline-entry:not(.timeline-entry--compact) .timeline-body-wrap {display:grid;grid-template-columns:11rem minmax(0,1fr);column-gap:2rem}
+ html[data-theme="starship"] .timeline-entry:not(.timeline-entry--compact) .timeline-topline {grid-column:1;grid-row:1 / span 3;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:.65rem}
+ html[data-theme="starship"] .timeline-entry:not(.timeline-entry--compact) :is(.timeline-title,.timeline-content,.timeline-footer) {grid-column:2}
+ html[data-theme="starship"] .timeline-entry:not(.timeline-entry--compact) .timeline-title {margin-top:0}
+}
