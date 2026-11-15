@@ -304,3 +304,35 @@
       display: Verdana, 'Noto Sans SC', 'PingFang SC', sans-serif
       mono: '''Courier New'', Menlo, Consolas, ''Noto Sans SC'', ''PingFang SC'', sans-serif'
     radius: 0px
+- id: glass
+  label: Soft Glass
+  scheme: both
+  replaces: []
+  tokens:
+    light:
+      bg: '#e7e8f8'
+      ink: '#25243e'
+      muted: '#55536c'
+      accent: '#503a94'
+      rule: '#b6b2ce'
+      surface: '#ffffffa8'
+      paper: '#f5f4fc'
+      rim: '#ffffffb0'
+      field-one: '#bce9f760'
+      field-two: '#b39adf50'
+    dark:
+      bg: '#11182c'
+      ink: '#eeecfa'
+      muted: '#c9c6dd'
+      accent: '#d1c2ff'
+      rule: '#73708f'
+      surface: '#252943ed'
+      paper: '#252943'
+      rim: '#ffffff30'
+      field-one: '#344d7550'
+      field-two: '#67518b40'
+    font:
+      body: '''Avenir Next'', Avenir, ''Segoe UI'', ''Noto Sans SC'', ''PingFang SC'', sans-serif'
+      display: Georgia, 'Noto Sans SC', 'PingFang SC', sans-serif
+      mono: Menlo, Consolas, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 28px
