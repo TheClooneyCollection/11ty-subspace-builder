@@ -125,3 +125,23 @@ it('legacy auto stays a default after setting mode and revisiting', () => {
   visit({storage}).api.setMode('dark');
   expect(visit({storage}).api.state).toMatchObject({theme: 'glass', mode: 'dark', manual: false});
 });
+
+it('reverting an opening default restores mode and remembered palette without pinning it', () => {
+  const storage = {themePalette:'indigo'};
+  const {api} = visit({storage});
+  const saved = api.capturePreference();
+  api.apply('liquid-glass-dark','dark','aurora',true);
+  api.restorePreference(saved);
+  expect(api.state).toMatchObject({theme:'glass',mode:'auto',manual:false});
+  expect(storage.theme).toBeUndefined();
+  expect(storage.themePalette).toBe('indigo');
+  expect(visit({storage,day:0}).api.state.theme).toBe('zine');
+});
+it('reverting a manual choice restores its logical partner and survives another visit', () => {
+  const storage = {theme:'holo',themeMode:'light'};
+  const {api} = visit({storage});const saved=api.capturePreference();
+  api.apply('paper','dark','',true);api.restorePreference(saved);
+  const next=visit({storage});
+  expect(next.api.state).toMatchObject({theme:'starship',requestedTheme:'holo',mode:'light',manual:true});
+  next.api.setMode('dark');expect(next.api.state.theme).toBe('holo');
+});

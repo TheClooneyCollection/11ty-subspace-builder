@@ -13,8 +13,8 @@
   if (previewPage) { selector.hidden = true; return; }
   const zh = document.documentElement.lang.startsWith('zh');
   const words = zh
-    ? { theme: '主题', choose: '选择主题', hint: '点选主题，在当前页面试用', close: '关闭', use: '使用', current: '当前', trying: '试用中', mode: '显示模式', auto: '跟随系统', light: '浅色', dark: '深色', reset: '使用网站默认主题', partner: 'Halo 的浅色搭配', cancel: '取消试用' }
-    : { theme: 'Theme', choose: 'Choose theme', hint: 'Tap one to try it on this page', close: 'Close', use: 'Use', current: 'Current', trying: 'Trying', mode: 'Appearance', auto: 'System', light: 'Light', dark: 'Dark', reset: 'Use site default', partner: 'light partner of Halo', cancel: 'Cancel preview' };
+    ? { theme: '主题', choose: '选择主题', hint: '点选即可切换并保存', close: '关闭', current: '当前', mode: '显示模式', auto: '跟随系统', light: '浅色', dark: '深色', reset: '使用网站默认主题', partner: 'Halo 的浅色搭配', revert: '恢复为' }
+    : { theme: 'Theme', choose: 'Choose theme', hint: 'Tap a theme to select it', close: 'Close', current: 'Current', mode: 'Appearance', auto: 'System', light: 'Light', dark: 'Dark', reset: 'Use site default', partner: 'light partner of Halo', revert: 'Revert to' };
   const entries = runtime.config.themes;
   const make = (tag, className, text) => {
     const node = document.createElement(tag);
@@ -61,11 +61,10 @@
   const status = make('p', 'theme-picker-status'); status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
   const actions = make('div', 'theme-picker-actions');
   const reset = button('theme-picker-reset', words.reset);
-  const cancel = button('theme-picker-cancel', words.cancel);
-  const apply = button('theme-picker-apply');
-  actions.append(reset, cancel, apply); footer.append(status, actions); panel.append(heading, body, footer); document.body.append(panel);
+  const revert = button('theme-picker-revert');
+  actions.append(reset, revert); footer.append(status, actions); panel.append(heading, body, footer); document.body.append(panel);
   let open = false;
-  let trying = false;
+  let opening = null;
   let restoring = false;
   const cards = [];
   for (const [id, entry] of Object.entries(entries)) {
@@ -80,14 +79,14 @@
       node.append(shot, copy); choices.append(node);
       const card = { id, palette, entry, node, shot };
       cards.push(card);
-      node.addEventListener('click', () => previewCard(card));
+      node.addEventListener('click', () => selectCard(card));
       node.addEventListener('keydown', event => {
         if (!['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
         event.preventDefault();
         const visible = cards.filter(item => !item.node.hidden);
         const step = ['ArrowDown', 'ArrowUp'].includes(event.key) && matchMedia('(min-width: 601px)').matches ? 3 : 1;
         const index = event.key === 'Home' ? 0 : event.key === 'End' ? visible.length - 1 : (visible.indexOf(card) + (['ArrowRight', 'ArrowDown'].includes(event.key) ? step : -step) + visible.length) % visible.length;
-        previewCard(visible[index]);
+        selectCard(visible[index]);
         visible[index].node.focus({ preventScroll: true });
         // Only deliberate keyboard navigation scrolls to a newly reached card.
         const rect = visible[index].node.getBoundingClientRect(), viewport = body.getBoundingClientRect();
@@ -96,10 +95,9 @@
       });
     }
   }
-  function previewCard(card) {
+  function selectCard(card) {
     preserveScroll(() => {
-      trying = true;
-      runtime.apply(card.id, runtime.state.mode, card.palette || runtime.state.palette, false);
+      runtime.apply(card.id, runtime.state.mode, card.palette || runtime.state.palette, true);
     }, card);
   }
   function captureAnchor(tapped) {
@@ -169,44 +167,43 @@
     if (!visible.some(card => card.node.tabIndex === 0) && visible.length) visible[0].node.tabIndex = 0;
     const partner = state.requestedTheme === 'holo' && state.theme === 'starship' && scheme === 'light';
     const schemeHint = partner ? words.partner : entries[state.theme].scheme === 'both' ? `${words.light.toLowerCase()} / ${words.dark.toLowerCase()}` : words[scheme].toLowerCase();
-    status.textContent = `${trying ? words.trying : words.current} ${label(state.theme, state.palette)} · ${schemeHint}`;
-    apply.textContent = `${words.use} ${label(state.theme, state.palette)}`;
-    reset.hidden = !state.manual; cancel.hidden = !trying;
+    status.textContent = `${words.current} ${label(state.theme, state.palette)} · ${schemeHint}`;
+    revert.textContent = opening ? `${words.revert} ${opening.label}` : '';
+    revert.hidden = !opening || JSON.stringify(runtime.capturePreference()) === JSON.stringify(opening.preference);
+    reset.hidden = !state.manual;
     positionPanel();
   }
-  function dismiss(commit = false, returnFocus = true) {
+  function dismiss(returnFocus = true) {
     if (!open) return;
     open = false; panel.hidden = true; trigger.setAttribute('aria-expanded', 'false');
-    if (!commit) runtime.cancelPreview();
-    trying = false; sync();
+    sync();
     if (returnFocus) trigger.focus({ preventScroll: true });
   }
   trigger.addEventListener('click', () => {
     if (open) { dismiss(); return; }
     scrollTail.style.height = '0px';
-    open = true; trying = false; panel.hidden = false; trigger.setAttribute('aria-expanded', 'true'); sync();
+    opening = {preference:runtime.capturePreference(), label:label(runtime.state.theme, runtime.state.palette)};
+    open = true; panel.hidden = false; trigger.setAttribute('aria-expanded', 'true'); sync();
     cards.find(card => !card.node.hidden && card.node.tabIndex === 0)?.node.focus({ preventScroll: true });
   });
   close.addEventListener('click', () => dismiss());
-  apply.addEventListener('click', () => {
-    const state = runtime.state;
-    runtime.apply(state.requestedTheme || state.theme, state.mode, state.palette, true);
-    dismiss(true);
+  reset.addEventListener('click', () => preserveScroll(() => runtime.useDefault()));
+  revert.addEventListener('click', () => {
+    if (opening) preserveScroll(() => runtime.restorePreference(opening.preference));
+    if (revert.hidden) close.focus({preventScroll:true});
   });
-  reset.addEventListener('click', () => preserveScroll(() => { trying = false; runtime.useDefault(); }));
-  cancel.addEventListener('click', () => preserveScroll(() => { trying = false; runtime.cancelPreview(); }));
   const inside = target => panel.contains(target) || selector.contains(target);
-  document.addEventListener('pointerdown', event => { if (open && !inside(event.target)) dismiss(false, false); });
-  document.addEventListener('focusin', event => { if (open && !inside(event.target)) dismiss(false, false); });
+  document.addEventListener('pointerdown', event => { if (open && !inside(event.target)) dismiss(false); });
+  document.addEventListener('focusin', event => { if (open && !inside(event.target)) dismiss(false); });
   document.addEventListener('keydown', event => {
     if (!open) return;
     if (event.key === 'Escape') { event.preventDefault(); dismiss(); }
     // Header controls and dialog form one nonmodal keyboard region, despite separate DOM parents.
     if (event.key === 'Tab' && inside(event.target)) {
-      const controls = [trigger, ...modeButtons, close, ...cards.filter(card => !card.node.hidden && card.node.tabIndex === 0).map(card => card.node), ...[reset, cancel, apply].filter(node => !node.hidden)];
+      const controls = [trigger, ...modeButtons, close, ...cards.filter(card => !card.node.hidden && card.node.tabIndex === 0).map(card => card.node), ...[reset, revert].filter(node => !node.hidden)];
       const index = controls.indexOf(document.activeElement), next = index + (event.shiftKey ? -1 : 1);
       if (index >= 0 && next >= 0 && next < controls.length) { event.preventDefault(); controls[next].focus({ preventScroll: true }); }
-      else if (index >= 0) { dismiss(false, false); (event.shiftKey ? trigger : modeButtons[modeButtons.length - 1]).focus({ preventScroll: true }); }
+      else if (index >= 0) { dismiss(false); (event.shiftKey ? trigger : modeButtons[modeButtons.length - 1]).focus({ preventScroll: true }); }
     }
   });
   document.addEventListener('themechange', () => {

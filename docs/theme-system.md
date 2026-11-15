@@ -4,7 +4,7 @@ Themes are CSS skins over one shared document. The layout exposes `data-region` 
 
 ## Reader preferences
 
-Choose a theme with the header swatches or open **Choose theme** for a preview. The preview uses one iframe of the current page, never a hover-triggered page-wide swap. Arrow keys move among choices, Enter or Apply selects one, Escape closes. Preview frames do not load analytics or comments.
+Open the header theme selector and click a card to apply and save it immediately. Arrow keys also select. Closing or Escape keeps the choice. After a change, **Revert to …** restores the theme, palette and mode from when this opening began; reopening establishes a new starting point.
 
 Mode is independent of theme: Auto follows the operating system, Light and Dark are explicit. Fixed-scheme themes disable mode switching unless they have a paired theme. Liquid Glass light/dark are paired; Auto follows the system within that family. The dark member has Aurora (default) and Indigo palettes.
 
@@ -64,8 +64,10 @@ Bundled presets: Warm Paper, Swiss, Brutalist, Retro web / Zine, Soft Glass, Liq
 
 The header contains the theme button and Light / Dark / System controls. Opening
 it shows a fixed paper-coloured dropdown; each card shows an actual home capture
-for the current scheme. Selecting a card tries it on the page without saving a
-manual choice. **Use** saves it, while Escape or closing cancels the trial.
+for the current scheme. Selecting a card immediately applies and saves the choice. Escape or closing
+keeps it. **Revert to …** restores the preference captured when the dropdown
+opened, including its mode, palette and whether it was a site default. Reverting
+a default does not turn it into a manual choice or replace the stored Fun rolls.
 **Use site default** clears the manual choice while retaining the display mode,
 Liquid Glass palette and first-visit rolls. Halo uses Starship as its light
 partner and returns to Halo when switched back to dark.

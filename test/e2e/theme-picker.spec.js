@@ -86,7 +86,7 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
       await card(page, id).click();
       await expect(page.locator('html')).toHaveAttribute('data-theme', id);
     }
-    await page.getByRole('button', { name: 'Use Retro sci-fi' }).click();
+    await page.keyboard.press('Escape');
     await mode(page, 'light').click();
     await expect(page.locator('html')).toHaveAttribute('data-scheme', 'light');
     await page.waitForTimeout(600);
@@ -126,22 +126,47 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
     })).toEqual(['0.7s', 'theme-fade-in', '8px']);
   });
 
-  test('Use saves the preview without replaying its crossfade or blur', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'no-preference' });
+  test('clicks save immediately and each opening has its own Revert target', async ({ page }) => {
     await page.goto('/?theme=swiss&mode=dark');
-    await page.evaluate(() => {
-      window.__fades = 0;
-      const start = document.startViewTransition.bind(document);
-      document.startViewTransition = update => { window.__fades++; return start(update); };
-    });
+    await page.evaluate(() => window.siteTheme.apply('swiss','dark','',true));
     await page.locator('.theme-picker-open').click();
-    await card(page, 'zine').click();
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'zine');
+    await expect(page.locator('.theme-picker-revert')).toBeHidden();
+    await card(page,'zine').click();
+    expect(await page.evaluate(() => localStorage.getItem('theme'))).toBe('zine');
+    await expect(page.locator('.theme-picker-revert')).toHaveText('Revert to Swiss');
     await settled(page);
-    expect(await page.evaluate(() => window.__fades)).toBe(1);
-    await page.locator('.theme-picker-apply').click();
-    await expect(page.getByRole('dialog')).toBeHidden();
-    expect(await page.evaluate(() => ({fades:window.__fades, active:document.documentElement.matches(':active-view-transition'), stored:localStorage.getItem('theme')}))).toEqual({fades:1,active:false,stored:'zine'});
+    await page.keyboard.press('Escape');
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('data-theme','zine');
+    await page.locator('.theme-picker-open').click();
+    await card(page,'paper').click();
+    await expect(page.locator('.theme-picker-revert')).toHaveText('Revert to Zine');
+    await settled(page);
+    await page.locator('.theme-picker-revert').click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme','zine');
+    expect(await page.evaluate(() => localStorage.getItem('theme'))).toBe('zine');
+    await expect(page.locator('.theme-picker-revert')).toBeHidden();
+    await expect(page.getByRole('dialog')).toBeVisible();
+  });
+
+  test('Revert restores the opening palette and mode, including a Halo partner', async ({page}) => {
+    await page.goto('/');
+    await page.evaluate(() => window.siteTheme.apply('liquid-glass-dark','dark','indigo',true));
+    await settled(page);
+    await page.locator('.theme-picker-open').click();
+    await card(page,'liquid-glass-dark','aurora').click();
+    await settled(page);await mode(page,'light').click();await settled(page);
+    await page.locator('.theme-picker-revert').click();
+    await expect(page.locator('html')).toHaveAttribute('data-palette','indigo');
+    await expect(page.locator('html')).toHaveAttribute('data-scheme','dark');
+    await settled(page);await page.keyboard.press('Escape');
+    await page.evaluate(() => window.siteTheme.apply('holo','light','indigo',true));
+    await settled(page);await page.locator('.theme-picker-open').click();
+    await card(page,'paper').click();await settled(page);
+    await page.locator('.theme-picker-revert').click();
+    await expect(page.locator('.theme-picker-status')).toContainText('light partner of Halo');
+    await settled(page);await mode(page,'dark').click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme','holo');
   });
 
   test('a tap during the crossfade still picks the tapped card', async ({ page }) => {
@@ -166,7 +191,7 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
     await expect(page.getByRole('dialog')).toBeVisible();
   });
 
-  test('lower card preview, scheme flip, and Use preserve panel and page scroll', async ({ page }) => {
+  test('lower card selection, scheme flip, and closing preserve panel and page scroll', async ({ page }) => {
     await page.goto('/?theme=swiss&mode=dark');
     await page.evaluate(() => scrollTo(0, 450));
     await page.locator('.theme-picker-open').click();
@@ -187,20 +212,20 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
     await expect.poll(async () => Math.abs((await position(page, 'retro-futurist')).offset - preview.offset)).toBeLessThan(2);
     await expect.poll(async () => Math.abs((await position(page, 'retro-futurist')).window - preview.window)).toBeLessThan(2);
     const flipped = await position(page, 'retro-futurist');
-    await page.locator('.theme-picker-apply').click();
+    await settled(page);await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).toBeHidden();
     await expect.poll(() => page.evaluate(() => scrollY)).toBe(flipped.window);
     expect(await page.evaluate(() => localStorage.getItem('theme'))).toBe('retro-futurist');
   });
 
-  test('Halo keeps its Starship light partner through Use and returns on dark', async ({ page }) => {
+  test('Halo keeps its Starship light partner after immediate selection and returns on dark', async ({ page }) => {
     await page.goto('/?theme=swiss&mode=dark');
     await page.locator('.theme-picker-open').click();
     await card(page, 'holo').click();
     await mode(page, 'light').click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'starship');
     await expect(page.locator('.theme-picker-status')).toContainText('light partner of Halo');
-    await page.locator('.theme-picker-apply').click();
+    await settled(page);await page.keyboard.press('Escape');
     expect(await page.evaluate(() => localStorage.getItem('theme'))).toBe('holo');
     await mode(page, 'dark').click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'holo');
@@ -208,11 +233,11 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'holo');
   });
 
-  test('Indigo survives both schemes and clearing the manual theme; Escape cancels a new preview', async ({ page }) => {
+  test('Indigo survives both schemes and clearing the manual theme; Escape keeps a new selection', async ({ page }) => {
     await page.goto('/?theme=swiss&mode=dark');
     await page.locator('.theme-picker-open').click();
     await card(page, 'liquid-glass-dark', 'indigo').click();
-    await page.locator('.theme-picker-apply').click();
+    await settled(page);await page.keyboard.press('Escape');
     await page.locator('.theme-picker-open').click();
     await mode(page, 'light').click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'liquid-glass-light');
@@ -227,7 +252,7 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
     const defaultTheme = await page.locator('html').getAttribute('data-theme');
     await card(page, 'paper').click();
     await page.keyboard.press('Escape');
-    await expect(page.locator('html')).toHaveAttribute('data-theme', defaultTheme);
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'paper');
     await expect(page.locator('.theme-picker-open')).toBeFocused();
     await page.reload();
     expect(await page.evaluate(() => localStorage.getItem('themePalette'))).toBe('indigo');

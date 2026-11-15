@@ -111,8 +111,8 @@
     // A non-palette skin must not erase the remembered Liquid Glass variant.
     if (nextPalette) rememberedPalette=nextPalette;
     if (persist) manualTheme=requestedTheme;
-    // Use saves an already visible preview; do not replay its visual effect.
-    render(!persist);
+    // Persisting a selection does not change whether its appearance needs a transition.
+    render();
     if (persist) {
       committedPalette=rememberedPalette;
       if (!preview) {
@@ -122,6 +122,23 @@
         remove('themePreference');
       }
     }
+  }
+  function capturePreference() {
+    return {requestedTheme, mode, palette:rememberedPalette, manual:!!manualTheme};
+  }
+  function restorePreference(saved) {
+    requestedTheme=migrate(saved.requestedTheme) || defaultTheme();
+    manualTheme=saved.manual ? requestedTheme : null;
+    mode=validMode(saved.mode) ? saved.mode : 'auto';
+    rememberedPalette=saved.palette || '';
+    committedPalette=rememberedPalette;
+    if (!preview) {
+      if (manualTheme) write('theme',manualTheme); else remove('theme');
+      write('themeMode',mode);
+      if (rememberedPalette) write('themePalette',rememberedPalette); else remove('themePalette');
+      remove('themePreference');
+    }
+    render();
   }
   function setMode(nextMode) {
     if (!validMode(nextMode)) return;
@@ -142,7 +159,7 @@
   render();
   committedPalette=rememberedPalette;
   initializing = false;
-  window.siteTheme={apply,setMode,useDefault,cancelPreview,config,get state(){return state();}};
+  window.siteTheme={apply,capturePreference,restorePreference,setMode,useDefault,cancelPreview,config,get state(){return state();}};
   media?.addEventListener?.('change',()=>{if(mode==='auto')render();});
   if(override || query.has('preview')){
     for(const key of ['theme','mode','palette','preview'])query.delete(key);

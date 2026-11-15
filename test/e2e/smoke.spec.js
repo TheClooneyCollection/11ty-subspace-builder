@@ -173,7 +173,7 @@ test.describe('timeline detail', () => {
 });
 
 test.describe('theme dropdown', () => {
-  test('keyboard previews immediately, Use commits, and Escape returns focus', async ({ page }) => {
+  test('keyboard selects and saves immediately, and Escape closes without reverting', async ({ page }) => {
     await page.goto('/?theme=swiss&mode=dark');
     await page.locator('.theme-picker-open').click();
     const dialog = page.getByRole('dialog');
@@ -181,9 +181,9 @@ test.describe('theme dropdown', () => {
     await page.keyboard.press('ArrowRight');
     const selected = await dialog.locator('[role=radio][aria-checked=true]').getAttribute('data-id');
     await expect(page.locator('html')).toHaveAttribute('data-theme', selected);
-    expect(await page.evaluate(() => localStorage.getItem('theme'))).toBeNull();
+    expect(await page.evaluate(() => localStorage.getItem('theme'))).toBe(selected);
     await expect(dialog.locator('iframe')).toHaveCount(0);
-    await page.locator('.theme-picker-apply').click();
+    await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
     expect(await page.evaluate(() => localStorage.getItem('theme'))).toBe(selected);
     await page.locator('.theme-picker-open').click();
