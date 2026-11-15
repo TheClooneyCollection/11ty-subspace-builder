@@ -13,8 +13,8 @@
   if (previewPage) { selector.hidden = true; return; }
   const zh = document.documentElement.lang.startsWith('zh');
   const words = zh
-    ? { theme: '主题', choose: '选择主题', hint: '点选即可切换并保存', close: '关闭', current: '当前', mode: '显示模式', auto: '跟随系统', light: '浅色', dark: '深色', reset: '使用网站默认主题', partner: 'Halo 的浅色搭配', revert: '恢复为' }
-    : { theme: 'Theme', choose: 'Choose theme', hint: 'Tap a theme to select it', close: 'Close', current: 'Current', mode: 'Appearance', auto: 'System', light: 'Light', dark: 'Dark', reset: 'Use site default', partner: 'light partner of Halo', revert: 'Revert to' };
+    ? { theme: '主题', choose: '选择主题', hint: '点选即可切换并保存', close: '关闭', current: '当前', mode: '显示模式', auto: '跟随系统', light: '浅色', dark: '深色', reset: '使用网站默认主题', partner: 'Halo 的浅色搭配', revert: '恢复为', copy: '复制链接', copied: '已复制', share: '主题分享链接' }
+    : { theme: 'Theme', choose: 'Choose theme', hint: 'Tap a theme to select it', close: 'Close', current: 'Current', mode: 'Appearance', auto: 'System', light: 'Light', dark: 'Dark', reset: 'Use site default', partner: 'light partner of Halo', revert: 'Revert to', copy: 'Copy link', copied: 'Copied!', share: 'Theme share link' };
   const entries = runtime.config.themes;
   const make = (tag, className, text) => {
     const node = document.createElement(tag);
@@ -62,7 +62,35 @@
   const actions = make('div', 'theme-picker-actions');
   const reset = button('theme-picker-reset', words.reset);
   const revert = button('theme-picker-revert');
-  actions.append(reset, revert); footer.append(status, actions); panel.append(heading, body, footer); document.body.append(panel);
+  const copy = selector.hasAttribute('data-theme-share-base') ? button('theme-picker-copy-link', words.copy) : null;
+  const shareField = copy ? make('input', 'theme-picker-share-url') : null;
+  let copiedURL = '';
+  if (copy) {
+    copy.setAttribute('aria-live','polite');
+    shareField.readOnly = true; shareField.hidden = true;
+    shareField.setAttribute('aria-label',words.share);
+  }
+  actions.append(reset, ...(copy ? [copy] : []), revert); footer.append(status, actions); panel.append(heading, body, footer); document.body.append(panel);
+  if (shareField) footer.append(shareField);
+  function shareURL() {
+    const state = runtime.state;
+    const url = new URL(location.pathname + location.search + location.hash, selector.dataset.themeShareBase || location.origin);
+    url.searchParams.set('theme',state.requestedTheme || state.theme);
+    url.searchParams.set('mode',state.scheme);
+    url.searchParams.delete('preview');
+    if (state.palette) url.searchParams.set('palette',state.palette); else url.searchParams.delete('palette');
+    return url.href;
+  }
+  copy?.addEventListener('click', async () => {
+    const url = shareURL();
+    try {
+      await navigator.clipboard.writeText(url);
+      copiedURL = url; copy.textContent = words.copied; shareField.hidden = true;
+    } catch {
+      shareField.value = url; shareField.hidden = false;
+      shareField.focus({preventScroll:true}); shareField.select();
+    }
+  });
   let open = false;
   let opening = null;
   let restoring = false;
@@ -171,6 +199,11 @@
     revert.textContent = opening ? `${words.revert} ${opening.label}` : '';
     revert.hidden = !opening || JSON.stringify(runtime.capturePreference()) === JSON.stringify(opening.preference);
     reset.hidden = !state.manual;
+    if (copy) {
+      const url = shareURL();
+      copy.textContent = copiedURL === url ? words.copied : words.copy;
+      if (shareField.value !== url) shareField.hidden = true;
+    }
     positionPanel();
   }
   function dismiss(returnFocus = true) {
@@ -200,7 +233,7 @@
     if (event.key === 'Escape') { event.preventDefault(); dismiss(); }
     // Header controls and dialog form one nonmodal keyboard region, despite separate DOM parents.
     if (event.key === 'Tab' && inside(event.target)) {
-      const controls = [trigger, ...modeButtons, close, ...cards.filter(card => !card.node.hidden && card.node.tabIndex === 0).map(card => card.node), ...[reset, revert].filter(node => !node.hidden)];
+      const controls = [trigger, ...modeButtons, close, ...cards.filter(card => !card.node.hidden && card.node.tabIndex === 0).map(card => card.node), ...[reset, copy, revert, shareField].filter(node => node && !node.hidden)];
       const index = controls.indexOf(document.activeElement), next = index + (event.shiftKey ? -1 : 1);
       if (index >= 0 && next >= 0 && next < controls.length) { event.preventDefault(); controls[next].focus({ preventScroll: true }); }
       else if (index >= 0) { dismiss(false); (event.shiftKey ? trigger : modeButtons[modeButtons.length - 1]).focus({ preventScroll: true }); }

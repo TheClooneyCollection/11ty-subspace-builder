@@ -89,7 +89,7 @@ layout: layouts/base.njk
     <div class="theme-art" aria-hidden="true"><span></span><span></span></div>
     <div class="flex items-center mt3 mt0-ns flex-wrap justify-end{% if page.url | i18nSwitchLinks | length %} header-language-controls{% endif %}">
       {% if showThemeSelectors %}
-      <div class="theme-controls" data-theme-selector></div>
+      <div class="theme-controls" data-theme-selector{% if environment != 'production' %} data-theme-share-base="{{ site.url }}"{% endif %}></div>
       {% endif %}
       {% include "components/language-switcher.njk" %}<button id="nav-toggle" class="dib dn-ns bn bg-transparent pa2 pointer{% if showThemeSelectors %} ml3{% endif %} mt2 mt0-ns" aria-expanded="false" aria-controls="sidebar">
         <div class="burger">

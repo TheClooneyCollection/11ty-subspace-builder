@@ -81,6 +81,11 @@ sci-fi and Brutalist for weekends. Swiss and Warm Paper remain manually selectab
 System appearance remains the default unless the reader chooses light or dark.
 The pre-paint initializer resolves these choices before loading one detail sheet.
 
+Development builds also show **Copy link** in the selector footer. It copies the
+current page on `site.url`, with the selected theme, effective light/dark scheme
+and palette. Production builds omit this control. If clipboard access is denied,
+the link appears in a selected field for manual copying.
+
 ### Maintaining preview shots
 
 The committed `assets/images/theme-previews/*.webp` files are real public home

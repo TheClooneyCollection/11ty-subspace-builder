@@ -122,3 +122,6 @@ html[data-scheme=dark] .theme-picker-panel{color-scheme:dark;--tp-bg:#1b1c21;--t
 @media print{.theme-picker-panel{display:none!important}}
 
 @media(max-width:430px){.header-language-controls{row-gap:.65rem}.theme-controls{max-width:100%;margin-left:0}}
+
+.theme-picker-copy-link{padding:.45rem .65rem;border:1px solid var(--tp-line);border-radius:4px;background:transparent;color:var(--tp-ink);font-size:.8rem;line-height:1.4}
+.theme-picker-share-url{width:100%;min-width:0;flex-basis:100%;padding:.5rem;background:var(--tp-bg);color:var(--tp-ink);border:1px solid var(--tp-line);border-radius:4px}
