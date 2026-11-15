@@ -361,3 +361,63 @@
       display: '-apple-system, BlinkMacSystemFont, ''Segoe UI'', ''Noto Sans SC'', ''PingFang SC'', sans-serif'
       mono: Menlo, Consolas, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 36px
+  pair: liquid-glass-dark
+- id: liquid-glass-dark
+  label: Liquid Glass Dark
+  scheme: dark
+  family: liquid-glass
+  pair: liquid-glass-light
+  replaces: []
+  tokens:
+    dark:
+      bg: '#101d20'
+      ink: '#f7f6f0'
+      muted: '#deded5'
+      accent: '#a7e8dc'
+      rule: '#ffffff30'
+      surface: '#121c228c'
+      paper: rgb(18 28 34 / .78)
+      rim: '#ffffff38'
+      selected: '#ffffff20'
+      field-one: '#69518d'
+      field-two: '#24766d'
+      glass-rgb: 18 28 34
+      opaque: '#17252b'
+    font:
+      body: '-apple-system, BlinkMacSystemFont, ''Segoe UI'', ''Noto Sans SC'', ''PingFang SC'', sans-serif'
+      display: '-apple-system, BlinkMacSystemFont, ''Segoe UI'', ''Noto Sans SC'', ''PingFang SC'', sans-serif'
+      mono: Menlo, Consolas, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 36px
+  palettes:
+    - id: aurora
+      label: Aurora
+      tokens:
+        bg: '#101d20'
+        ink: '#f7f6f0'
+        muted: '#deded5'
+        accent: '#a7e8dc'
+        rule: '#ffffff30'
+        surface: rgb(18 28 34 / .55)
+        paper: rgb(18 28 34 / .78)
+        rim: '#ffffff38'
+        selected: '#ffffff20'
+        field-one: '#69518d'
+        field-two: '#24766d'
+        glass-rgb: 18 28 34
+        opaque: '#17252b'
+    - id: indigo
+      label: Indigo
+      tokens:
+        bg: '#101522'
+        ink: '#f7f6f0'
+        muted: '#deded5'
+        accent: '#b9caff'
+        rule: '#ffffff30'
+        surface: rgb(18 24 43 / .55)
+        paper: rgb(18 24 43 / .78)
+        rim: '#ffffff38'
+        selected: '#ffffff20'
+        field-one: '#4a64b8'
+        field-two: '#343a77'
+        glass-rgb: 18 24 43
+        opaque: '#171f33'
