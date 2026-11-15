@@ -1,6 +1,7 @@
 # https://tachyons.io/docs/themes/skins/
 
 - id: sun
+  scheme: light
   label: Sun (black / washed-yellow)
   classes:
     - black
@@ -10,6 +11,7 @@
   project:
     tagActiveColor: "#ECE9E9"
 - id: default
+  scheme: light
   label: Default
   classes:
     - black
@@ -19,6 +21,7 @@
   project:
     tagActiveColor: "#ECE9E9"
 - id: mint
+  scheme: light
   label: Mint (black / washed-green)
   classes:
     - black
@@ -28,6 +31,7 @@
   project:
     tagActiveColor: "#ECE9E9"
 - id: grape
+  scheme: dark
   label: Grape (near-white / purple)
   classes:
     - near-white
@@ -37,6 +41,7 @@
   project:
     tagActiveColor: "#2D113B"
 - id: charcoal
+  scheme: dark
   label: Charcoal (near-white / mid-gray)
   classes:
     - near-white
@@ -46,6 +51,7 @@
   project:
     tagActiveColor: "#1A1A1A"
 - id: deep-blue
+  scheme: dark
   label: Deep Blue (white / dark-blue)
   classes:
     - white
@@ -55,6 +61,7 @@
   project:
     tagActiveColor: "#012A63"
 - id: midnight
+  scheme: dark
   label: Midnight (near-white / navy)
   classes:
     - near-white
@@ -64,6 +71,7 @@
   project:
     tagActiveColor: "#001B44"
 - id: terminal
+  scheme: dark
   label: Terminal (green / near-black)
   classes:
     - near-white

@@ -131,16 +131,10 @@ layout: layouts/base.njk
     .theme-auto-icon::after {
       content: none;
     }
-    html.theme[data-theme="sun"] [data-theme-mode-toggle] .theme-auto-icon,
-    html.theme[data-theme="default"] [data-theme-mode-toggle] .theme-auto-icon,
-    html.theme[data-theme="mint"] [data-theme-mode-toggle] .theme-auto-icon {
+    html.theme[data-scheme="light"] [data-theme-mode-toggle] .theme-auto-icon {
       color: #111;
     }
-    html.theme[data-theme="grape"] [data-theme-mode-toggle] .theme-auto-icon,
-    html.theme[data-theme="charcoal"] [data-theme-mode-toggle] .theme-auto-icon,
-    html.theme[data-theme="deep-blue"] [data-theme-mode-toggle] .theme-auto-icon,
-    html.theme[data-theme="midnight"] [data-theme-mode-toggle] .theme-auto-icon,
-    html.theme[data-theme="terminal"] [data-theme-mode-toggle] .theme-auto-icon {
+    html.theme[data-scheme="dark"] [data-theme-mode-toggle] .theme-auto-icon {
       color: #f4f4f4;
     }
     .theme-mode-icon {
@@ -166,38 +160,20 @@ layout: layouts/base.njk
     [data-theme-mode-toggle][data-theme-mode="custom"] .theme-mode-icon--dark {
       display: none;
     }
-    html.theme[data-theme="grape"] [data-theme-mode-toggle] .theme-mode-surface,
-    html.theme[data-theme="charcoal"] [data-theme-mode-toggle] .theme-mode-surface,
-    html.theme[data-theme="deep-blue"] [data-theme-mode-toggle] .theme-mode-surface,
-    html.theme[data-theme="midnight"] [data-theme-mode-toggle] .theme-mode-surface,
-    html.theme[data-theme="terminal"] [data-theme-mode-toggle] .theme-mode-surface {
+    html.theme[data-scheme="dark"] [data-theme-mode-toggle] .theme-mode-surface {
       background: rgba(255, 255, 255, 0.08);
       color: #f4f4f4;
     }
-    html.theme[data-theme="grape"] [data-theme-mode-toggle][data-theme-mode="auto"] .theme-mode-surface,
-    html.theme[data-theme="charcoal"] [data-theme-mode-toggle][data-theme-mode="auto"] .theme-mode-surface,
-    html.theme[data-theme="deep-blue"] [data-theme-mode-toggle][data-theme-mode="auto"] .theme-mode-surface,
-    html.theme[data-theme="midnight"] [data-theme-mode-toggle][data-theme-mode="auto"] .theme-mode-surface,
-    html.theme[data-theme="terminal"] [data-theme-mode-toggle][data-theme-mode="auto"] .theme-mode-surface {
+    html.theme[data-scheme="dark"] [data-theme-mode-toggle][data-theme-mode="auto"] .theme-mode-surface {
       background: rgba(255, 255, 255, 0.08);
       color: #f4f4f4;
     }
-    html.theme[data-theme="grape"] [data-theme-mode-toggle][data-theme-mode="light"] .theme-mode-surface,
-    html.theme[data-theme="charcoal"] [data-theme-mode-toggle][data-theme-mode="light"] .theme-mode-surface,
-    html.theme[data-theme="deep-blue"] [data-theme-mode-toggle][data-theme-mode="light"] .theme-mode-surface,
-    html.theme[data-theme="midnight"] [data-theme-mode-toggle][data-theme-mode="light"] .theme-mode-surface,
-    html.theme[data-theme="terminal"] [data-theme-mode-toggle][data-theme-mode="light"] .theme-mode-surface {
+    html.theme[data-scheme="dark"] [data-theme-mode-toggle][data-theme-mode="light"] .theme-mode-surface {
       background: #f4f4f4;
       color: #111;
     }
-    html.theme[data-theme="sun"] [data-theme-mode-toggle][data-theme-mode="dark"] .theme-mode-surface,
-    html.theme[data-theme="default"] [data-theme-mode-toggle][data-theme-mode="dark"] .theme-mode-surface,
-    html.theme[data-theme="mint"] [data-theme-mode-toggle][data-theme-mode="dark"] .theme-mode-surface,
-    html.theme[data-theme="grape"] [data-theme-mode-toggle][data-theme-mode="dark"] .theme-mode-surface,
-    html.theme[data-theme="charcoal"] [data-theme-mode-toggle][data-theme-mode="dark"] .theme-mode-surface,
-    html.theme[data-theme="deep-blue"] [data-theme-mode-toggle][data-theme-mode="dark"] .theme-mode-surface,
-    html.theme[data-theme="midnight"] [data-theme-mode-toggle][data-theme-mode="dark"] .theme-mode-surface,
-    html.theme[data-theme="terminal"] [data-theme-mode-toggle][data-theme-mode="dark"] .theme-mode-surface {
+    html.theme[data-scheme="light"] [data-theme-mode-toggle][data-theme-mode="dark"] .theme-mode-surface,
+html.theme[data-scheme="dark"] [data-theme-mode-toggle][data-theme-mode="dark"] .theme-mode-surface {
       background: rgba(255, 255, 255, 0.08);
       color: #f4f4f4;
     }

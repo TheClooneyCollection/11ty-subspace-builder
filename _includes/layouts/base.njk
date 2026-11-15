@@ -59,7 +59,7 @@
 	{% set twitterCard = 'summary_large_image' %}
 {% endif %}
 <!doctype html>
-<html lang="{{ htmlLang if site.i18n.enabled else metadata.language }}" class="theme {{ defaultThemeClasses }}" data-theme="{{ defaultTheme.id }}" data-default-theme="{{ defaultTheme.id }}" data-auto-light-theme="{{ autoLightTheme.id }}" data-auto-dark-theme="{{ autoDarkTheme.id }}" data-theme-preference="auto">
+<html lang="{{ htmlLang if site.i18n.enabled else metadata.language }}" class="theme {{ defaultThemeClasses }}" data-theme="{{ defaultTheme.id }}" data-scheme="{{ defaultTheme.scheme or 'light' }}" data-default-theme="{{ defaultTheme.id }}" data-auto-light-theme="{{ autoLightTheme.id }}" data-auto-dark-theme="{{ autoDarkTheme.id }}" data-theme-preference="auto">
 <head>
 	{% include "layouts/partials/head-seo.njk" %}
 	{% include "layouts/partials/theme-styles.njk" %}

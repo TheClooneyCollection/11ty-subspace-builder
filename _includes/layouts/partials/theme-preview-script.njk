@@ -131,6 +131,7 @@
 			themeTarget.classList.remove(...allThemeClasses);
 			themeTarget.classList.add(...themeMap[resolvedThemeId]);
 			themeTarget.dataset.theme = resolvedThemeId;
+		themeTarget.dataset.scheme = themeConfig.find(theme => theme.id === resolvedThemeId).scheme || 'light';
 			themeTarget.dataset.themePreference = preference;
 			const midtoneClass = themeMidtoneMap[resolvedThemeId] || defaultMidtoneClass;
 			if (allMidtoneClasses.length) {
