@@ -447,3 +447,29 @@
       display: '''Avenir Next'', Avenir, ''Segoe UI'', ''Noto Sans SC'', ''PingFang SC'', sans-serif'
       mono: Menlo, Consolas, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 3px
+- id: retro-futurist
+  label: Retro Futurist
+  scheme: both
+  replaces: []
+  tokens:
+    light:
+      bg: '#eee0ba'
+      ink: '#35223a'
+      muted: '#685064'
+      accent: '#934333'
+      rule: '#725369'
+      surface: '#fbf2d9'
+      code: '#e5d5b2'
+    dark:
+      bg: '#251b30'
+      ink: '#f5e8ca'
+      muted: '#d3bdca'
+      accent: '#f0ae83'
+      rule: '#a98992'
+      surface: '#33233c'
+      code: '#1c1525'
+    font:
+      body: '''Trebuchet MS'', ''Noto Sans SC'', ''PingFang SC'', sans-serif'
+      display: Rockwell, 'Cooper Black', Georgia, 'Noto Sans SC', 'PingFang SC', sans-serif
+      mono: Menlo, Consolas, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 0px
