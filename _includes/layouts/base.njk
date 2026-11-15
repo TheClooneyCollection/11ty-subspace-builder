@@ -84,6 +84,7 @@
 
 </head>
 <body>
+	<div class="theme-backdrop" aria-hidden="true"></div>
 	{{ content | safe }}
 	{% include "layouts/partials/theme-preview-script.njk" %}
 	{% set pageScripts = scripts if scripts is defined else [] %}

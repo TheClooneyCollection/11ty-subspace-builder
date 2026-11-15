@@ -189,6 +189,7 @@
     <div class="timeline-dot" aria-hidden="true"></div>
     <div class="timeline-body-wrap">
       <div class="timeline-topline">
+        <span class="timeline-type">#{{ entry | timelineEntryType }}</span>
         <span class="timeline-handle">{{ me.profile.name }}</span>
         <time class="timeline-timestamp" datetime="{{ entry.date | machineDate }}T{{ entry.data.time }}">{{ entry.date | readableDate }} · {{ entry.data.time }}</time>
       </div>

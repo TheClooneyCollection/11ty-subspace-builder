@@ -24,7 +24,8 @@ eleventyComputed:
   {% set nextHref = base ~ 'page/' ~ (pagination.pageNumber + 2) ~ '/' %}
 {% endif %}
 
-<section class="mw7 center">
+<section class="home-posts mw7 center">
+  <div class="home-intro"><p>{{ site.home.intro or ((me.intro.paragraphs or []) | first) or metadata.description }}</p></div>
   <h1 class="f3 f2-ns lh-title mt0 mb0">{{ ui.pages.home.heading }}</h1>
   {{ renderPostList(pagination.items, ui.pages.home.emptyMessage, false) | safe }}
   {% if pageCount > 1 %}
@@ -43,3 +44,10 @@ eleventyComputed:
     </nav>
   {% endif %}
 </section>
+
+<nav class="home-explore" hidden aria-label="Explore">
+  {% for item in sidebarNav %}{% if not item.hidden and item.id != 'drafts' and not (item.id == 'timeline' and not site.timeline.showInNav) %}
+    {% set exploreUrl = '/' if item.id == site.home.target else item.url %}
+    <a href="{{ exploreUrl if item.id == 'timeline' else (exploreUrl | i18nUrl(lang)) }}">{{ item.label }}</a>
+  {% endif %}{% endfor %}
+</nav>

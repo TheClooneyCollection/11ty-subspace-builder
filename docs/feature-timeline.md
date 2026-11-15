@@ -234,3 +234,5 @@ That includes changes to:
 - week or month grouping logic
 - relationship validation
 - navigation between timeline pages
+
+Type labels use a `timeline-type` hook and a visible `#` prefix. Themes style these separately from topic-tag links.

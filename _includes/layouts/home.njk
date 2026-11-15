@@ -26,7 +26,7 @@ layout: layouts/base.njk
 {% set timelineEarlierThread = currentTimelineEntry | timelineEarlierThreadEntries(timelineEntries) if currentTimelineEntry else [] %}
 {% set timelineFollowUpTree = currentTimelineEntry | timelineDescendantTree(timelineEntries, 2) if currentTimelineEntry else [] %}
 
-<div class="sans-serif">
+<div class="site-shell sans-serif">
   {% if isTimelinePage %}
     {{ renderTimelineStyles() }}
   {% endif %}
@@ -215,11 +215,13 @@ html.theme[data-scheme="dark"] [data-theme-mode-toggle][data-theme-mode="dark"] 
     }
   </style>
 
+  <header class="site-header">
   <!-- Site Title + Mobile Hamburger -->
-  <div class="pa4 flex items-center justify-between flex-wrap">
+  <div data-region="masthead" class="pa4 flex items-center justify-between flex-wrap">
     <a href="{{ '/' | i18nUrl(lang) }}" class="link dim f3 f2-ns fw6 ma0 tr tl-ns db theme-text">
       {{ site.title }}
     </a>
+    <div class="theme-art" aria-hidden="true"><span></span><span></span></div>
     <div class="flex items-center mt3 mt0-ns flex-wrap justify-end{% if page.url | i18nSwitchLinks | length %} header-language-controls{% endif %}">
       {% if showThemeSelectors %}
       <div class="flex items-center flex-nowrap ml3-ns ml2" data-theme-selector>
@@ -264,9 +266,9 @@ html.theme[data-scheme="dark"] [data-theme-mode-toggle][data-theme-mode="dark"] 
   </div>
 
   <!-- Two-column layout -->
-  <div class="flex flex-column flex-row-ns">
+
     <!-- Sidebar nav: hidden on mobile until toggle; no background color -->
-    <nav id="sidebar" class="dn db-ns w-100 w-25-ns pa4">
+    <nav data-region="nav" id="sidebar" class="dn db-ns w-100 w-25-ns pa4">
       {% macro renderNavItem(item) %}
         {% set isHomeTarget = item.id == homeTargetId %}
         {% set itemUrl = '/' if isHomeTarget else item.url %}
@@ -299,7 +301,7 @@ html.theme[data-scheme="dark"] [data-theme-mode-toggle][data-theme-mode="dark"] 
           </li>
         {% endif %}
       {% endmacro %}
-      <ul class="list pl0 ma0 pa0 flex flex-column lh-copy items-end">
+      <ul data-region="sidebar" class="list pl0 ma0 pa0 flex flex-column lh-copy items-end">
         {% for item in sidebarNav %}
           {% if item.id == homeTargetId %}{{ renderNavItem(item) }}{% endif %}
         {% endfor %}
@@ -309,8 +311,10 @@ html.theme[data-scheme="dark"] [data-theme-mode-toggle][data-theme-mode="dark"] 
       </ul>
     </nav>
 
+  </header>
+  <div class="site-content">
     <!-- Main content -->
-    <main class="w-100 w-75-ns pa4 lh-copy">{% include "components/translation-notice.njk" %}
+    <main data-region="main" class="w-100 w-75-ns pa4 lh-copy">{% include "components/translation-notice.njk" %}
       {% if showPostHeader %}
         <header class="mb4">
           {% if page.date %}
@@ -341,9 +345,15 @@ html.theme[data-scheme="dark"] [data-theme-mode-toggle][data-theme-mode="dark"] 
           {% endif %}
         </header>
       {% endif %}
-      <heading-anchors>
-        {{ content | safe }}
-      </heading-anchors>
+      {% if isArticlePage %}
+        {% set articleParts = content | articleLayout %}
+        <div class="article-layout{% if articleParts.toc %} has-toc{% endif %}">
+          {% if articleParts.toc %}<aside class="article-toc">{{ articleParts.toc | safe }}</aside>{% endif %}
+          <heading-anchors class="article-body">{{ articleParts.body | safe }}</heading-anchors>
+        </div>
+      {% else %}
+        <heading-anchors>{{ content | safe }}</heading-anchors>
+      {% endif %}
       {% if isTimelineDetailPage and (timelineEarlierThread | length or timelineFollowUpTree | length) %}
         {% set timelineUi = ui.pages.timeline %}
         <section class="timeline-thread">
@@ -405,6 +415,7 @@ html.theme[data-scheme="dark"] [data-theme-mode-toggle][data-theme-mode="dark"] 
       {% endif %}
     </main>
   </div>
+  <footer data-region="footer"></footer>
 </div>
 
 <script>
