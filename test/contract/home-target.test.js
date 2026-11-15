@@ -88,7 +88,10 @@ describe('contract — site.home.target', () => {
 
       for (const urlPath of pagesToCheck) {
         const { document } = parsePage(urlPath, options);
-        const paginationLinks = selectAll(document, 'nav:not(#sidebar) a[href]');
+        const paginationLinks = selectAll(
+          document,
+          'nav:not(#sidebar):not([data-language-switcher]) a[href]',
+        );
 
         for (const link of paginationLinks) {
           const href = link.getAttribute('href') || '';
