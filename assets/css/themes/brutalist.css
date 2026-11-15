@@ -1,0 +1,96 @@
+
+html[data-theme="brutalist"] body { font-size:18px; line-height:1.65; }
+html[data-theme="brutalist"] a { text-underline-offset:.2em; }
+html[data-theme="brutalist"] [data-region=main] { overflow-wrap:anywhere; }
+html[data-theme="brutalist"] .article-body { max-width:70ch; font-size:1.125rem; }
+html[data-theme="brutalist"] .article-body h2 { margin-top:1.8em; font-size:1.8rem; }
+html[data-theme="brutalist"] .article-body h3 { margin-top:1.5em; font-size:1.4rem; }
+html[data-theme="brutalist"] .article-body pre { font-size:.9rem; line-height:1.65; }
+html[data-theme="brutalist"] .article-body pre code { overflow-wrap:normal; }
+html[data-theme="brutalist"] .article-toc { font-size:.9rem; }
+html[data-theme="brutalist"] .timeline-type { font-family:var(--font-mono); }
+html[data-theme="brutalist"] .timeline-content { font-size:1rem; line-height:1.75; }
+html[data-theme="brutalist"] .timeline-title { font-size:1.35rem; }
+html[data-theme="brutalist"] .timeline-timestamp, html[data-theme="brutalist"] .timeline-handle, html[data-theme="brutalist"] .timeline-tags a { opacity:1; color:var(--muted); }
+html[data-theme="brutalist"] .timeline-timestamp { white-space:normal; font-variant-numeric:tabular-nums; }
+html[data-theme="brutalist"] .timeline-relationship { border-color:var(--rule); opacity:1; }
+html[data-theme="brutalist"] .project-card { background:var(--surface); color:var(--ink); border-color:var(--rule); border-radius:0; }
+html[data-theme="brutalist"] .project-card__summary { color:var(--muted); }
+html[data-theme="brutalist"] .project-card__tags { border-color:var(--rule); }
+html[data-theme="brutalist"] [data-series-entry] { border-color:var(--rule); }
+html[data-theme="brutalist"] [data-region=footer] { color:var(--muted); border-top:1px solid var(--rule); margin-top:3rem; }
+html[data-theme="brutalist"]:lang(zh) .article-body, html[data-theme="brutalist"]:lang(zh-Hans) .article-body { line-height:1.9; }
+@media(max-width:599px) {
+ html[data-theme="brutalist"] body { font-size:17px; }
+ html[data-theme="brutalist"] .article-body { font-size:1.0625rem; }
+ html[data-theme="brutalist"] [data-region=masthead] > a { max-width:100%; overflow-wrap:anywhere; }
+ html[data-theme="brutalist"] .home-posts article { min-width:0; }
+}
+/* Brutalist R2: saturated print blocks around calm reading surfaces. */
+html[data-theme="brutalist"] .site-shell { max-width:1400px; padding:1.8rem 2.5rem; }
+html[data-theme="brutalist"] .site-header { border:4px solid var(--ink); }
+html[data-theme="brutalist"] [data-region=masthead] { padding:1rem 1.2rem .5rem; }
+html[data-theme="brutalist"] [data-region=masthead] > a { font-weight:900; font-size:1.4rem; }
+html[data-theme="brutalist"] [data-region=nav] { padding:.5rem 1.2rem 1rem; }
+html[data-theme="brutalist"] [data-region=sidebar] a { font-weight:700; color:var(--ink); }
+html[data-theme="brutalist"] [data-region=sidebar] a.underline { text-decoration-thickness:4px; text-decoration-color:var(--accent); }
+html[data-theme="brutalist"] [data-region=main] { padding:3rem 0; }
+html[data-theme="brutalist"] h1, html[data-theme="brutalist"] h2, html[data-theme="brutalist"] h3 { font-weight:900; letter-spacing:-.04em; }
+html[data-theme="brutalist"] .home-posts { display:grid; grid-template-columns:1.1fr .9fr; gap:2.5rem 0; align-items:center; }
+html[data-theme="brutalist"] .home-posts > h1 { grid-column:1; grid-row:1; padding:1.75rem; font-size:clamp(3rem,6.5vw,6.4rem); line-height:.95; letter-spacing:-.065em; color:white; background:var(--blue); }
+html[data-theme="brutalist"] .home-intro { grid-column:2; grid-row:1; background:var(--yellow); color:#111; padding:1.7rem; border:4px solid #111; box-shadow:7px 7px 0 var(--ink); font-size:1.35rem; font-weight:700; margin:0 7px 0 0; }
+html[data-theme="brutalist"] .home-intro a { color:#111; }
+html[data-theme="brutalist"] .home-posts > .flex { grid-column:1 / -1; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:2rem; padding:1rem 7px 0 0; }
+html[data-theme="brutalist"] .home-posts article { border:3px solid var(--ink); border-top:14px solid var(--mint); padding:1.5rem; box-shadow:6px 6px 0 var(--ink); margin:0; }
+html[data-theme="brutalist"] .home-posts article:nth-child(3n + 1) { border-top-color:var(--coral); }
+html[data-theme="brutalist"] .home-posts article h2 { font-size:2rem; margin-top:0; }
+html[data-theme="brutalist"] .home-posts article h2 a { color:var(--ink); text-decoration:underline; }
+html[data-theme="brutalist"] .home-posts > nav { grid-column:1 / -1; }
+html[data-theme="brutalist"] .home-posts .br-pill { border-radius:0; border-width:2px; background:var(--surface); }
+html[data-theme="brutalist"] [data-region=main] > header { border-bottom:8px solid var(--blue); padding-bottom:1.75rem; }
+html[data-theme="brutalist"] [data-region=main] > header > h1 { font-size:clamp(2.5rem,6vw,5.5rem); line-height:.98; }
+html[data-theme="brutalist"] .article-toc { border:0; border-top:10px solid var(--mint); border-radius:0; font-weight:700; background:none; padding:1rem 0; }
+html[data-theme="brutalist"] .article-body h2 { border-left:10px solid var(--blue); padding-left:1rem; }
+html[data-theme="brutalist"] .article-body h3 { border-bottom:4px solid var(--mint); padding-bottom:.6rem; }
+html[data-theme="brutalist"] .article-body blockquote { border-left:10px solid var(--coral); }
+html[data-theme="brutalist"] .article-body pre { border:2px solid var(--ink); border-top:8px solid var(--blue); }
+html[data-theme="brutalist"] .timeline-entry { border:0; border-top:3px solid var(--ink); border-radius:0; padding:1.8rem 0; background:none; }
+html[data-theme="brutalist"] .timeline-dot { display:none; }
+html[data-theme="brutalist"] .timeline-topline { margin-bottom:1rem; gap:.6rem 1rem; }
+html[data-theme="brutalist"] .timeline-type { border:2px solid var(--ink); border-radius:0; color:var(--ink); background:var(--surface); font-weight:700; }
+html[data-theme="brutalist"] .timeline-title { font-size:1.7rem; margin-bottom:1rem; }
+html[data-theme="brutalist"] .timeline-content { max-width:68ch; }
+html[data-theme="brutalist"] .project-card { border:3px solid var(--ink); border-bottom:12px solid var(--mint); box-shadow:6px 6px 0 var(--ink); background:var(--bg); }
+html[data-theme="brutalist"] .project-card:nth-child(3n + 2) { border-bottom-color:var(--coral); }
+html[data-theme="brutalist"] .project-card:nth-child(3n) { border-bottom-color:var(--yellow); }
+html[data-theme="brutalist"] .project-card:hover { box-shadow:6px 6px 0 var(--ink); }
+html[data-theme="brutalist"] .project-card__title { background:var(--mint); padding:.75rem; color:#111; }
+html[data-theme="brutalist"] .project-card:nth-child(3n + 2) .project-card__title { background:var(--coral); }
+html[data-theme="brutalist"] .project-card:nth-child(3n) .project-card__title { background:var(--yellow); }
+html[data-theme="brutalist"] .project-card__title a, html[data-theme="brutalist"] .project-card__title a:visited { color:#111; }
+html[data-theme="brutalist"] [data-series-entry] { padding:1.25rem; border:3px solid var(--ink); border-top:12px solid var(--mint); margin-bottom:1.8rem; }
+html[data-theme="brutalist"] [data-series-entry]:nth-child(even) { border-top-color:var(--coral); }
+html[data-theme="brutalist"] [data-series-entry]::marker { font-weight:900; color:var(--accent); }
+@media(max-width:750px) {
+ html[data-theme="brutalist"] .site-shell { padding:1rem 1.4rem 1rem 1rem; }
+ html[data-theme="brutalist"] [data-region=main] { padding:2rem 0; }
+ html[data-theme="brutalist"] .home-posts { display:flex; flex-direction:column; gap:0; align-items:stretch; }
+ html[data-theme="brutalist"] .home-posts > h1 { order:-2; font-size:clamp(2.8rem,13vw,4rem); padding:1.25rem; }
+ html[data-theme="brutalist"] .home-intro { margin:0 7px 1.7rem .6rem; padding:1.2rem; font-size:1.2rem; }
+ html[data-theme="brutalist"] .home-posts > .flex { grid-template-columns:1fr; gap:1.8rem; }
+ html[data-theme="brutalist"] .home-posts article { padding:1.2rem; }
+ html[data-theme="brutalist"] .home-posts article h2 { font-size:1.7rem; }
+}
+
+/* Keep project controls on the same material as their reading surface. */
+html[data-theme="brutalist"] .projects-shell { --projects-filter-bg:var(--surface); --project-tag-bg:var(--surface); --project-tag-border:var(--rule); --project-tag-border-hover:var(--accent); --project-tag-color:var(--ink); --project-tag-count-bg:var(--bg); --project-card-media-bg:var(--surface); --project-card-divider:var(--rule); --project-browser-bg:var(--surface); --project-browser-address-bg:var(--bg); --project-browser-address-color:var(--muted); --project-browser-border:var(--rule); --project-tag-active-color:var(--surface); }
+html[data-theme="brutalist"] .project-tag:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+html[data-theme="brutalist"] .site-shell:has(.home-posts) .theme-art { display:flex; gap:5px; width:2.5rem; height:1.5rem; margin-inline:auto 1rem; flex-shrink:0; }
+html[data-theme="brutalist"] .theme-art span { flex:1; background:var(--accent); }
+html[data-theme="brutalist"] .theme-art span:first-child { background:var(--coral); border:2px solid var(--ink); }
+html[data-theme="brutalist"] .theme-art span:last-child { background:var(--mint); border:2px solid var(--ink); }
+@media(max-width:750px) { html[data-theme="brutalist"] .site-shell:has(.home-posts) .theme-art { display:none; } }
+
+html[data-theme="brutalist"] .timeline-content pre { max-width:100%; overflow-x:auto; background:var(--surface); padding:1rem; border:1px solid var(--rule); font-size:.9rem; }
+html[data-theme="brutalist"] .timeline-content img { max-width:100%; height:auto; }
+html[data-theme="brutalist"] .timeline-content table { display:block; max-width:100%; overflow-x:auto; }

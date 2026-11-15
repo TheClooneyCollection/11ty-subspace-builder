@@ -242,3 +242,35 @@
       display: '''Helvetica Neue'', Helvetica, Arial, ''Noto Sans SC'', ''PingFang SC'', sans-serif'
       mono: '''Courier New'', Menlo, Consolas, ''Noto Sans SC'', ''PingFang SC'', sans-serif'
     radius: 0px
+- id: brutalist
+  label: Brutalist
+  scheme: both
+  replaces: []
+  tokens:
+    light:
+      bg: '#fafafa'
+      ink: '#111111'
+      muted: '#444444'
+      accent: '#164bd1'
+      rule: '#111111'
+      surface: '#e9edf4'
+      blue: '#164bd1'
+      coral: '#ff897e'
+      mint: '#83d7bb'
+      yellow: '#ffde00'
+    dark:
+      bg: '#101522'
+      ink: '#f5f5f5'
+      muted: '#bdc6d8'
+      accent: '#9cb7ff'
+      rule: '#f5f5f5'
+      surface: '#202b42'
+      blue: '#164bd1'
+      coral: '#ff897e'
+      mint: '#83d7bb'
+      yellow: '#ffde00'
+    font:
+      body: Arial, Helvetica, 'Noto Sans SC', 'PingFang SC', sans-serif
+      display: Arial, Helvetica, 'Noto Sans SC', 'PingFang SC', sans-serif
+      mono: '''Courier New'', Menlo, Consolas, ''Noto Sans SC'', ''PingFang SC'', sans-serif'
+    radius: 0px
