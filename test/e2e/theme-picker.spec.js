@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 
 const card = (page, id, palette = '') => page.locator(`.theme-picker-card[data-id="${id}"][data-palette="${palette}"]`);
 const mode = (page, value) => page.locator(`[data-theme-mode-toggle="${value}"]`);
-// Chromium ignores taps during a view transition, so wait out the 0.18 s crossfade before the next tap.
+// Playwright scrolls the window when it clicks during a view transition, so wait out the 0.4 s crossfade.
 const settled = page => page.waitForFunction(() => !document.documentElement.matches(':active-view-transition'));
 const position = (page, id) => page.evaluate(id => {
   const body = document.querySelector('.theme-picker-body');
@@ -119,6 +119,28 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
     await mode(page, 'light').click();
     await expect(page.locator('html')).toHaveAttribute('data-scheme', 'light');
     expect(await page.evaluate(() => window.__fades)).toBe(reducedMotion === 'reduce' ? 0 : 2);
+  });
+
+  test('a tap during the crossfade still picks the tapped card', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/?theme=swiss&mode=dark');
+    await page.locator('.theme-picker-open').click();
+    // A DOM click starts the fade without Playwright scrolling the page mid-transition.
+    await card(page, 'brutalist').evaluate(node => node.click());
+    // Tap the middle of whichever other card shows in the panel body.
+    const box = await page.evaluate(() => {
+      const body = document.querySelector('.theme-picker-body').getBoundingClientRect();
+      for (const node of document.querySelectorAll('.theme-picker-card:not([hidden]):not([data-id="brutalist"])')) {
+        const rect = node.getBoundingClientRect();
+        const top = Math.max(rect.top, body.top), bottom = Math.min(rect.bottom, body.bottom, innerHeight);
+        if (bottom - top > 40) return { id: node.dataset.id, active: document.documentElement.matches(':active-view-transition'), x: rect.x + rect.width / 2, y: (top + bottom) / 2 };
+      }
+    });
+    expect(box.active).toBe(true);
+    // A raw tap, as a reader would make it, while Chromium still hit-tests the root.
+    await page.mouse.click(box.x, box.y);
+    await expect(page.locator('html')).toHaveAttribute('data-theme', box.id);
+    await expect(page.getByRole('dialog')).toBeVisible();
   });
 
   test('lower card preview, scheme flip, and Use preserve panel and page scroll', async ({ page }) => {

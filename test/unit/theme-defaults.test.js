@@ -17,7 +17,7 @@ function visit({storage = {}, day = 1, random = () => 0, dark = false, strategy 
     location: {search, pathname: '/', hash: ''}, history: {replaceState() {}}, window: {matchMedia: query => query.includes('reduced-motion') ? {matches: reduce} : media},
     document: {documentElement: root, getElementById: id => id === 'theme-config' ? {textContent: JSON.stringify(config)} : null,
       dispatchEvent: event => events.push(event), write: html => writes.push(html),
-      ...(transitions ? {startViewTransition: update => {fades.push(root.dataset.theme); update();}} : {})},
+      ...(transitions ? {startViewTransition: update => {fades.push(root.dataset.theme); update(); return {finished: Promise.resolve(), skipTransition() {}};}} : {})},
     localStorage: {getItem(key) {if (blocked) throw Error('blocked'); return storage[key];}, setItem(key, value) {if (blocked) throw Error('blocked'); storage[key] = value;}, removeItem(key) {if (blocked) throw Error('blocked'); delete storage[key];}}};
   vm.runInNewContext(source, context);
   return {api: context.window.siteTheme, root, storage, media, events, writes, fades};

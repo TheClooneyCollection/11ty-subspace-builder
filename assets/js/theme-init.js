@@ -55,6 +55,18 @@
   let theme, palette, scheme;
   root.dataset.previewPage = String(preview);
   let initializing = true;
+  let fading = null;
+  // Chromium hit-tests the root during a view transition, so a tap mid-fade would be lost.
+  // End the fade and hand the click to whatever is under the pointer.
+  // Its pointerdown would also read as a tap outside the picker, so swallow that too.
+  document.addEventListener?.('pointerdown', event => { if (fading && event.target === root) event.stopPropagation(); }, true);
+  document.addEventListener?.('click', event => {
+    if (!fading || event.target !== root) return;
+    event.stopPropagation();
+    const {clientX: x, clientY: y} = event;
+    fading.skipTransition();
+    fading.finished.finally(() => document.elementFromPoint(x, y)?.closest('button,a,[role],input,label')?.click());
+  }, true);
   const state = () => ({theme,mode,palette,preview,scheme,manual:!!manualTheme,requestedTheme});
   function render() {
     let id = requestedTheme;
@@ -85,7 +97,10 @@
     };
     // All theme sheets ship in one bundle, so a switch only flips attributes; crossfade it where supported.
     const calm=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if(!initializing && document.startViewTransition && !calm && !document.hidden) document.startViewTransition(commit);
+    if(!initializing && document.startViewTransition && !calm && !document.hidden){
+      const fade=fading=document.startViewTransition(commit);
+      fade.finished.finally(()=>{if(fading===fade)fading=null;});
+    }
     else commit();
   }
   function apply(id, nextMode=mode, nextPalette=rememberedPalette, persist=false) {
