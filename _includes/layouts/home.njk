@@ -398,7 +398,7 @@ html.theme[data-scheme="dark"] [data-theme-mode-toggle][data-theme-mode="dark"] 
         </section>
       {% endif %}
       {% if isArticlePage and showComments and giscusConfig.repo %}
-        <script src="https://giscus.app/client.js"
+        <script type="application/json" data-comment-script data-src="https://giscus.app/client.js"
                 data-repo="{{ giscusConfig.repo }}"
                 data-repo-id="{{ giscusConfig.repoId }}"
                 data-category="{{ giscusConfig.category }}"

@@ -8,6 +8,9 @@
 		{% endif %}
 	{% endfor %}
 {% endif %}
+{% set defaultMode = siteThemeConfig.defaultMode or 'auto' %}
+{% set defaultScheme = defaultTheme.scheme if defaultTheme.scheme != 'both' else ('dark' if defaultMode == 'dark' else 'light') %}
+{% set themeRuntime = themes | themeManifest(siteThemeConfig) %}
 {% set defaultThemeMidtoneClass = defaultTheme.midtoneClass if defaultTheme.midtoneClass is defined else 'mid-gray' %}
 {% set autoLightTheme = defaultTheme %}
 {% set autoDarkTheme = defaultTheme %}
@@ -58,10 +61,12 @@
 	{% set twitterCard = 'summary_large_image' %}
 {% endif %}
 <!doctype html>
-<html lang="{{ htmlLang if site.i18n.enabled else metadata.language }}" class="theme" data-theme="{{ defaultTheme.id }}" data-scheme="{{ defaultTheme.scheme or 'light' }}" data-default-theme="{{ defaultTheme.id }}" data-auto-light-theme="{{ autoLightTheme.id }}" data-auto-dark-theme="{{ autoDarkTheme.id }}" data-theme-preference="auto">
+<html lang="{{ htmlLang if site.i18n.enabled else metadata.language }}" class="theme" data-theme="{{ defaultTheme.id }}" data-scheme="{{ defaultScheme }}" data-default-theme="{{ defaultTheme.id }}" data-auto-light-theme="{{ autoLightTheme.id }}" data-auto-dark-theme="{{ autoDarkTheme.id }}" data-theme-mode="{{ defaultMode }}" data-default-mode="{{ defaultMode }}">
 <head>
 	{% include "layouts/partials/head-seo.njk" %}
 	{% include "layouts/partials/theme-styles.njk" %}
+	<link id="theme-css" rel="stylesheet" blocking="render">
+    {% if themeRuntime.themes[defaultTheme.id].css %}<noscript><link rel="stylesheet" href="{{ themeRuntime.themes[defaultTheme.id].css }}"></noscript>{% endif %}
 	{% include "layouts/partials/theme-init-script.njk" %}
 
 	{% if environment != 'development' %}

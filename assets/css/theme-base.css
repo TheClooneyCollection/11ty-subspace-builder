@@ -58,3 +58,6 @@ html.theme .bg-white-20{background:var(--surface)}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media print{.site-header{position:static}.article-toc{position:static;max-height:none}.theme-backdrop,.theme-art,[data-theme-selector]{display:none!important}}
+
+[hidden]{display:none!important}
+html:not([data-theme-ready]) [data-region=nav]{display:block}

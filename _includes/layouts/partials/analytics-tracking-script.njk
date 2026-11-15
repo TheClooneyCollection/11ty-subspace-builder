@@ -1,6 +1,12 @@
 {% set tracking = site['umami'] %}
-{% if tracking and tracking['source'] and tracking['id'] %}
-
-<script defer src="{{ tracking['source'] }}" data-website-id="{{ tracking['id'] }}"></script>
-
+{% if tracking and tracking.source and tracking.id %}
+<script>
+if (document.documentElement.dataset.previewPage !== 'true') {
+  const analytics = document.createElement('script');
+  analytics.defer = true;
+  analytics.src = {{ tracking.source | dump | safe }};
+  analytics.dataset.websiteId = {{ tracking.id | dump | safe }};
+  document.head.append(analytics);
+}
+</script>
 {% endif %}
