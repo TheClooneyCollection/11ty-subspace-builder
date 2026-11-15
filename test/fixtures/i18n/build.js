@@ -43,6 +43,8 @@ export function buildI18nFixture({
       '_includes',
       'src',
       '_data',
+      'assets/css',
+      'assets/js',
     ]) {
       fs.cpSync(path.join(root, name), path.join(dir, name), {
         recursive: true,

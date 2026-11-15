@@ -18,17 +18,30 @@
 		--accent: {{ defaultAccent }};
 		--accent-hover: var(--accent);
 	}
-	@media screen {
-		{% for theme in themes %}
-		{% set projectConfig = theme.project if theme.project is defined else {} %}
-		html.theme[data-theme="{{ theme.id }}"] {
-			--accent: {{ theme.accent | default(defaultAccent) }};
-			{% if projectConfig.tagActiveColor %}
-			--project-tag-active-color: {{ projectConfig.tagActiveColor }};
-			{% endif %}
-		}
-		{% endfor %}
-	}
+	{% for theme in themes %}
+    html.theme[data-theme="{{ theme.id }}"] {
+      {% for role, stack in theme.tokens.font %}--font-{{ role }}: {{ stack | safe }};{% endfor %}
+      --radius: {{ theme.tokens.radius }};
+    }
+    {% for scheme, values in theme.tokens %}{% if scheme == 'light' or scheme == 'dark' %}
+      html.theme[data-theme="{{ theme.id }}"][data-scheme="{{ scheme }}"] {
+        {% for key, value in values %}--{{ key }}: {{ value }};{% endfor %}
+      }
+    {% endif %}{% endfor %}
+    {% for palette in theme.palettes %}
+      html.theme[data-theme="{{ theme.id }}"][data-palette="{{ palette.id }}"] {
+        {% for key, value in palette.tokens %}--{{ key }}: {{ value }};{% endfor %}
+      }
+    {% endfor %}
+    {% if theme.scheme == 'both' %}
+      @media (prefers-color-scheme: dark) {
+        html.theme:not([data-theme-ready])[data-theme="{{ theme.id }}"][data-default-mode="auto"] {
+          {% for key, value in theme.tokens.dark %}--{{ key }}: {{ value }};{% endfor %}
+          color-scheme: dark;
+        }
+      }
+    {% endif %}
+    {% endfor %}
 	@supports (color: color-mix(in srgb, #000 0%, #fff 100%)) {
 		html.theme {
 			--accent-hover: color-mix(in srgb, var(--accent) 80%, white 20%);
@@ -72,11 +85,10 @@
 	html.theme blockquote.todo-quote.prod {
 		display: none !important;
 	}
-	html.theme.black blockquote.todo-quote {
+	html.theme[data-scheme="light"] blockquote.todo-quote {
 		--todo-quote-fg: #fff;
 	}
-	html.theme.near-white blockquote.todo-quote,
-	html.theme.white blockquote.todo-quote {
+	html.theme[data-scheme="dark"] blockquote.todo-quote {
 		--todo-quote-fg: #111;
 	}
 	html.theme .footnotes {
@@ -155,4 +167,5 @@
 	img {
 		height: auto;
 	}
+{{ "" | themeBaseCss | safe }}
 </style>

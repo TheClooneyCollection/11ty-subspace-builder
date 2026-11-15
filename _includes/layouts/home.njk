@@ -231,7 +231,8 @@ html.theme[data-scheme="dark"] [data-theme-mode-toggle][data-theme-mode="dark"] 
                   class="theme-preview-button w2 h2 bn pointer br2 mr2 mb2 pa0 ba b--transparent bg-transparent flex items-center justify-center"
                   data-theme-preview="{{ theme.id }}"
                   aria-label="{{ ui.shared.theme.previewAriaTemplate | replace('{theme}', theme.label) }}">
-            <span class="w-100 h-100 br2 flex items-center justify-center {{ theme.classes | join(' ') }}">
+            {% set swatch = theme.tokens.light or theme.tokens.dark %}
+            <span style="background:{{ swatch.bg }};color:{{ swatch.ink }};border-bottom:3px solid {{ swatch.accent }}" class="w-100 h-100 br2 flex items-center justify-center">
               Aa
             </span>
           </button>

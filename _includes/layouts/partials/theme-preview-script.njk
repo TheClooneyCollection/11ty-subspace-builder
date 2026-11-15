@@ -128,8 +128,8 @@
 			const { persist = true, syncSelect = true, preview = false } = options;
 			const resolvedThemeId = resolveThemeId(preference);
 			if (!themeMap[resolvedThemeId]) return;
-			themeTarget.classList.remove(...allThemeClasses);
-			themeTarget.classList.add(...themeMap[resolvedThemeId]);
+
+
 			themeTarget.dataset.theme = resolvedThemeId;
 		themeTarget.dataset.scheme = themeConfig.find(theme => theme.id === resolvedThemeId).scheme || 'light';
 			themeTarget.dataset.themePreference = preference;

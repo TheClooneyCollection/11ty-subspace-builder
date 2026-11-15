@@ -1,5 +1,3 @@
-# https://tachyons.io/docs/themes/skins/
-
 - id: sun
   scheme: light
   label: Sun (black / washed-yellow)
@@ -7,9 +5,23 @@
     - black
     - bg-washed-yellow
   midtoneClass: gold
-  accent: "#E7040F"
+  accent: '#E7040F'
   project:
-    tagActiveColor: "#ECE9E9"
+    tagActiveColor: '#ECE9E9'
+  tokens:
+    light:
+      bg: '#fffceb'
+      ink: '#000'
+      muted: '#756000'
+      accent: '#E7040F'
+      rule: '#d9d4b0'
+      surface: '#fffef5'
+    font:
+      body: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      display: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 4px
+  replaces: []
 - id: default
   scheme: light
   label: Default
@@ -17,9 +29,23 @@
     - black
     - bg-white
   midtoneClass: mid-gray
-  accent: "#00449E"
+  accent: '#00449E'
   project:
-    tagActiveColor: "#ECE9E9"
+    tagActiveColor: '#ECE9E9'
+  tokens:
+    light:
+      bg: '#fff'
+      ink: '#000'
+      muted: '#555'
+      accent: '#00449E'
+      rule: '#ccc'
+      surface: '#f4f4f4'
+    font:
+      body: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      display: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 4px
+  replaces: []
 - id: mint
   scheme: light
   label: Mint (black / washed-green)
@@ -27,9 +53,23 @@
     - black
     - bg-washed-green
   midtoneClass: dark-green
-  accent: "#137752"
+  accent: '#137752'
   project:
-    tagActiveColor: "#ECE9E9"
+    tagActiveColor: '#ECE9E9'
+  tokens:
+    light:
+      bg: '#e8fdf5'
+      ink: '#000'
+      muted: '#137752'
+      accent: '#137752'
+      rule: '#bddbcc'
+      surface: '#f6fffb'
+    font:
+      body: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      display: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 4px
+  replaces: []
 - id: grape
   scheme: dark
   label: Grape (near-white / purple)
@@ -37,9 +77,23 @@
     - near-white
     - bg-purple
   midtoneClass: light-purple
-  accent: "#FFA3D7"
+  accent: '#FFA3D7'
   project:
-    tagActiveColor: "#2D113B"
+    tagActiveColor: '#2D113B'
+  tokens:
+    dark:
+      bg: '#5e2ca5'
+      ink: '#f4f4f4'
+      muted: '#d4bbf5'
+      accent: '#FFA3D7'
+      rule: '#9872c9'
+      surface: '#48217e'
+    font:
+      body: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      display: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 4px
+  replaces: []
 - id: charcoal
   scheme: dark
   label: Charcoal (near-white / mid-gray)
@@ -47,9 +101,23 @@
     - near-white
     - bg-mid-gray
   midtoneClass: light-silver
-  accent: "#CCCCCC"
+  accent: '#CCCCCC'
   project:
-    tagActiveColor: "#1A1A1A"
+    tagActiveColor: '#1A1A1A'
+  tokens:
+    dark:
+      bg: '#555'
+      ink: '#f4f4f4'
+      muted: '#ddd'
+      accent: '#ccc'
+      rule: '#999'
+      surface: '#444'
+    font:
+      body: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      display: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 4px
+  replaces: []
 - id: deep-blue
   scheme: dark
   label: Deep Blue (white / dark-blue)
@@ -57,9 +125,23 @@
     - white
     - bg-dark-blue
   midtoneClass: light-blue
-  accent: "#CDECFF"
+  accent: '#CDECFF'
   project:
-    tagActiveColor: "#012A63"
+    tagActiveColor: '#012A63'
+  tokens:
+    dark:
+      bg: '#00449e'
+      ink: '#fff'
+      muted: '#cdecff'
+      accent: '#cdecff'
+      rule: '#7396c3'
+      surface: '#003477'
+    font:
+      body: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      display: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 4px
+  replaces: []
 - id: midnight
   scheme: dark
   label: Midnight (near-white / navy)
@@ -67,9 +149,23 @@
     - near-white
     - bg-navy
   midtoneClass: moon-gray
-  accent: "#96CCFF"
+  accent: '#96CCFF'
   project:
-    tagActiveColor: "#001B44"
+    tagActiveColor: '#001B44'
+  tokens:
+    dark:
+      bg: '#001b44'
+      ink: '#f4f4f4'
+      muted: '#ccc'
+      accent: '#96ccff'
+      rule: '#506580'
+      surface: '#08284f'
+    font:
+      body: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      display: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 4px
+  replaces: []
 - id: terminal
   scheme: dark
   label: Terminal (green / near-black)
@@ -77,6 +173,20 @@
     - near-white
     - bg-near-black
   midtoneClass: light-green
-  accent: "#33FF66"
+  accent: '#33FF66'
   project:
-    tagActiveColor: "#0A2A0A"
+    tagActiveColor: '#0A2A0A'
+  tokens:
+    dark:
+      bg: '#111'
+      ink: '#f4f4f4'
+      muted: '#9eebcf'
+      accent: '#33ff66'
+      rule: '#555'
+      surface: '#222'
+    font:
+      body: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      display: Arial, 'Noto Sans SC', 'PingFang SC', sans-serif
+      mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 4px
+  replaces: []

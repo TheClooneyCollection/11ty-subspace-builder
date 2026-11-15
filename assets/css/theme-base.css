@@ -1,0 +1,60 @@
+/* Shared structure; every detail sheet is a skin of this same document. */
+html.theme {color:var(--ink);background:var(--bg);font-family:var(--font-body);color-scheme:light;--header-height:9rem;--accent-hover:var(--accent);--tag-font:var(--font-mono)}
+html[data-scheme=dark]{color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-width:0;background:transparent}
+html.theme .sans-serif{font-family:var(--font-body)}
+html.theme .theme-text{color:var(--ink)}
+html.theme .theme-midtone{color:var(--muted)}
+html.theme a,html.theme a:visited{color:var(--accent)}
+html.theme a:hover{color:var(--accent-hover)}
+h1,h2,h3,h4{font-family:var(--font-display);line-height:1.15;overflow-wrap:anywhere}
+code,pre,kbd{font-family:var(--font-mono)}
+:where(h1,h2,h3,h4,h5,h6,[id],:target){scroll-margin-top:calc(var(--header-height) + 1rem)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+.theme-backdrop{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.theme-art{display:none;pointer-events:none}
+.site-shell{max-width:90rem;margin:auto;isolation:isolate}
+.site-header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:2px solid var(--rule)}
+[data-region=masthead]{padding:1rem 2rem;gap:.5rem}
+html.theme [data-region=nav]{width:100%;padding:.5rem 2rem 1rem;background:var(--bg)}
+[data-region=sidebar]{flex-direction:row;flex-wrap:wrap;gap:.4rem 1.3rem;align-items:center}
+[data-region=sidebar]>li{width:auto;margin:0}
+[data-region=sidebar] a{font-size:1rem;text-align:left}
+html.theme [data-region=main]{width:100%;max-width:80rem;margin:auto;padding:2.5rem 2rem;min-width:0}
+[data-region=footer]{padding:1rem}
+html.theme .b--black-10,html.theme .b--black-20,html.theme .b--black-80{border-color:var(--rule)}
+html.theme .bg-white-20{background:var(--surface)}
+.home-intro{font-size:1.15rem;max-width:65ch}
+.home-explore{display:none}
+.home-posts{max-width:none}
+.home-posts article{padding:1.5rem 0;border-color:var(--rule)}
+.home-posts article>div{max-width:72ch}
+.article-layout{min-width:0}
+.article-body{display:block;min-width:0;max-width:75ch;margin:auto;overflow-wrap:anywhere}
+.article-body p,.article-body li{line-height:1.75}
+.article-toc{margin-bottom:2rem;padding:1rem;border:1px solid var(--rule);background:var(--surface);border-radius:var(--radius)}
+.article-toc ul{padding-left:1.2rem}.article-toc a{overflow-wrap:anywhere}
+.article-body img{max-width:100%;height:auto}.article-body figure{margin:1.5rem 0}.article-body figcaption{color:var(--muted);font-size:.9rem}
+.article-body pre{max-width:100%;overflow-x:auto;background:var(--surface);padding:1rem;border:1px solid var(--rule)}
+.article-body table{display:block;max-width:100%;overflow-x:auto;border-collapse:collapse;margin:1.5rem 0}
+.article-body th,.article-body td{padding:.65rem .9rem;border:1px solid var(--rule);text-align:left}
+.article-body blockquote{margin:1.5rem 0;padding:.5rem 1.3rem;border-left:4px solid var(--accent);background:var(--surface)}
+.timeline-entry{border-color:var(--rule)}
+.timeline-type{display:inline-block;font-family:var(--tag-font);font-size:.8rem;line-height:1.4;padding:.2rem .5rem;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface);color:var(--accent)}
+.timeline-topline{gap:.7rem;flex-wrap:wrap}
+@media(min-width:1100px){
+ .article-layout.has-toc{display:grid;grid-template-columns:13rem minmax(0,1fr);gap:2.5rem;align-items:start}
+ .article-toc{position:sticky;top:calc(var(--header-height) + 1rem);max-height:calc(100vh - var(--header-height) - 2rem);overflow-y:auto}
+ .article-body{width:100%}
+}
+@media(max-width:599px){
+ [data-region=masthead]{padding:.75rem 1rem}
+ html.theme [data-region=main]{padding:1.5rem 1rem}
+ html.theme [data-region=nav]{padding:.5rem 1rem}
+ [data-region=masthead]>a{font-size:1.5rem}
+ [data-theme-selector]{max-width:100%;flex-wrap:wrap}
+ .article-toc{position:static;max-height:none}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media print{.site-header{position:static}.article-toc{position:static;max-height:none}.theme-backdrop,.theme-art,[data-theme-selector]{display:none!important}}

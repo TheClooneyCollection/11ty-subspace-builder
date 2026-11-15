@@ -616,6 +616,7 @@ export default function (eleventyConfig) {
 
   eleventyConfig.addFilter('excerpt', excerpt);
   eleventyConfig.addFilter('articleLayout', articleLayout);
+  eleventyConfig.addFilter('themeBaseCss', () => fs.readFileSync(new URL('./assets/css/theme-base.css', import.meta.url), 'utf8'));
 
   eleventyConfig.addFilter('absoluteUrl', (path, base = '') => {
     if (!path) return '';

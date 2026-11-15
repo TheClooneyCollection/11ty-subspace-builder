@@ -43,8 +43,8 @@
 		const desiredThemeId = resolveThemeId(desiredPreference);
 		const desiredClasses = themeMap[desiredThemeId];
 		if (!desiredClasses) return;
-		themeTarget.classList.remove(...allThemeClasses);
-		themeTarget.classList.add(...desiredClasses);
+
+
 		themeTarget.dataset.theme = desiredThemeId;
 		themeTarget.dataset.scheme = themeConfig.find(theme => theme.id === desiredThemeId).scheme || 'light';
 		themeTarget.dataset.themePreference = desiredPreference;

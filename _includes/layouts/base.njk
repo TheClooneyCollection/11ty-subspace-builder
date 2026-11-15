@@ -8,7 +8,6 @@
 		{% endif %}
 	{% endfor %}
 {% endif %}
-{% set defaultThemeClasses = defaultTheme.classes | join(' ') %}
 {% set defaultThemeMidtoneClass = defaultTheme.midtoneClass if defaultTheme.midtoneClass is defined else 'mid-gray' %}
 {% set autoLightTheme = defaultTheme %}
 {% set autoDarkTheme = defaultTheme %}
@@ -59,7 +58,7 @@
 	{% set twitterCard = 'summary_large_image' %}
 {% endif %}
 <!doctype html>
-<html lang="{{ htmlLang if site.i18n.enabled else metadata.language }}" class="theme {{ defaultThemeClasses }}" data-theme="{{ defaultTheme.id }}" data-scheme="{{ defaultTheme.scheme or 'light' }}" data-default-theme="{{ defaultTheme.id }}" data-auto-light-theme="{{ autoLightTheme.id }}" data-auto-dark-theme="{{ autoDarkTheme.id }}" data-theme-preference="auto">
+<html lang="{{ htmlLang if site.i18n.enabled else metadata.language }}" class="theme" data-theme="{{ defaultTheme.id }}" data-scheme="{{ defaultTheme.scheme or 'light' }}" data-default-theme="{{ defaultTheme.id }}" data-auto-light-theme="{{ autoLightTheme.id }}" data-auto-dark-theme="{{ autoDarkTheme.id }}" data-theme-preference="auto">
 <head>
 	{% include "layouts/partials/head-seo.njk" %}
 	{% include "layouts/partials/theme-styles.njk" %}
@@ -94,5 +93,6 @@
 		{% endfor %}
 	{% endif %}
 	<script src="/assets/js/copy.js" defer></script>
+	<script src="/assets/js/theme-layout.js" defer></script>
 </body>
 </html>
