@@ -59,7 +59,7 @@ test.describe('theme toggle', () => {
     await expect(page.locator('html')).toHaveAttribute('data-scheme', 'dark');
   });
   test('migrates stored legacy choices and requests only active detail CSS', async ({ page }) => {
-    await page.addInitScript(() => { localStorage.setItem('theme','sun'); localStorage.setItem('themePreference','sun'); });
+    await page.addInitScript(() => { if(window!==window.top)return; localStorage.setItem('theme','sun'); localStorage.setItem('themePreference','sun'); });
     const styles=[];
     page.on('request', request=>{if(request.url().includes('/assets/css/themes/'))styles.push(request.url());});
     await page.goto('/');
@@ -182,5 +182,36 @@ test.describe('timeline detail', () => {
     const parentBranch = page.locator('.timeline-thread__branch--parent').first();
     await expect(parentBranch).toBeVisible();
     await expect(parentBranch).toContainText(/Earlier in thread|Parent/i);
+  });
+});
+
+test.describe('theme peek panel', () => {
+  test('previews with keyboard without changing the page until Apply', async ({page}) => {
+    await page.goto('/');
+    const initial=await page.locator('html').getAttribute('data-theme');
+    await page.locator('.theme-picker-open').click();
+    const dialog=page.locator('.theme-peek');await expect(dialog).toBeVisible();
+    await page.keyboard.press('ArrowRight');
+    const selected=await dialog.locator('[role=radio][aria-checked=true]').getAttribute('data-id');
+    await expect(page.locator('html')).toHaveAttribute('data-theme',initial);
+    await expect(dialog.locator('iframe')).toHaveCount(1);
+    await page.keyboard.press('Enter');await expect(dialog).not.toBeVisible();
+    await expect(page.locator('html')).toHaveAttribute('data-theme',selected);
+    expect(await page.evaluate(()=>localStorage.getItem('theme'))).toBe(selected);
+    await page.locator('.theme-picker-open').click();await page.keyboard.press('Escape');
+    await expect(page.locator('.theme-picker-open')).toBeFocused();
+  });
+  test('keeps Liquid Glass paired modes and its indigo palette across reload', async ({page})=>{
+    await page.goto('/');await page.locator('.theme-picker-open').click();
+    await page.locator('.theme-peek-choice[data-id="liquid-glass-dark"]').click();
+    await page.locator('.theme-peek-options select').nth(1).selectOption('indigo');
+    await page.locator('.theme-peek-apply').click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme','liquid-glass-dark');
+    await expect(page.locator('html')).toHaveAttribute('data-palette','indigo');
+    await page.reload();await expect(page.locator('html')).toHaveAttribute('data-palette','indigo');
+    await page.evaluate(()=>window.siteTheme.apply('liquid-glass-dark','light','indigo',true));
+    await expect(page.locator('html')).toHaveAttribute('data-theme','liquid-glass-light');
+    await page.evaluate(()=>window.siteTheme.apply('liquid-glass-light','dark','indigo',true));
+    await expect(page.locator('html')).toHaveAttribute('data-palette','indigo');
   });
 });

@@ -185,34 +185,8 @@ html.theme[data-scheme="dark"] [data-theme-mode-toggle][data-theme-mode="dark"] 
     .theme .theme-text:active {
       color: inherit;
     }
-    @media screen and (min-width: 30em) {
-      [data-theme-selector] {
-        position: relative;
-      }
-      [data-theme-selector]::after {
-        content: '';
-        display: inline-block;
-        margin-left: 0.25rem;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-        border-top: 5px solid currentColor;
-        transition: transform 0.2s ease;
-      }
-      [data-theme-selector]:hover::after,
-      [data-theme-selector]:focus-within::after {
-        transform: rotate(180deg);
-      }
-      [data-theme-selector] .theme-preview-button {
-        display: none;
-      }
-      [data-theme-selector] .theme-preview-button[data-active] {
-        display: flex;
-      }
-      [data-theme-selector]:hover .theme-preview-button,
-      [data-theme-selector]:focus-within .theme-preview-button {
-        display: flex;
-      }
-    }
+    [data-theme-selector] { flex-wrap: wrap; gap: .25rem; }
+    [data-theme-selector] .theme-preview-button { display: flex; }
   </style>
 
   <header class="site-header">
