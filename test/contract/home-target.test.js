@@ -90,7 +90,7 @@ describe('contract — site.home.target', () => {
         const { document } = parsePage(urlPath, options);
         const paginationLinks = selectAll(
           document,
-          'nav:not(#sidebar):not([data-language-switcher]) a[href]',
+          '.home-posts nav a[href]',
         );
 
         for (const link of paginationLinks) {
