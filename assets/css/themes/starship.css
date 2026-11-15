@@ -12,8 +12,8 @@ html[data-theme="starship"] h1 {font-size:clamp(2.25rem,4.7vw,4.1rem);letter-spa
 html[data-theme="starship"] h2 {font-size:1.8rem}
 html[data-theme="starship"] a {text-underline-offset:.25em}
 html[data-theme="starship"] .home-posts {display:flex;flex-direction:column;position:relative;max-width:none}
-html[data-theme="starship"] .home-posts>h1 {order:-1;font-size:clamp(3.25rem,6.4vw,5.6rem);width:56%;margin-bottom:1.25rem}
-html[data-theme="starship"] .home-intro {position:relative;max-width:none;min-height:14rem;margin-bottom:3rem}
+html[data-theme="starship"] .home-posts>h1 {font-size:clamp(3.25rem,6.4vw,5.6rem);width:56%;margin-bottom:1.25rem}
+html[data-theme="starship"] .home-intro {position:relative;max-width:none;min-height:14rem;margin-bottom:3rem;padding-top:5rem}
 html[data-theme="starship"] .home-intro>p {max-width:52%;font-size:1.3rem;line-height:1.65;margin-top:0}
 html[data-theme="starship"] .home-intro::before,
 html[data-theme="starship"] .home-intro::after {content:"";position:absolute;pointer-events:none}
@@ -54,7 +54,7 @@ html[data-theme="starship"] .theme-art span {position:absolute;pointer-events:no
  html[data-theme="starship"] [data-region="main"] {padding:2rem 1.25rem 3rem}
  html[data-theme="starship"] .theme-art {display:none}
  html[data-theme="starship"] .home-posts>h1 {width:100%;font-size:clamp(2.8rem,12vw,4rem)}
- html[data-theme="starship"] .home-intro {min-height:0;padding-bottom:14rem;margin-bottom:1.5rem}
+ html[data-theme="starship"] .home-intro {min-height:0;padding-top:0;padding-bottom:14rem;margin-bottom:1.5rem}
  html[data-theme="starship"] .home-intro>p {max-width:100%;font-size:1.15rem}
  html[data-theme="starship"] .home-posts article:first-child {padding:1.5rem}
  html[data-theme="starship"] .home-posts article:first-child h2 {font-size:1.85rem}
@@ -69,8 +69,8 @@ html[data-theme="starship"] .theme-art span {position:absolute;pointer-events:no
 }
 
 html[data-theme="starship"] .site-header {border-bottom:1px solid var(--rule)}
-html[data-theme="starship"] .home-intro::before {width:11.25rem;height:11.25rem;right:12%;top:-2.25rem;border-radius:50%;background:linear-gradient(140deg,#e4eeed,#7f9eaf)}
-html[data-theme="starship"] .home-intro::after {width:38%;height:13rem;right:1%;top:-3rem;border:1px solid var(--accent);border-radius:50%;transform:rotate(-28deg);background:radial-gradient(circle at 85% 15%,var(--accent) 0 3px,transparent 4px)}
+html[data-theme="starship"] .home-intro::before {width:11.25rem;height:11.25rem;right:12%;top:2.75rem;border-radius:50%;background:linear-gradient(140deg,#e4eeed,#7f9eaf)}
+html[data-theme="starship"] .home-intro::after {width:38%;height:13rem;right:1%;top:2rem;border:1px solid var(--accent);border-radius:50%;transform:rotate(-28deg);background:radial-gradient(circle at 85% 15%,var(--accent) 0 3px,transparent 4px)}
 html[data-theme="starship"] .theme-art::before {width:1.4rem;height:1.4rem;border-radius:50%;background:linear-gradient(140deg,#e4eeed,#7f9eaf);left:.8rem;top:.3rem}
 html[data-theme="starship"] .theme-art::after {inset:.25rem 0;border:1px solid var(--accent);border-radius:50%;transform:rotate(-28deg)}
 html[data-theme="starship"] .home-posts article:first-child {border-top:3px solid var(--accent);border-radius:3px 3px 4rem 3px}

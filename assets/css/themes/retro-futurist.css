@@ -12,8 +12,8 @@ html[data-theme="retro-futurist"] h1 {font-size:clamp(2.25rem,4.7vw,4.1rem);lett
 html[data-theme="retro-futurist"] h2 {font-size:1.8rem}
 html[data-theme="retro-futurist"] a {text-underline-offset:.25em}
 html[data-theme="retro-futurist"] .home-posts {display:flex;flex-direction:column;position:relative;max-width:none}
-html[data-theme="retro-futurist"] .home-posts>h1 {order:-1;font-size:clamp(3.25rem,6.4vw,5.6rem);width:56%;margin-bottom:1.25rem}
-html[data-theme="retro-futurist"] .home-intro {position:relative;max-width:none;min-height:14rem;margin-bottom:3rem}
+html[data-theme="retro-futurist"] .home-posts>h1 {font-size:clamp(3.25rem,6.4vw,5.6rem);width:56%;margin-bottom:1.25rem}
+html[data-theme="retro-futurist"] .home-intro {position:relative;max-width:none;min-height:14rem;margin-bottom:3rem;padding-top:5rem}
 html[data-theme="retro-futurist"] .home-intro>p {max-width:52%;font-size:1.3rem;line-height:1.65;margin-top:0}
 html[data-theme="retro-futurist"] .home-intro::before,
 html[data-theme="retro-futurist"] .home-intro::after {content:"";position:absolute;pointer-events:none}
@@ -54,7 +54,7 @@ html[data-theme="retro-futurist"] .theme-art span {position:absolute;pointer-eve
  html[data-theme="retro-futurist"] [data-region="main"] {padding:2rem 1.25rem 3rem}
  html[data-theme="retro-futurist"] .theme-art {display:none}
  html[data-theme="retro-futurist"] .home-posts>h1 {width:100%;font-size:clamp(2.8rem,12vw,4rem)}
- html[data-theme="retro-futurist"] .home-intro {min-height:0;padding-bottom:14rem;margin-bottom:1.5rem}
+ html[data-theme="retro-futurist"] .home-intro {min-height:0;padding-top:0;padding-bottom:14rem;margin-bottom:1.5rem}
  html[data-theme="retro-futurist"] .home-intro>p {max-width:100%;font-size:1.15rem}
  html[data-theme="retro-futurist"] .home-posts article:first-child {padding:1.5rem}
  html[data-theme="retro-futurist"] .home-posts article:first-child h2 {font-size:1.85rem}
@@ -73,8 +73,8 @@ html[data-theme="retro-futurist"] .site-header {border-bottom:4px solid var(--in
 html[data-theme="retro-futurist"] [data-region="nav"] {border-top:1px solid var(--rule);padding-top:.8rem}
 html[data-theme="retro-futurist"] h1,html[data-theme="retro-futurist"] h2,html[data-theme="retro-futurist"] [data-region="masthead"]>a {font-weight:900}
 html[data-theme="retro-futurist"] [data-region="sidebar"] a.underline {background:var(--ink);color:var(--bg);padding-inline:.55rem;text-decoration:none}
-html[data-theme="retro-futurist"] .home-intro::before {right:0;top:-5rem;width:38%;height:18rem;border-radius:12rem 12rem 0 0;background:radial-gradient(circle at 50% 40%,#f4c867 0 30%,transparent 30.5%),#bd684d}
-html[data-theme="retro-futurist"] .home-intro::after {right:0;top:6.5rem;width:38%;height:6.5rem;background:linear-gradient(155deg,transparent 0 30%,#35223a 30% 52%,transparent 52%),repeating-linear-gradient(0deg,#35223a 0 10px,#bd684d 10px 19px)}
+html[data-theme="retro-futurist"] .home-intro::before {right:0;top:0;width:38%;height:18rem;border-radius:12rem 12rem 0 0;background:radial-gradient(circle at 50% 40%,#f4c867 0 30%,transparent 30.5%),#bd684d}
+html[data-theme="retro-futurist"] .home-intro::after {right:0;top:11.5rem;width:38%;height:6.5rem;background:linear-gradient(155deg,transparent 0 30%,#35223a 30% 52%,transparent 52%),repeating-linear-gradient(0deg,#35223a 0 10px,#bd684d 10px 19px)}
 html[data-theme="retro-futurist"] .theme-art {border-radius:2rem 2rem 0 0;background:#bd684d}
 html[data-theme="retro-futurist"] .theme-art::before {width:1.25rem;height:1.25rem;border-radius:50%;background:#f4c867;top:.2rem;left:.875rem}
 html[data-theme="retro-futurist"] .theme-art::after {inset:65% 0 0;background:repeating-linear-gradient(0deg,#35223a 0 2px,#bd684d 2px 4px)}
