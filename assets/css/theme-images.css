@@ -1,0 +1,12 @@
+/* Swap light/dark image pairs with the runtime theme using the shared resolved scheme */
+.theme-img-dark {
+  display: none !important;
+}
+
+html.theme[data-scheme="dark"] .theme-img-light {
+  display: none !important;
+}
+
+html.theme[data-scheme="dark"] .theme-img-dark {
+  display: block !important;
+}

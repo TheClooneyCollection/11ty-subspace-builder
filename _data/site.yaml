@@ -7,18 +7,15 @@ author:
 
 theme:
   showSelectors: true
-  previewResetDelay: 500
-  previewHoverDelay: 500
   transitionDuration: 0.5s
    # all options: linear, ease, ease-in, ease-out, ease-in-out
   transitionTimingFunction: ease-in-out
-  # theme switch crossfade; builder default 0.4s
-  fadeDuration: 0.4s
-  # blur at the crossfade midpoint; builder default 0 (none)
-  fadeBlur: 0
-  defaultId: sun
-  autoLightId: sun
-  autoDarkId: terminal
+  # theme switch crossfade; fallback 0.4s
+  fadeDuration: 0.7s
+  # blur at the crossfade midpoint; fallback 0 (none)
+  fadeBlur: 8px
+  defaultId: paper
+  defaultMode: auto
 
 githubEmbed:
   collapseLineThreshold: 15
