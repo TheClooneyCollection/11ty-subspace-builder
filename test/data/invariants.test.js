@@ -57,7 +57,33 @@ describe('data invariants — series.yaml', () => {
   // Series entries are referenced by URL path (e.g. /posts/foo/) under the
   // `entries` key. Resolve each to the underlying markdown file in posts/,
   // notes/, or timeline/ — every referenced item must exist as a real source file.
-  const findSourceForUrl = (url) => {
+  // A post or note can set its own URL with a `permalink:` front matter line.
+  const findSourceByPermalink = (url, dirs) => {
+    const wanted = `/${url.replace(/^\/+/, '').replace(/\/+$/, '')}/`;
+    const walk = (dir) =>
+      fs.existsSync(dir)
+        ? fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+            const full = path.join(dir, entry.name);
+            if (entry.isDirectory()) return walk(full);
+            return entry.name.endsWith('.md') ? [full] : [];
+          })
+        : [];
+    return (
+      dirs
+        .flatMap((dir) => walk(path.resolve(dir)))
+        .find((file) => {
+          const match = fs
+            .readFileSync(file, 'utf8')
+            .match(/^---\n[\s\S]*?^permalink:\s*["']?([^"'\n]+?)["']?\s*$/m);
+          return match && match[1] === wanted;
+        }) || null
+    );
+  };
+
+  const findSourceForUrl = (url) =>
+    findSourceByFilename(url) || findSourceByPermalink(url, ['posts', 'notes']);
+
+  const findSourceByFilename = (url) => {
     // strip leading/trailing slashes
     const trimmed = url.replace(/^\/+/, '').replace(/\/+$/, '');
     // /posts/<slug>/, /notes/<slug>/, or /timeline/<slug>/
