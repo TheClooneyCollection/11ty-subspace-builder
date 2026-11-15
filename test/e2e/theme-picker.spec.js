@@ -126,6 +126,24 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
     })).toEqual(['0.7s', 'theme-fade-in', '8px']);
   });
 
+  test('Use saves the preview without replaying its crossfade or blur', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/?theme=swiss&mode=dark');
+    await page.evaluate(() => {
+      window.__fades = 0;
+      const start = document.startViewTransition.bind(document);
+      document.startViewTransition = update => { window.__fades++; return start(update); };
+    });
+    await page.locator('.theme-picker-open').click();
+    await card(page, 'zine').click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'zine');
+    await settled(page);
+    expect(await page.evaluate(() => window.__fades)).toBe(1);
+    await page.locator('.theme-picker-apply').click();
+    await expect(page.getByRole('dialog')).toBeHidden();
+    expect(await page.evaluate(() => ({fades:window.__fades, active:document.documentElement.matches(':active-view-transition'), stored:localStorage.getItem('theme')}))).toEqual({fades:1,active:false,stored:'zine'});
+  });
+
   test('a tap during the crossfade still picks the tapped card', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.goto('/?theme=swiss&mode=dark');

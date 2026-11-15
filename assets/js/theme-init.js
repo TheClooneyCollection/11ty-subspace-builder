@@ -68,7 +68,7 @@
     fading.finished.finally(() => document.elementFromPoint(x, y)?.closest('button,a,[role],input,label')?.click());
   }, true);
   const state = () => ({theme,mode,palette,preview,scheme,manual:!!manualTheme,requestedTheme});
-  function render() {
+  function render(animate = true) {
     let id = requestedTheme;
     let entry = themes[id];
     const desired = mode === 'auto' ? (media?.matches ? 'dark' : 'light') : mode;
@@ -82,6 +82,8 @@
     if (palette) rememberedPalette=palette;
     scheme=entry.scheme==='both'?desired:entry.scheme;
     const detail=state();
+    const visualChange = root.dataset.theme !== detail.theme || root.dataset.scheme !== detail.scheme || root.dataset.palette !== detail.palette;
+    if (!animate) fading?.skipTransition();
     const commit=()=>{
       root.dataset.theme=detail.theme;
       root.dataset.scheme=detail.scheme;
@@ -97,7 +99,7 @@
     };
     // All theme sheets ship in one bundle, so a switch only flips attributes; crossfade it where supported.
     const calm=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if(!initializing && document.startViewTransition && !calm && !document.hidden){
+    if(animate && visualChange && !initializing && document.startViewTransition && !calm && !document.hidden){
       const fade=fading=document.startViewTransition(commit);
       fade.finished.finally(()=>{if(fading===fade)fading=null;});
     }
@@ -109,7 +111,8 @@
     // A non-palette skin must not erase the remembered Liquid Glass variant.
     if (nextPalette) rememberedPalette=nextPalette;
     if (persist) manualTheme=requestedTheme;
-    render();
+    // Use saves an already visible preview; do not replay its visual effect.
+    render(!persist);
     if (persist) {
       committedPalette=rememberedPalette;
       if (!preview) {
