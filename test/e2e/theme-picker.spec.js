@@ -39,6 +39,25 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
     expect(errors).toEqual([]);
   });
 
+  test('dropdown chrome follows the page scheme, not the theme', async ({ page }) => {
+    const luminance = locator => locator.evaluate(node => {
+      const [r, g, b] = getComputedStyle(node).backgroundColor.match(/\d+/g).map(Number);
+      return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+    });
+    await page.goto('/?theme=brutalist&mode=dark');
+    await page.locator('.theme-picker-open').click();
+    const panel = page.getByRole('dialog');
+    for (const scheme of ['dark', 'light', 'dark']) {
+      await mode(page, scheme).click();
+      await expect(page.locator('html')).toHaveAttribute('data-scheme', scheme);
+      for (const part of [panel, panel.locator('.theme-picker-footer'), panel.locator('.theme-picker-card:not([hidden])').first()]) {
+        const value = await luminance(part);
+        if (scheme === 'dark') expect(value).toBeLessThan(0.25); else expect(value).toBeGreaterThan(0.75);
+      }
+      await expect(panel.locator('.theme-picker-status')).toHaveText('Current Brutalist · light / dark');
+    }
+  });
+
   test('lower card preview, scheme flip, and Use preserve panel and page scroll', async ({ page }) => {
     await page.goto('/?theme=swiss&mode=dark');
     await page.evaluate(() => scrollTo(0, 450));
