@@ -4,6 +4,7 @@
 {% set defaultAccent = defaultTheme.accent if defaultTheme.accent is defined else '#00449E' %}
 <style>
 	{% if siteThemeConfig.fadeDuration %}html { --theme-fade-duration: {{ siteThemeConfig.fadeDuration }}; }{% endif %}
+	{% if siteThemeConfig.fadeBlur %}html { --theme-fade-blur: {{ siteThemeConfig.fadeBlur }}; }{% endif %}
 	html.theme {
 		transition: background-color {{ transitionDuration }} {{ transitionTimingFunction }}, color {{ transitionDuration }} {{ transitionTimingFunction }};
 	}

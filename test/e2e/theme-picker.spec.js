@@ -119,8 +119,11 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
     await mode(page, 'light').click();
     await expect(page.locator('html')).toHaveAttribute('data-scheme', 'light');
     expect(await page.evaluate(() => window.__fades)).toBe(reducedMotion === 'reduce' ? 0 : 2);
-    // site.theme.fadeDuration reaches the crossfade.
-    expect(await page.evaluate(() => getComputedStyle(document.documentElement, '::view-transition-new(root)').animationDuration)).toBe('0.7s');
+    // site.theme.fadeDuration and fadeBlur reach the crossfade.
+    expect(await page.evaluate(() => {
+      const style = getComputedStyle(document.documentElement, '::view-transition-new(root)');
+      return [style.animationDuration, style.animationName, style.getPropertyValue('--theme-fade-blur').trim()];
+    })).toEqual(['0.7s', 'theme-fade-in', '8px']);
   });
 
   test('a tap during the crossfade still picks the tapped card', async ({ page }) => {
