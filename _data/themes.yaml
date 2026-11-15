@@ -473,3 +473,22 @@
       display: Rockwell, 'Cooper Black', Georgia, 'Noto Sans SC', 'PingFang SC', sans-serif
       mono: Menlo, Consolas, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 0px
+- id: holo
+  label: Holo
+  scheme: dark
+  replaces: []
+  tokens:
+    dark:
+      bg: '#080f26'
+      ink: '#e0e9f9'
+      muted: '#b9c6e0'
+      accent: '#99edf2'
+      rule: '#4e628b'
+      surface: '#101e38'
+      code: '#0a142b'
+      feature-end: '#151c38'
+    font:
+      body: '''Avenir Next'', ''Segoe UI'', ''Noto Sans SC'', ''PingFang SC'', sans-serif'
+      display: '''Avenir Next'', ''Segoe UI'', ''Noto Sans SC'', ''PingFang SC'', sans-serif'
+      mono: Menlo, Consolas, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 0px
