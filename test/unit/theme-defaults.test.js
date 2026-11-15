@@ -2,26 +2,25 @@ import { expect, it } from 'vitest';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const source = fs.readFileSync('assets/js/theme-init.js', 'utf8');
-const themes = Object.fromEntries(['paper', 'glass', 'starship', 'zine', 'retro-futurist', 'brutalist'].map(id => [id, {scheme: 'both', css: `/${id}.css`}]));
+const themes = Object.fromEntries(['paper', 'glass', 'starship', 'zine', 'retro-futurist', 'brutalist'].map(id => [id, {scheme: 'both'}]));
 themes.holo = {scheme: 'dark'};
 themes['liquid-glass-light'] = {scheme: 'light', pair: 'liquid-glass-dark'};
 themes['liquid-glass-dark'] = {scheme: 'dark', pair: 'liquid-glass-light', palettes: ['aurora', 'indigo']};
-function visit({storage = {}, day = 1, random = () => 0, dark = false, strategy = 'fun', search = '', blocked = false, fallbackSheet = false} = {}) {
+function visit({storage = {}, day = 1, random = () => 0, dark = false, strategy = 'fun', search = '', blocked = false, reduce = false, transitions = false} = {}) {
   const root = {dataset: {}};
-  const events = [], writes = [];
-  const sheet = {setAttribute(key, value) {this[key] = value;}, removeAttribute(key) {delete this[key];}, remove() {}};
+  const events = [], writes = [], fades = [];
   const media = {matches: dark, addEventListener(_, callback) {this.change = callback;}};
   const config = {themes, defaultId: 'paper', defaultMode: 'auto', defaultStrategy: strategy,
     weekdayThemes: ['glass', 'liquid-glass-dark', 'starship', 'holo'], weekendThemes: ['zine', 'retro-futurist', 'brutalist'], legacy: {sun: {id: 'paper'}, charcoal: {id: 'brutalist', mode: 'dark'}}};
   const context = {URLSearchParams, Date: class {getDay() {return day;}}, Math: {random, floor: Math.floor},
     CustomEvent: class {constructor(type, {detail}) {this.type = type; this.detail = detail;}},
-    location: {search, pathname: '/', hash: ''}, history: {replaceState() {}}, window: {matchMedia: () => media},
-    document: {documentElement: root, getElementById: id => id === 'theme-config' ? {textContent: JSON.stringify(config)} : id === 'theme-css' ? sheet : null,
-      dispatchEvent: event => events.push(event), write: html => writes.push(html)},
+    location: {search, pathname: '/', hash: ''}, history: {replaceState() {}}, window: {matchMedia: query => query.includes('reduced-motion') ? {matches: reduce} : media},
+    document: {documentElement: root, getElementById: id => id === 'theme-config' ? {textContent: JSON.stringify(config)} : null,
+      dispatchEvent: event => events.push(event), write: html => writes.push(html),
+      ...(transitions ? {startViewTransition: update => {fades.push(root.dataset.theme); update();}} : {})},
     localStorage: {getItem(key) {if (blocked) throw Error('blocked'); return storage[key];}, setItem(key, value) {if (blocked) throw Error('blocked'); storage[key] = value;}, removeItem(key) {if (blocked) throw Error('blocked'); delete storage[key];}}};
-  if (fallbackSheet) context.HTMLLinkElement = class {};
   vm.runInNewContext(source, context);
-  return {api: context.window.siteTheme, root, storage, media, events, writes, sheet};
+  return {api: context.window.siteTheme, root, storage, media, events, writes, fades};
 }
 it('first roll is retained across visits without making the default manual', () => {
   const storage = {};
@@ -102,12 +101,23 @@ it('unavailable storage still allows defaults and manual choices within the visi
   const {api} = visit({blocked: true}); api.apply('paper', 'dark', '', true); api.useDefault();
   expect(api.state).toMatchObject({theme: 'glass', mode: 'dark', manual: false});
 });
-it('pre-paint fallback inserts one stylesheet and later changes emit effective state', () => {
-  const {api, writes, events, sheet} = visit({fallbackSheet: true});
-  expect(writes).toEqual(['<link id="theme-css" rel="stylesheet" blocking="render" href="/glass.css">']);
+it('a switch only flips attributes and emits effective state', () => {
+  const {api, root, writes, events} = visit();
   api.apply('paper', 'dark');
-  expect(writes).toHaveLength(1); expect(sheet.href).toBe('/paper.css');
+  expect(writes).toEqual([]);
+  expect(root.dataset).toMatchObject({theme: 'paper', scheme: 'dark'});
   expect(events.at(-1).detail).toMatchObject({theme: 'paper', scheme: 'dark', manual: false});
+});
+it('switches crossfade where supported, but not on first paint or with reduced motion', () => {
+  const motion = visit({transitions: true});
+  expect(motion.fades).toEqual([]);
+  motion.api.apply('paper', 'dark');
+  expect(motion.fades).toEqual(['glass']);
+  expect(motion.root.dataset.theme).toBe('paper');
+  const calm = visit({transitions: true, reduce: true});
+  calm.api.apply('paper', 'dark');
+  expect(calm.fades).toEqual([]);
+  expect(calm.root.dataset.theme).toBe('paper');
 });
 
 it('legacy auto stays a default after setting mode and revisiting', () => {

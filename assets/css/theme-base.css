@@ -56,6 +56,9 @@ html.theme .bg-white-20{background:var(--surface)}
  [data-theme-selector]{max-width:100%;flex-wrap:wrap}
  .article-toc{position:static;max-height:none}
 }
+/* Theme switches crossfade briefly; theme-init skips the transition under reduced motion. Taps pass through the fade. */
+::view-transition{pointer-events:none}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.18s}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media print{.site-header{position:static}.article-toc{position:static;max-height:none}.theme-backdrop,.theme-art,[data-theme-selector]{display:none!important}}
 

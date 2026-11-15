@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const source=fs.readFileSync('assets/js/theme-init.js','utf8');
-const themes={paper:{scheme:'both',css:'/paper.css'},light:{scheme:'light',pair:'dark'},dark:{scheme:'dark',pair:'light',palettes:['aurora','indigo']},holo:{scheme:'dark'}};
+const themes={paper:{scheme:'both'},light:{scheme:'light',pair:'dark'},dark:{scheme:'dark',pair:'light',palettes:['aurora','indigo']},holo:{scheme:'dark'}};
 function run(storage={},search='',dark=false){
  const data={...storage},root={dataset:{}},sheet={setAttribute(k,v){this[k]=v},removeAttribute(k){delete this[k]}};
  const config={defaultId:'paper',defaultMode:'auto',themes,legacy:{sun:{id:'paper'},charcoal:{id:'paper',mode:'dark'}}};
@@ -16,5 +16,5 @@ describe('theme preferences before first paint',()=>{
  it('keeps URL previews out of stored preferences',()=>{const r=run({theme:'paper'},'?theme=holo&preview=1');expect(r.root.dataset.theme).toBe('holo');expect(r.data.theme).toBe('paper');});
  it('switches pairs and preserves palette',()=>{const r=run({theme:'light',themeMode:'auto',themePalette:'indigo'},'',true);expect(r.root.dataset).toMatchObject({theme:'dark',palette:'indigo'});r.runtime.apply('dark','light','indigo',true);expect(r.root.dataset.theme).toBe('light');});
  it('ignores invalid mode and palette',()=>{const r=run({theme:'dark',themeMode:'dark',themePalette:'wrong'});expect(r.root.dataset.palette).toBe('aurora');});
- it('loads only the selected detail stylesheet',()=>{expect(run().sheet.href).toBe('/paper.css');});
+ it('never touches the theme stylesheet; one bundle holds every theme',()=>{const r=run({},'',true);r.runtime.apply('light','light','',true);expect(r.root.dataset.theme).toBe('light');expect(Object.keys(r.sheet)).toEqual(['setAttribute','removeAttribute']);});
 });

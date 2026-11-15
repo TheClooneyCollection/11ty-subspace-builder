@@ -65,8 +65,7 @@
 <head>
 	{% include "layouts/partials/head-seo.njk" %}
 	{% include "layouts/partials/theme-styles.njk" %}
-	<link id="theme-css" rel="stylesheet" blocking="render">
-    {% if themeRuntime.themes[defaultTheme.id].css %}<noscript><link rel="stylesheet" href="{{ themeRuntime.themes[defaultTheme.id].css }}"></noscript>{% endif %}
+	{% if themeRuntime.css %}<link id="theme-css" rel="stylesheet" href="{{ themeRuntime.css }}">{% endif %}
 	{% include "layouts/partials/theme-init-script.njk" %}
 
 	{% if environment != 'development' %}

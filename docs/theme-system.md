@@ -42,7 +42,7 @@ Set `site.theme.defaultId` and `defaultMode` (`auto|light|dark`) in `_data/site.
 
 ## Loading and accessibility
 
-All tokens and the shared base CSS are inline, so background and text are correct before painting. The head initializer chooses exactly one detail stylesheet. It sets `blocking="render"`; engines without that API get a parser-inserted link via `document.write` during synchronous head parsing only. No `document.write` occurs during later switching. A `noscript` stylesheet and system-dark token rule support readers without JavaScript.
+All tokens and the shared base CSS are inline, so background and text are correct before painting. Every theme's detail CSS ships in one fingerprinted bundle (`/assets/css/themes.<hash>.css`, built by `lib/theme-bundle.js`), a normal render-blocking stylesheet. Switching only flips `data-theme`, so no frame paints without the new theme's styles; it crossfades inside `document.startViewTransition` where supported, except under `prefers-reduced-motion`. `@font-face` files in a theme's CSS still download only when that theme uses them. The system-dark token rule supports readers without JavaScript.
 
 The header is sticky at every width. Its measured height updates `--header-height` so anchor targets clear the navigation. At 1100px and wider, the article TOC occupies a sticky side column with internal vertical scrolling; narrower screens retain inline navigation. Code and tables scroll inside their containers. Reduced-motion preferences disable decorative motion; glass skins include opaque fallbacks and reduced-transparency rules.
 

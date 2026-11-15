@@ -3,6 +3,8 @@ import fs from 'node:fs/promises';
 
 const card = (page, id, palette = '') => page.locator(`.theme-picker-card[data-id="${id}"][data-palette="${palette}"]`);
 const mode = (page, value) => page.locator(`[data-theme-mode-toggle="${value}"]`);
+// Chromium ignores taps during a view transition, so wait out the 0.18 s crossfade before the next tap.
+const settled = page => page.waitForFunction(() => !document.documentElement.matches(':active-view-transition'));
 const position = (page, id) => page.evaluate(id => {
   const body = document.querySelector('.theme-picker-body');
   const node = document.querySelector(`.theme-picker-card[data-id="${id}"]:not([hidden])`);
@@ -58,6 +60,67 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
     }
   });
 
+  test('switching themes never paints a frame without the new theme styles', async ({ page }) => {
+    const sheets = [];
+    page.on('request', request => { if (/\/assets\/css\/themes[./]/.test(request.url())) sheets.push(new URL(request.url()).pathname); });
+    // Reduced motion turns off the crossfade and the colour transitions, so each frame shows a settled value.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/?theme=swiss&mode=dark');
+    await page.evaluate(() => {
+      window.__frames = [];
+      const check = () => {
+        const root = document.documentElement;
+        const look = ['html', 'body', '.site-header', '[data-region=masthead]', '.home-posts > h1', '.home-intro'].map(selector => {
+          const node = document.querySelector(selector);
+          if (!node) return '-';
+          const style = getComputedStyle(node);
+          return [style.backgroundColor, style.backgroundImage.slice(0, 40), style.color, style.fontFamily, style.fontSize, style.padding, style.borderWidth].join(' ');
+        }).join(' | ');
+        window.__frames.push({ id: `${root.dataset.theme}/${root.dataset.scheme}`, look });
+        requestAnimationFrame(check);
+      };
+      requestAnimationFrame(check);
+    });
+    await page.locator('.theme-picker-open').click();
+    for (const id of ['brutalist', 'zine', 'retro-futurist']) {
+      await card(page, id).click();
+      await expect(page.locator('html')).toHaveAttribute('data-theme', id);
+    }
+    await page.getByRole('button', { name: 'Use Retro sci-fi' }).click();
+    await mode(page, 'light').click();
+    await expect(page.locator('html')).toHaveAttribute('data-scheme', 'light');
+    await page.waitForTimeout(600);
+    const frames = await page.evaluate(() => window.__frames);
+    // Each theme's last frame is its settled look; every earlier frame under that theme must already match it.
+    const settled = Object.fromEntries(frames.map(frame => [frame.id, frame.look]));
+    expect(Object.keys(settled)).toEqual(['swiss/dark', 'brutalist/dark', 'zine/dark', 'retro-futurist/dark', 'retro-futurist/light']);
+    expect(new Set(Object.values(settled)).size).toBe(5);
+    expect(frames.filter(frame => frame.look !== settled[frame.id]).map(frame => frame.id)).toEqual([]);
+    // One bundle holds every theme; switching never fetches another sheet.
+    expect(sheets).toHaveLength(1);
+    expect(sheets[0]).toMatch(/^\/assets\/css\/themes\.[a-f0-9]{10}\.css$/);
+  });
+
+  for (const reducedMotion of ['no-preference', 'reduce']) test(`theme switch crossfade is ${reducedMotion === 'reduce' ? 'off' : 'on'} with reduced motion ${reducedMotion}`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion });
+    await page.goto('/?theme=swiss&mode=dark');
+    const supported = await page.evaluate(() => {
+      window.__fades = 0;
+      if (!document.startViewTransition) return false;
+      const start = document.startViewTransition.bind(document);
+      document.startViewTransition = update => { window.__fades += 1; return start(update); };
+      return true;
+    });
+    expect(supported).toBe(true);
+    await page.locator('.theme-picker-open').click();
+    await card(page, 'zine').click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'zine');
+    await settled(page);
+    await mode(page, 'light').click();
+    await expect(page.locator('html')).toHaveAttribute('data-scheme', 'light');
+    expect(await page.evaluate(() => window.__fades)).toBe(reducedMotion === 'reduce' ? 0 : 2);
+  });
+
   test('lower card preview, scheme flip, and Use preserve panel and page scroll', async ({ page }) => {
     await page.goto('/?theme=swiss&mode=dark');
     await page.evaluate(() => scrollTo(0, 450));
@@ -69,6 +132,7 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
     expect(before.scroll).toBeGreaterThan(0);
     await lower.click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'retro-futurist');
+    await settled(page);
     await expect.poll(async () => Math.abs((await position(page, 'retro-futurist')).scroll - before.scroll)).toBeLessThan(2);
     await expect.poll(async () => Math.abs((await position(page, 'retro-futurist')).window - before.window)).toBeLessThan(2);
     expect(await page.getByRole('dialog').evaluate(node => ({ background: getComputedStyle(node).backgroundColor, radius: getComputedStyle(node).borderRadius }))).toEqual(chrome);
@@ -113,6 +177,8 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
     await expect(page.locator('.theme-picker-reset')).toBeHidden();
     expect(await page.evaluate(() => localStorage.getItem('theme'))).toBeNull();
     expect(await page.evaluate(() => localStorage.getItem('themePalette'))).toBe('indigo');
+    // A theme switch paints once its sheet has loaded, so wait for the page to catch up with the runtime.
+    await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme === window.siteTheme.state.theme)).toBe(true);
     const defaultTheme = await page.locator('html').getAttribute('data-theme');
     await card(page, 'paper').click();
     await page.keyboard.press('Escape');

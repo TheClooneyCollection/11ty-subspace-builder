@@ -69,27 +69,24 @@
     palette=palettes.includes(rememberedPalette)?rememberedPalette:palettes[0] || '';
     if (palette) rememberedPalette=palette;
     scheme=entry.scheme==='both'?desired:entry.scheme;
-    root.dataset.theme=id;
-    root.dataset.scheme=scheme;
-    root.dataset.themeMode=mode;
-    root.dataset.palette=palette;
-    root.dataset.themeReady='';
-    const sheet=document.getElementById('theme-css');
-    if(sheet){
-      if (initializing && entry.css && document.write && typeof HTMLLinkElement !== 'undefined' && !('blocking' in HTMLLinkElement.prototype)) {
-        // Older engines need a parser-inserted sheet to block the first paint.
-        const href=entry.css.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-        sheet.remove();
-        document.write('<link id="theme-css" rel="stylesheet" blocking="render" href="'+href+'">');
-      } else if(entry.css) sheet.setAttribute('href',entry.css);
-      else sheet.removeAttribute('href');
-    }
-    let preload=document.getElementById('theme-font');
-    if(entry.bodyFont){
-      if(!preload){preload=document.createElement('link');preload.id='theme-font';preload.rel='preload';preload.as='font';preload.type='font/woff2';preload.crossOrigin='anonymous';document.head.append(preload);}
-      preload.href=entry.bodyFont;
-    }else preload?.remove();
-    document.dispatchEvent(new CustomEvent('themechange',{detail:state()}));
+    const detail=state();
+    const commit=()=>{
+      root.dataset.theme=detail.theme;
+      root.dataset.scheme=detail.scheme;
+      root.dataset.themeMode=detail.mode;
+      root.dataset.palette=detail.palette;
+      root.dataset.themeReady='';
+      let preload=document.getElementById('theme-font');
+      if(entry.bodyFont){
+        if(!preload){preload=document.createElement('link');preload.id='theme-font';preload.rel='preload';preload.as='font';preload.type='font/woff2';preload.crossOrigin='anonymous';document.head.append(preload);}
+        preload.href=entry.bodyFont;
+      }else preload?.remove();
+      document.dispatchEvent(new CustomEvent('themechange',{detail}));
+    };
+    // All theme sheets ship in one bundle, so a switch only flips attributes; crossfade it where supported.
+    const calm=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if(!initializing && document.startViewTransition && !calm && !document.hidden) document.startViewTransition(commit);
+    else commit();
   }
   function apply(id, nextMode=mode, nextPalette=rememberedPalette, persist=false) {
     requestedTheme=migrate(id) || defaultTheme();

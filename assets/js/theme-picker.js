@@ -145,13 +145,15 @@
   function sync() {
     const state = runtime.state;
     const scheme = state.scheme || document.documentElement.dataset.scheme;
-    triggerLabel.textContent = state.theme.startsWith('liquid-glass-') ? 'Liquid Glass' : label(state.theme, state.palette);
+    // The header shows the painted theme, so it changes inside the same crossfade as the page.
+    const painted = entries[document.documentElement.dataset.theme] ? document.documentElement.dataset.theme : state.theme;
+    triggerLabel.textContent = painted.startsWith('liquid-glass-') ? 'Liquid Glass' : label(painted, document.documentElement.dataset.palette ?? state.palette);
     trigger.setAttribute('aria-label', `${words.choose}: ${triggerLabel.textContent}`);
     modeButtons.forEach(node => node.setAttribute('aria-pressed', String(node.dataset.themeModeToggle === state.mode)));
     modes.dataset.scheme = scheme;
-    const entry = entries[state.theme], pair = entries[entry.pair];
-    const light = entry.swatches?.light || pair?.swatches?.light || entry.swatch;
-    const dark = entry.swatches?.dark || pair?.swatches?.dark || entry.swatch;
+    const shown = entries[painted], pair = entries[shown.pair];
+    const light = shown.swatches?.light || pair?.swatches?.light || shown.swatch;
+    const dark = shown.swatches?.dark || pair?.swatches?.dark || shown.swatch;
     dot.style.background = `linear-gradient(90deg, ${light.bg} 50%, ${dark.bg} 50%)`;
     for (const card of cards) {
       card.node.hidden = card.entry.scheme !== 'both' && card.entry.scheme !== scheme;
