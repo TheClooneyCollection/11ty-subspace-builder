@@ -81,11 +81,7 @@ Date sorts use the date plus front matter `time` (missing time counts as `00:00`
 
 ## Theme system
 
-8 named themes (sun, default, mint, grape, charcoal, deep-blue, midnight, terminal). Switching is runtime via JS — no page reload. Each theme sets:
-- Tachyons text/background classes on `<html>`
-- `--accent` and `--accent-hover` CSS custom properties
-
-Use `var(--accent)` for theme-aware accent color in custom CSS. Use the `theme-text` and `theme-midtone` classes for text that should follow the active theme.
+Read `docs/theme-system.md` before changing theme loading, switching, or adding a skin. Themes share one DOM; add detail CSS and tokens instead of per-theme templates. Use `data-scheme` for dark styling, preserve CJK font fallbacks, and keep preview frames free of analytics/comments.
 
 ## Build rules — critical
 
