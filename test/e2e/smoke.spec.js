@@ -46,17 +46,14 @@ test.describe('homepage', () => {
 });
 
 test.describe('theme toggle', () => {
-  test('mode preference persists and fixed themes explain their restriction', async ({ page }) => {
+  test('segmented mode preference persists and every mode stays enabled', async ({ page }) => {
     await page.goto('/');
-    const both = await page.evaluate(() => Object.entries(window.siteTheme.config.themes).find(([,t]) => t.scheme === 'both')?.[0]);
-    const toggle = page.locator('[data-theme-mode-toggle]');
-    if (!both) { await expect(toggle).toBeDisabled(); return; }
-    await page.evaluate(id => window.siteTheme.apply(id, 'light', '', true), both);
-    await toggle.click();
+    await page.locator('[data-theme-mode-toggle="dark"]').click();
     await expect(page.locator('html')).toHaveAttribute('data-theme-mode', 'dark');
     expect(await page.evaluate(() => localStorage.getItem('themeMode'))).toBe('dark');
     await page.reload();
     await expect(page.locator('html')).toHaveAttribute('data-scheme', 'dark');
+    for (const mode of ['light', 'dark', 'auto']) await expect(page.locator(`[data-theme-mode-toggle="${mode}"]`)).toBeEnabled();
   });
   test('migrates stored legacy choices and requests only active detail CSS', async ({ page }) => {
     await page.addInitScript(() => { if(window!==window.top)return; localStorage.setItem('theme','sun'); localStorage.setItem('themePreference','sun'); });
@@ -185,33 +182,22 @@ test.describe('timeline detail', () => {
   });
 });
 
-test.describe('theme peek panel', () => {
-  test('previews with keyboard without changing the page until Apply', async ({page}) => {
-    await page.goto('/');
-    const initial=await page.locator('html').getAttribute('data-theme');
+test.describe('theme dropdown', () => {
+  test('keyboard previews immediately, Use commits, and Escape returns focus', async ({ page }) => {
+    await page.goto('/?theme=swiss&mode=dark');
     await page.locator('.theme-picker-open').click();
-    const dialog=page.locator('.theme-peek');await expect(dialog).toBeVisible();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
     await page.keyboard.press('ArrowRight');
-    const selected=await dialog.locator('[role=radio][aria-checked=true]').getAttribute('data-id');
-    await expect(page.locator('html')).toHaveAttribute('data-theme',initial);
-    await expect(dialog.locator('iframe')).toHaveCount(1);
-    await page.keyboard.press('Enter');await expect(dialog).not.toBeVisible();
-    await expect(page.locator('html')).toHaveAttribute('data-theme',selected);
-    expect(await page.evaluate(()=>localStorage.getItem('theme'))).toBe(selected);
-    await page.locator('.theme-picker-open').click();await page.keyboard.press('Escape');
+    const selected = await dialog.locator('[role=radio][aria-checked=true]').getAttribute('data-id');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', selected);
+    expect(await page.evaluate(() => localStorage.getItem('theme'))).toBeNull();
+    await expect(dialog.locator('iframe')).toHaveCount(0);
+    await page.locator('.theme-picker-apply').click();
+    await expect(dialog).toBeHidden();
+    expect(await page.evaluate(() => localStorage.getItem('theme'))).toBe(selected);
+    await page.locator('.theme-picker-open').click();
+    await page.keyboard.press('Escape');
     await expect(page.locator('.theme-picker-open')).toBeFocused();
-  });
-  test('keeps Liquid Glass paired modes and its indigo palette across reload', async ({page})=>{
-    await page.goto('/');await page.locator('.theme-picker-open').click();
-    await page.locator('.theme-peek-choice[data-id="liquid-glass-dark"]').click();
-    await page.locator('.theme-peek-options select').nth(1).selectOption('indigo');
-    await page.locator('.theme-peek-apply').click();
-    await expect(page.locator('html')).toHaveAttribute('data-theme','liquid-glass-dark');
-    await expect(page.locator('html')).toHaveAttribute('data-palette','indigo');
-    await page.reload();await expect(page.locator('html')).toHaveAttribute('data-palette','indigo');
-    await page.evaluate(()=>window.siteTheme.apply('liquid-glass-dark','light','indigo',true));
-    await expect(page.locator('html')).toHaveAttribute('data-theme','liquid-glass-light');
-    await page.evaluate(()=>window.siteTheme.apply('liquid-glass-light','dark','indigo',true));
-    await expect(page.locator('html')).toHaveAttribute('data-palette','indigo');
   });
 });

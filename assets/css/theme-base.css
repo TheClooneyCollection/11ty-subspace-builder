@@ -61,16 +61,56 @@ html.theme .bg-white-20{background:var(--surface)}
 
 [hidden]{display:none!important}
 html:not([data-theme-ready]) [data-region=nav]{display:block}
-.theme-picker-open,.theme-peek button,.theme-peek select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:.5rem .75rem;cursor:pointer}
-.theme-picker-open{font-size:.85rem}
-.theme-peek{width:min(60rem,calc(100vw - 2rem));max-height:calc(100dvh - 2rem);overflow:auto;padding:1.5rem;border:2px solid var(--rule);border-radius:max(var(--radius),8px);background:var(--bg);color:var(--ink);box-shadow:0 1rem 5rem #0007}
-.theme-peek::backdrop{background:#0008;backdrop-filter:blur(5px)}
-.theme-peek-heading,.theme-peek-footer,.theme-peek-options{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
-.theme-peek h2{font-size:1.4rem;margin:.25rem 0}
-.theme-peek-choices{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5rem;margin:1rem 0}
-.theme-peek-choice{display:flex;align-items:center;gap:.5rem;text-align:left;min-width:0;font-size:.8rem!important;overflow-wrap:anywhere}
-.theme-peek-choice[aria-checked=true]{outline:3px solid var(--accent);outline-offset:1px}
-.theme-swatch{flex-shrink:0;display:grid;place-items:center;width:2rem;height:2rem;border:3px solid;font-weight:bold}
-.theme-peek-options{margin:1rem 0}.theme-peek-frame{width:100%;height:42vh;min-height:12rem;border:1px solid var(--rule);background:var(--surface);pointer-events:none}
-.theme-peek-apply{background:var(--ink)!important;color:var(--bg)!important}
-@media(max-width:600px){.theme-peek{margin:auto 0 0;width:100%;max-width:100%;max-height:94dvh;padding:1rem;border-radius:16px 16px 0 0}.theme-peek-choices{grid-template-columns:repeat(2,minmax(0,1fr))}.theme-peek-frame{height:24vh;min-height:8rem}.theme-preview-button{display:none!important}.theme-picker-open{margin-right:.5rem}}
+
+/* Header treatment B follows the page; the dropdown below deliberately does not. */
+.theme-controls{display:inline-flex;align-items:center;flex-wrap:nowrap!important;gap:.65rem;margin-left:1rem}
+.theme-picker-open{display:inline-flex;align-items:center;gap:.45rem;height:2rem;padding:0 .15rem;border:0;border-radius:0;background:transparent;color:var(--ink);font:600 .9rem/1.2 var(--font-body);cursor:pointer;white-space:nowrap}
+.theme-picker-name{border-bottom:2px solid var(--rule);padding-bottom:1px}
+.theme-picker-dot{position:relative;display:inline-grid;place-items:center;flex:none;width:16px;height:16px;border-radius:50%;background:linear-gradient(90deg,#f4efe4 50%,#15151d 50%);box-shadow:inset 0 0 0 1px #0003,0 0 0 1.5px var(--ink)}
+.theme-picker-dot::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 1.5px var(--bg)}
+.theme-picker-chevron{width:.5rem;height:.5rem;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:translateY(-2px) rotate(45deg)}
+.theme-mode-segments{display:inline-flex;height:2rem;align-items:stretch;border:1px solid var(--rule);border-radius:max(var(--radius),999px);background:var(--surface);padding:2px}
+.theme-mode-segment{display:grid;place-items:center;width:2rem;padding:0;border:0;border-radius:inherit;background:transparent;color:var(--muted);font:1rem/1 system-ui,sans-serif;cursor:pointer}
+.theme-mode-segment[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.theme-mode-segment:hover:not([aria-pressed=true]){color:var(--accent)}
+
+/* Fixed Warm Paper chrome: no skin tokens, inherited fonts, or inherited radii. */
+.theme-picker-panel{position:fixed;z-index:100;display:flex;flex-direction:column;width:min(44rem,calc(100vw - 16px));overflow:hidden;border:1px solid #c8c0ad;border-radius:6px;background:#f4efe4;color:#2b2a24;color-scheme:light;box-shadow:0 1.5rem 5rem #0005;font:400 16px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;text-align:left;letter-spacing:normal}
+.theme-picker-panel *{box-sizing:border-box}
+.theme-picker-heading{display:flex;align-items:center;gap:.75rem;padding:1rem 1.25rem .75rem;flex:none}
+html.theme .theme-picker-panel .theme-picker-title{margin:0;color:#2b2a24;font:700 1.25rem/1.2 -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;letter-spacing:normal;text-transform:none}
+.theme-picker-hint{flex:1;margin:0;color:#6d6a5c;font-size:.85rem;line-height:1.4}
+.theme-picker-panel button{font-family:inherit;letter-spacing:normal;text-transform:none;cursor:pointer}
+.theme-picker-close{display:grid;place-items:center;flex:none;width:2rem;height:2rem;margin-left:auto;padding:0;border:1px solid #c8c0ad;border-radius:4px;background:#faf7ef;color:#2b2a24;font-size:1.25rem;line-height:1}
+.theme-picker-body{overflow:auto;overscroll-behavior:contain;overflow-anchor:none;scroll-behavior:auto;min-height:0;padding:3px 1.25rem 1rem;flex:1 1 auto;scrollbar-color:#9c9687 #f4efe4}
+.theme-picker-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9rem}
+.theme-picker-card{display:flex;flex-direction:column;min-width:0;margin:0;padding:0;overflow:hidden;text-align:left;border:1.5px solid #c8c0ad;border-radius:4px;background:#faf7ef;color:#2b2a24;box-shadow:none}
+.theme-picker-card:hover{border-color:#5a6b2f}
+.theme-picker-card[aria-checked=true]{border-color:#5a6b2f;box-shadow:0 0 0 2px #5a6b2f}
+.theme-picker-shot{display:block;width:100%;height:auto;aspect-ratio:1440/900;object-fit:cover;object-position:top;background:#e5dfd1;border:0;border-radius:0}
+.theme-picker-copy{display:flex;flex-direction:column;gap:.15rem;width:100%;min-height:5.1rem;padding:.6rem .8rem .7rem}
+.theme-picker-card-name{font-size:.95rem;font-weight:700;line-height:1.35}
+.theme-picker-description{color:#6d6a5c;font-size:.76rem;font-weight:400;line-height:1.4}
+.theme-picker-footer{display:flex;align-items:center;justify-content:space-between;gap:.65rem;flex-wrap:wrap;flex:none;padding:.75rem 1.25rem;border-top:1px solid #c8c0ad;background:#faf7ef}
+.theme-picker-status{margin:0;color:#6d6a5c;font-size:.85rem;line-height:1.45;overflow-wrap:anywhere}
+.theme-picker-actions{display:flex;align-items:center;justify-content:flex-end;gap:.65rem;flex-wrap:wrap;margin-left:auto}
+.theme-picker-reset{padding:0;border:0;border-radius:0;background:transparent;color:#5a6b2f;font-size:.8rem;text-decoration:underline;text-underline-offset:2px}
+.theme-picker-apply,.theme-picker-cancel{padding:.5rem .75rem;border:1px solid #2b2a24;border-radius:4px;background:#2b2a24;color:#faf7ef;font-size:.85rem;font-weight:600;line-height:1.4}
+.theme-picker-cancel{background:transparent;border-color:#c8c0ad;color:#2b2a24}
+.theme-picker-panel :focus-visible{outline:3px solid #5a6b2f;outline-offset:2px}
+@media(max-width:600px){
+ .theme-controls{gap:.5rem;margin-left:.5rem}
+ .theme-picker-panel{left:8px!important;right:8px!important;width:auto}
+ .theme-picker-choices{grid-template-columns:1fr}
+ .theme-picker-heading{flex-wrap:wrap;gap:.35rem .75rem;padding:.75rem 1rem}
+ .theme-picker-hint{order:3;flex-basis:100%;font-size:.8rem}
+ .theme-picker-body{padding-right:1rem;padding-left:1rem}
+ .theme-picker-footer{display:grid;grid-template-columns:1fr;padding:.65rem 1rem;gap:.5rem}
+ .theme-picker-status{width:100%}
+ .theme-picker-actions{width:100%;gap:.5rem}
+ .theme-picker-copy{min-height:4.4rem}
+}
+@media(max-width:430px){.theme-picker-dot{width:20px;height:20px}.theme-picker-open{padding:0 .3rem}}
+@media print{.theme-picker-panel{display:none!important}}
+
+@media(max-width:430px){.header-language-controls{row-gap:.65rem}.theme-controls{max-width:100%;margin-left:0}}

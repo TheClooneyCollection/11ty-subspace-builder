@@ -200,7 +200,11 @@
   hidden: true
   retired: true
 - id: paper
-  label: Paper
+  label: Warm Paper
+  description: Warm paper, serif reading type and deep ink.
+  shots:
+    light: /assets/images/theme-previews/paper-light.webp
+    dark: /assets/images/theme-previews/paper-dark.webp
   scheme: both
   replaces:
     - sun
@@ -229,6 +233,10 @@
     radius: 0px
 - id: swiss
   label: Swiss
+  description: Strict grid, sharp type and precise colour.
+  shots:
+    light: /assets/images/theme-previews/swiss-light.webp
+    dark: /assets/images/theme-previews/swiss-dark.webp
   scheme: both
   replaces:
     - default
@@ -256,6 +264,10 @@
     radius: 0px
 - id: brutalist
   label: Brutalist
+  description: Hard edges, heavy type and bold colour blocks.
+  shots:
+    light: /assets/images/theme-previews/brutalist-light.webp
+    dark: /assets/images/theme-previews/brutalist-dark.webp
   scheme: both
   replaces:
     - id: charcoal
@@ -290,6 +302,10 @@
     radius: 0px
 - id: zine
   label: Zine
+  description: Playful borders, stickers and old-web charm.
+  shots:
+    light: /assets/images/theme-previews/zine-light.webp
+    dark: /assets/images/theme-previews/zine-dark.webp
   scheme: both
   replaces: []
   tokens:
@@ -320,6 +336,10 @@
     radius: 0px
 - id: glass
   label: Soft Glass
+  description: Frosted panels with soft colour and calm type.
+  shots:
+    light: /assets/images/theme-previews/glass-light.webp
+    dark: /assets/images/theme-previews/glass-dark.webp
   scheme: both
   replaces: []
   tokens:
@@ -352,6 +372,9 @@
     radius: 28px
 - id: liquid-glass-light
   label: Liquid Glass Light
+  description: Translucent panels over a soft landscape.
+  shots:
+    light: /assets/images/theme-previews/liquid-glass-light-light.webp
   scheme: light
   family: liquid-glass
   replaces: []
@@ -378,6 +401,12 @@
   pair: liquid-glass-dark
 - id: liquid-glass-dark
   label: Liquid Glass Dark
+  description: Translucent panels over flowing colour.
+  shots:
+    dark: /assets/images/theme-previews/liquid-glass-dark-dark.webp
+  paletteShots:
+    aurora: /assets/images/theme-previews/liquid-glass-dark-dark.webp
+    indigo: /assets/images/theme-previews/liquid-glass-dark-indigo.webp
   scheme: dark
   family: liquid-glass
   pair: liquid-glass-light
@@ -439,6 +468,10 @@
         opaque: '#171f33'
 - id: starship
   label: Starship
+  description: Crisp panels and quiet instrument colours.
+  shots:
+    light: /assets/images/theme-previews/starship-light.webp
+    dark: /assets/images/theme-previews/starship-dark.webp
   scheme: both
   replaces:
     - deep-blue
@@ -465,7 +498,11 @@
       mono: Menlo, Consolas, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 3px
 - id: retro-futurist
-  label: Retro Futurist
+  label: Retro sci-fi
+  description: Space-age posters, chunky type and orbit art.
+  shots:
+    light: /assets/images/theme-previews/retro-futurist-light.webp
+    dark: /assets/images/theme-previews/retro-futurist-dark.webp
   scheme: both
   replaces: []
   tokens:
@@ -491,7 +528,10 @@
       mono: Menlo, Consolas, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 0px
 - id: holo
-  label: Holo
+  label: Halo
+  description: Neon holographic type on near-black. Dark only.
+  shots:
+    dark: /assets/images/theme-previews/holo-dark.webp
   scheme: dark
   replaces:
     - grape

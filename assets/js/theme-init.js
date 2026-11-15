@@ -9,30 +9,68 @@
   const validMode = value => ['auto','light','dark'].includes(value);
   const read = key => {try{return localStorage.getItem(key);}catch{return null;}};
   const write = (key, value) => {try{localStorage.setItem(key,value);}catch{}};
-  const migrate = id => config.legacy[id]?.id || (themes[id] && !themes[id].retired ? id : fallback);
+  const remove = key => {try{localStorage.removeItem(key);}catch{}};
+  const migrate = id => {
+    const mapped = config.legacy?.[id]?.id || id;
+    return themes[mapped] && !themes[mapped].retired ? mapped : null;
+  };
+  const override = query.has('theme') || query.has('mode') || query.has('palette');
+  const canStore = !preview && !override;
   const oldPreference = read('themePreference');
   const storedMode = read('themeMode');
   const storedId = read('theme');
-  let theme = oldPreference === 'auto' && !storedMode ? fallback : migrate(oldPreference && oldPreference !== 'auto' && !storedMode ? oldPreference : storedId);
-  let mode = validMode(storedMode) ? storedMode : oldPreference === 'auto' ? 'auto' : config.legacy[oldPreference || storedId]?.mode || config.defaultMode;
-  let palette = read('themePalette');
-  const override = query.has('theme') || query.has('mode') || query.has('palette');
-  if(query.has('theme')) theme=migrate(query.get('theme'));
+  const oldId = oldPreference && oldPreference !== 'auto' && !storedMode ? oldPreference : storedId;
+  let manualTheme = oldPreference === 'auto' && !storedMode ? null : migrate(oldId);
+  let mode = validMode(storedMode) ? storedMode : oldPreference === 'auto' ? 'auto' : config.legacy?.[oldId]?.mode || config.defaultMode || 'auto';
+  let rememberedPalette = read('themePalette') || '';
+  let committedPalette = rememberedPalette;
+  const rolls = {};
+  if (config.defaultStrategy === 'fun') {
+    for (const period of ['weekday', 'weekend']) {
+      const pool = (config[period + 'Themes'] || []).filter(id => migrate(id) === id);
+      const key = 'themeRoll' + (period === 'weekday' ? 'Weekday' : 'Weekend');
+      const saved = read(key);
+      rolls[period] = pool.includes(saved) ? saved : pool[Math.floor(Math.random() * pool.length)] || fallback;
+      if (canStore && pool.length && rolls[period] !== saved) write(key, rolls[period]);
+    }
+  }
+  const defaultTheme = () => {
+    const day = new Date().getDay();
+    return config.defaultStrategy === 'fun' ? rolls[day === 0 || day === 6 ? 'weekend' : 'weekday'] : fallback;
+  };
+  let requestedTheme = manualTheme || defaultTheme();
+  if (canStore && manualTheme && (oldPreference || storedId !== manualTheme)) {
+    write('theme', manualTheme);
+    write('themeMode', mode);
+    remove('themePreference');
+  }
+  if (canStore && oldPreference === 'auto' && !storedMode) {
+    remove('theme');
+    remove('themePreference');
+    write('themeMode', mode);
+  }
+  if(query.has('theme')) requestedTheme=migrate(query.get('theme')) || defaultTheme();
   if(validMode(query.get('mode'))) mode=query.get('mode');
-  if(query.has('palette')) palette=query.get('palette');
+  if(query.has('palette')) rememberedPalette=query.get('palette');
+  let theme, palette, scheme;
   root.dataset.previewPage = String(preview);
   let initializing = true;
-  function apply(id, nextMode=mode, nextPalette=palette, persist=false) {
-    id=themes[id] ? id : migrate(id);
-    mode=validMode(nextMode)?nextMode:'auto';
-    let entry=themes[id];
-    const desired=mode==='auto'?(media?.matches?'dark':'light'):mode;
-    if(entry.pair && themes[entry.pair] && entry.scheme!==desired){id=entry.pair;entry=themes[id];}
+  const state = () => ({theme,mode,palette,preview,scheme,manual:!!manualTheme,requestedTheme});
+  function render() {
+    let id = requestedTheme;
+    let entry = themes[id];
+    const desired = mode === 'auto' ? (media?.matches ? 'dark' : 'light') : mode;
+    if (entry.scheme !== 'both' && entry.scheme !== desired) {
+      const partner = id === 'holo' && desired === 'light' && themes.starship ? 'starship' : entry.pair;
+      if (themes[partner]) {id=partner;entry=themes[id];}
+    }
     theme=id;
     const palettes=entry.palettes || themes[entry.pair]?.palettes || [];
-    palette=palettes.includes(nextPalette)?nextPalette:palettes[0] || '';
+    palette=palettes.includes(rememberedPalette)?rememberedPalette:palettes[0] || '';
+    if (palette) rememberedPalette=palette;
+    scheme=entry.scheme==='both'?desired:entry.scheme;
     root.dataset.theme=id;
-    root.dataset.scheme=entry.scheme==='both'?desired:entry.scheme;
+    root.dataset.scheme=scheme;
     root.dataset.themeMode=mode;
     root.dataset.palette=palette;
     root.dataset.themeReady='';
@@ -51,13 +89,46 @@
       if(!preload){preload=document.createElement('link');preload.id='theme-font';preload.rel='preload';preload.as='font';preload.type='font/woff2';preload.crossOrigin='anonymous';document.head.append(preload);}
       preload.href=entry.bodyFont;
     }else preload?.remove();
-    if(persist){write('theme',theme);write('themeMode',mode);if(palette)write('themePalette',palette);try{localStorage.removeItem('themePreference');}catch{}}
-    document.dispatchEvent(new CustomEvent('themechange',{detail:{theme,mode,palette}}));
+    document.dispatchEvent(new CustomEvent('themechange',{detail:state()}));
   }
-  apply(theme,mode,palette,!override && !preview);
+  function apply(id, nextMode=mode, nextPalette=rememberedPalette, persist=false) {
+    requestedTheme=migrate(id) || defaultTheme();
+    mode=validMode(nextMode)?nextMode:'auto';
+    // A non-palette skin must not erase the remembered Liquid Glass variant.
+    if (nextPalette) rememberedPalette=nextPalette;
+    if (persist) manualTheme=requestedTheme;
+    render();
+    if (persist) {
+      committedPalette=rememberedPalette;
+      if (!preview) {
+        write('theme',manualTheme);
+        write('themeMode',mode);
+        if(committedPalette) write('themePalette',committedPalette);
+        remove('themePreference');
+      }
+    }
+  }
+  function setMode(nextMode) {
+    if (!validMode(nextMode)) return;
+    mode=nextMode;
+    if (!preview) write('themeMode',mode);
+    render();
+  }
+  function cancelPreview() {
+    requestedTheme=manualTheme || defaultTheme();
+    rememberedPalette=committedPalette;
+    render();
+  }
+  function useDefault() {
+    manualTheme=null;
+    if (!preview) {remove('theme');remove('themePreference');}
+    cancelPreview();
+  }
+  render();
+  committedPalette=rememberedPalette;
   initializing = false;
-  window.siteTheme={apply,config,get state(){return {theme,mode,palette,preview};}};
-  media?.addEventListener?.('change',()=>{if(mode==='auto')apply(theme,mode,palette,!override&&!preview);});
+  window.siteTheme={apply,setMode,useDefault,cancelPreview,config,get state(){return state();}};
+  media?.addEventListener?.('change',()=>{if(mode==='auto')render();});
   if(override || query.has('preview')){
     for(const key of ['theme','mode','palette','preview'])query.delete(key);
     try{history.replaceState(null,'',location.pathname+(query.size?'?'+query:'')+location.hash);}catch{}

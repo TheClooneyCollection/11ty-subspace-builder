@@ -45,6 +45,7 @@ export function buildI18nFixture({
       '_data',
       'assets/css',
       'assets/js',
+      'assets/images/theme-previews',
     ]) {
       fs.cpSync(path.join(root, name), path.join(dir, name), {
         recursive: true,

@@ -59,3 +59,38 @@ For downstream custom themes, convert the entry to scheme/tokens, then move deta
 Run `npm test`, `npm run build`, then `npm run test:e2e`. Browser checks include storage migration, exactly one active-theme CSS request, a delayed first load in both native and fallback render-blocking paths, preview isolation, and picker interaction. Review each skin at phone and desktop widths, in every supported scheme, including CJK content and long TOCs.
 
 Bundled presets: Warm Paper, Swiss, Brutalist, Retro web / Zine, Soft Glass, Liquid Glass Light, Liquid Glass Dark, Starship, Retro-futurist, and Holo. Paper, Swiss, Brutalist, Zine, Soft Glass, Starship, and Retro-futurist support both schemes. Liquid Glass members are individually fixed and paired; Holo is dark only.
+
+## Reader picker and first-visit defaults
+
+The header contains the theme button and Light / Dark / System controls. Opening
+it shows a fixed paper-coloured dropdown; each card shows an actual home capture
+for the current scheme. Selecting a card tries it on the page without saving a
+manual choice. **Use** saves it, while Escape or closing cancels the trial.
+**Use site default** clears the manual choice while retaining the display mode,
+Liquid Glass palette and first-visit rolls. Halo uses Starship as its light
+partner and returns to Halo when switched back to dark.
+
+`site.theme.defaultStrategy` chooses `simple` (the builder default, using
+`defaultId`) or `fun`. Fun rolls one entry from `weekdayThemes` and one from
+`weekendThemes` on the first visit. Both are stored permanently in that browser;
+the local day selects which applies. A manual choice wins. The built-in pools
+are Soft Glass, Liquid Glass, Starship and Halo for weekdays, and Zine, Retro
+sci-fi and Brutalist for weekends. Swiss and Warm Paper remain manually selectable.
+System appearance remains the default unless the reader chooses light or dark.
+The pre-paint initializer resolves these choices before loading one detail sheet.
+
+### Maintaining preview shots
+
+The committed `assets/images/theme-previews/*.webp` files are real public home
+captures, 600px wide at WebP quality 65. Theme data declares `shots` per supported
+scheme and `paletteShots` per palette. The manifest throws if any required asset
+is missing; it never substitutes a different scheme. Isolated build fixtures copy
+these assets too.
+
+After changing a skin or home layout, run `npm run build`, then
+`node scripts/generate-theme-previews.js`, then build again. The capture script
+starts and closes its own random-port server for `_site`, uses a 1440×900 browser
+viewport, and resizes the screenshots. It does not use or restart a dev server.
+Commit the refreshed images with the skin change. A newly added theme needs its
+first real home capture checked in before normal builds, because missing shots
+are intentionally a build error.
