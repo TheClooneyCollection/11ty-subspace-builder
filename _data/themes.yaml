@@ -190,3 +190,29 @@
       mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 4px
   replaces: []
+- id: paper
+  label: Paper
+  scheme: both
+  replaces: []
+  tokens:
+    light:
+      bg: '#d3c6a8'
+      ink: '#20271c'
+      muted: '#4b5540'
+      accent: '#2c3e20'
+      rule: '#b9af95'
+      surface: '#eee5cf'
+      code: '#e0d6be'
+    dark:
+      bg: '#242820'
+      ink: '#fff8e8'
+      muted: '#c6d0ae'
+      accent: '#e0edc6'
+      rule: '#72765f'
+      surface: '#30372b'
+      code: '#242820'
+    font:
+      body: Palatino, 'Palatino Linotype', Georgia, 'Noto Sans SC', 'PingFang SC', sans-serif
+      display: Palatino, 'Palatino Linotype', Georgia, 'Noto Sans SC', 'PingFang SC', sans-serif
+      mono: '''Courier New'', Menlo, Consolas, ''Noto Sans SC'', ''PingFang SC'', sans-serif'
+    radius: 0px
