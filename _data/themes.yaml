@@ -22,6 +22,7 @@
       mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 4px
   replaces: []
+  hidden: true
 - id: default
   scheme: light
   label: Default
@@ -46,6 +47,7 @@
       mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 4px
   replaces: []
+  hidden: true
 - id: mint
   scheme: light
   label: Mint (black / washed-green)
@@ -70,6 +72,7 @@
       mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 4px
   replaces: []
+  hidden: true
 - id: grape
   scheme: dark
   label: Grape (near-white / purple)
@@ -94,6 +97,7 @@
       mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 4px
   replaces: []
+  hidden: true
 - id: charcoal
   scheme: dark
   label: Charcoal (near-white / mid-gray)
@@ -118,6 +122,7 @@
       mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 4px
   replaces: []
+  hidden: true
 - id: deep-blue
   scheme: dark
   label: Deep Blue (white / dark-blue)
@@ -142,6 +147,7 @@
       mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 4px
   replaces: []
+  hidden: true
 - id: midnight
   scheme: dark
   label: Midnight (near-white / navy)
@@ -166,6 +172,7 @@
       mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 4px
   replaces: []
+  hidden: true
 - id: terminal
   scheme: dark
   label: Terminal (green / near-black)
@@ -190,10 +197,14 @@
       mono: ui-monospace, monospace, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 4px
   replaces: []
+  hidden: true
+  retired: true
 - id: paper
   label: Paper
   scheme: both
-  replaces: []
+  replaces:
+    - sun
+    - mint
   tokens:
     light:
       bg: '#d3c6a8'
@@ -219,7 +230,8 @@
 - id: swiss
   label: Swiss
   scheme: both
-  replaces: []
+  replaces:
+    - default
   tokens:
     light:
       bg: '#f7f7f5'
@@ -245,7 +257,9 @@
 - id: brutalist
   label: Brutalist
   scheme: both
-  replaces: []
+  replaces:
+    - id: charcoal
+      mode: dark
   tokens:
     light:
       bg: '#fafafa'
@@ -367,7 +381,9 @@
   scheme: dark
   family: liquid-glass
   pair: liquid-glass-light
-  replaces: []
+  replaces:
+    - id: midnight
+      mode: dark
   tokens:
     dark:
       bg: '#101d20'
@@ -424,7 +440,8 @@
 - id: starship
   label: Starship
   scheme: both
-  replaces: []
+  replaces:
+    - deep-blue
   tokens:
     light:
       bg: '#f2f5f5'
@@ -476,7 +493,8 @@
 - id: holo
   label: Holo
   scheme: dark
-  replaces: []
+  replaces:
+    - grape
   tokens:
     dark:
       bg: '#080f26'

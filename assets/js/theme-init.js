@@ -23,7 +23,7 @@
   root.dataset.previewPage = String(preview);
   let initializing = true;
   function apply(id, nextMode=mode, nextPalette=palette, persist=false) {
-    id=migrate(id);
+    id=themes[id] ? id : migrate(id);
     mode=validMode(nextMode)?nextMode:'auto';
     let entry=themes[id];
     const desired=mode==='auto'?(media?.matches?'dark':'light'):mode;
