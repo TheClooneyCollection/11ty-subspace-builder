@@ -336,3 +336,28 @@
       display: Georgia, 'Noto Sans SC', 'PingFang SC', sans-serif
       mono: Menlo, Consolas, 'Noto Sans SC', 'PingFang SC', sans-serif
     radius: 28px
+- id: liquid-glass-light
+  label: Liquid Glass Light
+  scheme: light
+  family: liquid-glass
+  replaces: []
+  tokens:
+    light:
+      bg: '#eeefeb'
+      ink: '#1e2923'
+      muted: '#414f46'
+      accent: '#256048'
+      rule: '#344e3845'
+      surface: '#ffffff90'
+      paper: '#fbfcf8'
+      rim: '#ffffffee'
+      selected: '#ffffffb8'
+      field-one: '#adc3a0'
+      field-two: '#ccd7b770'
+      glass-rgb: 255 255 255
+      opaque: '#f2f4ed'
+    font:
+      body: '-apple-system, BlinkMacSystemFont, ''Segoe UI'', ''Noto Sans SC'', ''PingFang SC'', sans-serif'
+      display: '-apple-system, BlinkMacSystemFont, ''Segoe UI'', ''Noto Sans SC'', ''PingFang SC'', sans-serif'
+      mono: Menlo, Consolas, 'Noto Sans SC', 'PingFang SC', sans-serif
+    radius: 36px
