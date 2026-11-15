@@ -3,8 +3,9 @@ import yaml from 'js-yaml';
 import { expect, it } from 'vitest';
 import { themeManifest } from '../../lib/theme-manifest.js';
 const themes = yaml.load(fs.readFileSync('_data/themes.yaml','utf8'));
-it('offers Simple by default and exposes configured Fun pools', () => {
-  expect(themeManifest(themes).defaultStrategy).toBe('simple');
+it('defaults to Fun with Soft Glass and exposes configured pools', () => {
+  expect(themeManifest(themes)).toMatchObject({defaultStrategy:'fun', defaultId:'glass'});
+  expect(themeManifest(themes,{defaultStrategy:'simple'}).defaultStrategy).toBe('simple');
   const config = themeManifest(themes,{defaultStrategy:'fun',defaultId:'swiss'});
   expect(config.defaultId).toBe('swiss');
   expect(config.defaultStrategy).toBe('fun');

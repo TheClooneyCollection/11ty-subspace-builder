@@ -38,7 +38,7 @@ Optional `family` and reciprocal `pair` fields connect fixed light/dark entries.
 
 Detail styles go in `assets/css/themes/<id>.css`, scoped under `html[data-theme="<id>"]`. Token-only entries need no detail file. Use `[data-scheme="dark"]` instead of hard-coded theme lists. Keep `--accent`, `.theme-text` and `.theme-midtone` compatible with embedded content. Timeline type labels use `.timeline-type` and `--tag-font`; they have a visible `#` prefix.
 
-Set `site.theme.defaultId` and `defaultMode` (`auto|light|dark`) in `_data/site.yaml`. `showSelectors` controls whether readers see switching controls. The theme ID is the only line to change when choosing a new default. The retired `autoLightId`, `autoDarkId`, `previewHoverDelay`, and `previewResetDelay` no longer affect v2.
+Set `site.theme.defaultId` (builder default `glass`) and `defaultMode` (`auto|light|dark`) in `_data/site.yaml`. `showSelectors` controls whether readers see switching controls. The theme ID is the only line to change when choosing a new default. The retired `autoLightId`, `autoDarkId`, `previewHoverDelay`, and `previewResetDelay` no longer affect v2.
 
 ## Loading and accessibility
 
@@ -72,8 +72,9 @@ a default does not turn it into a manual choice or replace the stored Fun rolls.
 Liquid Glass palette and first-visit rolls. Halo uses Starship as its light
 partner and returns to Halo when switched back to dark.
 
-`site.theme.defaultStrategy` chooses `simple` (the builder default, using
-`defaultId`) or `fun`. Fun rolls one entry from `weekdayThemes` and one from
+`site.theme.defaultStrategy` chooses `fun` (the builder default) or `simple`
+(always `defaultId`). With no `defaultId`, the builder falls back to Soft Glass
+(`glass`). Fun rolls one entry from `weekdayThemes` and one from
 `weekendThemes` on the first visit. Both are stored permanently in that browser;
 the local day selects which applies. A manual choice wins. The built-in pools
 are Soft Glass, Liquid Glass, Starship and Halo for weekdays, and Zine, Retro

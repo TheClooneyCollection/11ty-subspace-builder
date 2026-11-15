@@ -14,7 +14,7 @@ theme:
   fadeDuration: 0.7s
   # blur at the crossfade midpoint; fallback 0 (none)
   fadeBlur: 8px
-  defaultId: paper
+  defaultId: glass
   defaultStrategy: fun
   defaultMode: auto
 

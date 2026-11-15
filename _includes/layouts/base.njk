@@ -1,5 +1,5 @@
 {% set siteThemeConfig = site.theme or {} %}
-{% set configuredDefaultThemeId = siteThemeConfig.defaultId %}
+{% set configuredDefaultThemeId = siteThemeConfig.defaultId or 'glass' %}
 {% set defaultTheme = themes | first %}
 {% if configuredDefaultThemeId %}
 	{% for theme in themes  %}
