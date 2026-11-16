@@ -7,7 +7,7 @@ https://subspace-builder.nicholas.clooney.io/
 ## Features
 
 - Powered by Eleventy 3 with Markdown-it, footnotes, auto-generated heading anchors, and computed content metadata
-- Tachyons-based, theme-aware typography and color palettes with runtime switching for site chrome, code blocks, and GitHub embeds
+- A theme picker in the header with a set of CSS skins over the same pages, from Warm Paper and Swiss to Soft Glass, Liquid Glass and Retro sci-fi; new visitors get Fun mode, which rolls a skin for them, with Soft Glass as the fallback (see [the theme system](docs/theme-system.md))
 - Responsive navigation with a mobile hamburger menu, dark-theme-safe icon styling, and paginated home-page browsing
 - Dedicated content surfaces for posts, drafts, notes, tags, projects, and curated series pages with cross-content series backlinks
 - Reusable post list rendering with excerpt trimming, readable dates, and build-time pagination support
@@ -120,13 +120,9 @@ npm run starter:nicholas
 - If you do not plan to use Giscus, delete or comment out the `giscus` block so any clones of this starter do not point comment traffic at someone else’s repository.
 - The remaining attributes (`mapping`, `lang`, etc.) can stay at their defaults unless you want to tweak how threads are created or which language the widget uses.
 
-### Theme presets (`_data/themes.yaml`)
+### Themes (`_data/themes.yaml`)
 
-Add, remove, or tweak Tachyons class pairs here. Each theme entry accepts:
-
-- `id` - Unique identifier used for persistence and data attributes.
-- `classes` - Tachyons classes applied to `html` when the theme is active.
-- `midtoneClass` - Optional class used to recolor elements tagged with `.theme-midtone`.
+Each theme is a set of tokens (colours, fonts, radius) plus an optional detail stylesheet. [The theme system](docs/theme-system.md) covers adding a skin, the site default (`site.theme`) and how readers' choices are stored. v1 presets written as Tachyons class pairs still work for one transition release; the same doc shows how to convert them.
 
 ## Writing Content
 
@@ -181,9 +177,3 @@ The home page runs `renderPostList(collections.posts, ...)` and Eleventy only ad
 ## License
 
 MIT License - see [`LICENSE`](LICENSE).
-
-## Theme presets
-
-Ten CSS skins share the same pages: Warm Paper, Swiss, Brutalist, Retro web / Zine, Soft Glass, Liquid Glass Light, Liquid Glass Dark, Starship, Retro-futurist and Holo. Seven follow light/dark mode; Liquid Glass pairs separate light/dark skins with Aurora and Indigo dark palettes; Holo is dark only. The header offers explicit previews and persistent theme/mode preferences.
-
-See [the theme system](docs/theme-system.md) for configuration, custom skins and v1 migration.
