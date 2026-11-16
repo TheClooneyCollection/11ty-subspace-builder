@@ -12,7 +12,7 @@ concurrency:
 jobs:
   test:
     if: github.repository == 'TheClooneyCollection/11ty-subspace-builder'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     steps:
