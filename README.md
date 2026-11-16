@@ -107,6 +107,8 @@ npm run starter:nicholas
 
 ## Configuration
 
+See the [complete configuration reference](docs/configuration.md) for every site and data-file setting, defaults, and supported values.
+
 ### Site settings (`_data/site.yml`)
 
 - `title`, `url`, and author contact details.
