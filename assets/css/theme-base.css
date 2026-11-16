@@ -56,14 +56,14 @@ html.theme .bg-white-20{background:var(--surface)}
  [data-theme-selector]{max-width:100%;flex-wrap:wrap}
  .article-toc{position:static;max-height:none}
 }
-/* Theme switches crossfade for --theme-fade-duration (site.theme.fadeDuration, default 0.4s); theme-init skips the transition under reduced motion. theme-init forwards a tap made mid-fade. */
+/* Theme switches crossfade for --theme-fade-duration (site.theme.fadeDuration, default 0.7s); theme-init skips the transition under reduced motion. theme-init forwards a tap made mid-fade. */
 ::view-transition{pointer-events:none}
-::view-transition-old(root),::view-transition-new(root){animation-duration:var(--theme-fade-duration,.4s);animation-timing-function:cubic-bezier(.4,0,.2,1)}
-/* --theme-fade-blur (site.theme.fadeBlur, default 0) softens the midpoint of the crossfade. */
+::view-transition-old(root),::view-transition-new(root){animation-duration:var(--theme-fade-duration,.7s);animation-timing-function:cubic-bezier(.4,0,.2,1)}
+/* --theme-fade-blur (site.theme.fadeBlur, default 8px) softens the midpoint of the crossfade. */
 ::view-transition-old(root){animation-name:theme-fade-out}
 ::view-transition-new(root){animation-name:theme-fade-in}
-@keyframes theme-fade-out{from{opacity:1;filter:blur(0)}to{opacity:0;filter:blur(var(--theme-fade-blur,0px))}}
-@keyframes theme-fade-in{from{opacity:0;filter:blur(var(--theme-fade-blur,0px))}to{opacity:1;filter:blur(0)}}
+@keyframes theme-fade-out{from{opacity:1;filter:blur(0)}to{opacity:0;filter:blur(var(--theme-fade-blur,8px))}}
+@keyframes theme-fade-in{from{opacity:0;filter:blur(var(--theme-fade-blur,8px))}to{opacity:1;filter:blur(0)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media print{.site-header{position:static}.article-toc{position:static;max-height:none}.theme-backdrop,.theme-art,[data-theme-selector]{display:none!important}}
 

@@ -124,6 +124,17 @@ for (const width of [390, 1440]) test.describe(`theme picker at ${width}px`, () 
       const style = getComputedStyle(document.documentElement, '::view-transition-new(root)');
       return [style.animationDuration, style.animationName, style.getPropertyValue('--theme-fade-blur').trim()];
     })).toEqual(['0.7s', 'theme-fade-in', '8px']);
+    // With no configured custom properties, the CSS fallback keeps the same feel.
+    await page.addStyleTag({ content: 'html { --theme-fade-duration: initial !important; --theme-fade-blur: initial !important; }' });
+    expect(await page.evaluate(() => {
+      const duration = getComputedStyle(document.documentElement, '::view-transition-new(root)').animationDuration;
+      const probe = document.createElement('div');
+      probe.style.animation = 'theme-fade-in 1s paused both';
+      document.body.append(probe);
+      const blur = getComputedStyle(probe).filter;
+      probe.remove();
+      return [duration, blur];
+    })).toEqual(['0.7s', reducedMotion === 'reduce' ? 'none' : 'blur(8px)']);
   });
 
   test('clicks save immediately and each opening has its own Revert target', async ({ page }) => {

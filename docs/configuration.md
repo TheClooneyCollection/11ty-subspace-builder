@@ -42,8 +42,8 @@ These settings live under `site.theme`. See [Theme system](theme-system.md) for 
 | `weekendThemes` | Omitted / `[zine, retro-futurist, brutalist]` | Array of eligible theme IDs for Saturday and Sunday. Invalid, migrated or retired IDs are filtered; an empty pool uses the default. |
 | `transitionDuration` | `0.5s` / `0.35s` | CSS time for background/text color transitions. |
 | `transitionTimingFunction` | `ease-in-out` / `ease` | CSS timing function, such as `linear`, `ease`, `ease-in`, `ease-out`, `ease-in-out`, or `cubic-bezier(...)`. |
-| `fadeDuration` | `0.7s` / `0.4s` | CSS time for supported View Transition crossfades; reduced-motion users skip them. |
-| `fadeBlur` | `8px` / `0px` | Nonnegative CSS length for crossfade blur. Use `0px` to disable blur. |
+| `fadeDuration` | `0.7s` / `0.7s` | CSS time for supported View Transition crossfades; reduced-motion users skip them. |
+| `fadeBlur` | `8px` / `8px` | Nonnegative CSS length for crossfade blur. Use `0px` to disable blur. |
 
 Legacy `autoLightId` and `autoDarkId` are still read into HTML attributes but do not control the current runtime. `previewResetDelay` is assigned a template fallback of `200` but unused; `previewHoverDelay` is not read. Do not use these retired settings to configure the picker.
 
