@@ -8,6 +8,7 @@ import { loadSources } from '../lib/og/sources.js';
 import { loadFonts } from '../lib/og/fonts.js';
 import { template } from '../lib/og/styles.js';
 import { render } from '../lib/og/render.js';
+import { missingGlyphs } from '../lib/og/glyphs.js';
 import { showcaseData, SHOWCASE_URL } from '../lib/og/showcase.js';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
@@ -36,13 +37,15 @@ export async function generateOgImages({ root = ROOT, force = process.argv.inclu
     if (!sources.has(style)) sources.set(style, loadSources(style));
     return sources.get(style);
   };
-  const renderCard = async (data) => {
-    if (!fonts.has(data.style)) fonts.set(data.style, loadFonts(data.style));
-    return render(template(data), await fonts.get(data.style));
+  const fontsFor = (style) => {
+    if (!fonts.has(style)) fonts.set(style, loadFonts(style));
+    return fonts.get(style);
   };
+  const glyphsFor = async (data) => missingGlyphs(template(data), await fontsFor(data.style));
+  const renderCard = async (data) => render(template(data), await fontsFor(data.style));
   const result = await generateCards({ entries, site, series, locales, force,
     manifest: await json(path.join(cache, 'manifest.json'), {}),
-  }, { sourcesFor, renderCard, exists: (file) => exists(path.join(output, file)),
+  }, { sourcesFor, renderCard, glyphsFor, warn: (message) => console.warn(message), exists: (file) => exists(path.join(output, file)),
     save: (file, png) => writeFile(path.join(output, file), png),
   });
   // Remove generated files no longer represented, including the comparison post from a prior dev build.
@@ -59,6 +62,8 @@ export async function generateOgImages({ root = ROOT, force = process.argv.inclu
     const previous = await json(path.join(cache, 'showcase.json'), {});
     const next = {};
     for (const item of showcase) {
+      const missing = await glyphsFor(item.data);
+      if (missing.length) console.warn(`[og] Missing glyphs in showcase ${item.sample} (${item.style}): ${missing.map(({ character, codePoint }) => `${JSON.stringify(character)} ${codePoint}`).join(', ')}`);
       const key = `${item.sample}-${item.style}`;
       const file = path.join(output, 'showcase', `${key}.png`);
       const hash = cacheKey(item.data, await sourcesFor(item.style));

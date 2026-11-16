@@ -47,6 +47,7 @@
     "@fontsource/noto-sans-tc": "^5.2.9",
     "@playwright/test": "^1.60.0",
     "@resvg/resvg-js": "^2.6.0",
+    "@shuding/opentype.js": "^1.4.0-beta.0",
     "gray-matter": "^4.0.3",
     "highlight.js": "^11.11.1",
     "http-server": "^14.1.1",

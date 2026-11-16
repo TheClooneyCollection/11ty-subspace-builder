@@ -7,15 +7,18 @@ const entry = (extra = {}) => ({ key: '/posts/first', url: '/posts/first/',
 function fixture() {
   const files = new Map();
   const rendered = [];
+  const warnings = [];
   const sources = { templates: { 'retro.js': 'template' }, fonts: { 'body.woff': Buffer.from('font') }, versions: { satori: '1', resvg: '1' } };
   const capabilities = {
     sourcesFor: async () => sources,
+    glyphsFor: async () => [],
+    warn: (message) => warnings.push(message),
     renderCard: async (data) => { rendered.push(data); return Buffer.from(data.title); },
     exists: async (file) => files.has(file),
     save: async (file, data) => { files.set(file, data); },
   };
   const run = (extra = {}) => generateCards({ entries: [entry()], site: { url: 'https://example.test' }, series: [], ...extra }, capabilities);
-  return { files, rendered, sources, run };
+  return { files, rendered, sources, run, capabilities, warnings };
 }
 
 describe('card generation workflow', () => {
@@ -27,6 +30,16 @@ describe('card generation workflow', () => {
     expect((await f.run({ manifest: first.manifest })).rendered).toBe(0);
     f.files.clear();
     expect((await f.run({ manifest: first.manifest })).rendered).toBe(1);
+  });
+  it('warns about missing glyphs with the source page on both fresh and cached cards', async () => {
+    const f = fixture();
+    f.capabilities.glyphsFor = async () => [{ character: '🦄', codePoint: 'U+1F984' }];
+    const first = await f.run({ entries: [entry({ filePath: 'posts/first.md' })] });
+    expect(first.rendered).toBe(1);
+    expect(f.warnings).toEqual(['[og] Missing glyphs for posts/first.md (retro): "🦄" U+1F984']);
+    const cached = await f.run({ entries: [entry({ filePath: 'posts/first.md' })], manifest: first.manifest });
+    expect(cached.rendered).toBe(0);
+    expect(f.warnings).toHaveLength(2);
   });
   it('a source change invalidates the saved image without a manual version bump', async () => {
     const f = fixture(); const first = await f.run();
@@ -63,6 +76,8 @@ describe('card generation workflow', () => {
   it('render errors fail the build instead of saving a misleading manifest', async () => {
     await expect(generateCards({ entries: [entry()], site: {}, series: [] }, {
       sourcesFor: async () => ({ templates: {}, fonts: {}, versions: {} }),
+      glyphsFor: async () => [],
+      warn: () => { throw new Error('unexpected glyph warning'); },
       exists: async () => false,
       renderCard: async () => { throw new Error('renderer unavailable'); },
       save: async () => { throw new Error('must not save'); },

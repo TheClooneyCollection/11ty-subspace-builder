@@ -126,4 +126,33 @@ describe('share card data', () => {
       .toMatchObject({ title: 'Café', excerpt: 'First\nSecond', parent: 'Café', siteName: 'Café', series: { title: 'Café' } });
     expect(input.title).toBe('Cafe\u0301');
   });
+
+  it.each([
+    ['production\u2011ready', 'production-ready'],
+    ['well\u2010formed', 'well-formed'],
+    ['12\u201215', '12–15'],
+    ['A\u2015B', 'A—B'],
+    ['A\u00a0B\u202fC\u2007D', 'A B C D'],
+    ['soft\u00adhyphen\u200b\u200c\u200d\u2060\ufeff', 'softhyphen'],
+    ['“It’s ready”—中文 🌱', '“It’s ready”—中文 🌱'],
+  ])('normalizes publishing text %s across every drawn input', (value, expected) => {
+    const input = entry({ title: value, excerpt: value, parentTitle: value });
+    const definitions = [{ id: 'garden', title: value, entries: [input.url] }];
+    const data = cardData(input, { ogImage: { siteName: value } }, definitions);
+    expect(data).toMatchObject({ title: expected, excerpt: expected, parent: expected,
+      siteName: expected, series: { title: expected } });
+    expect(input.title).toBe(value);
+    const localized = cardData({ ...input, lang: 'zh' }, {}, definitions,
+      { series: { garden: { title: value } } });
+    expect(localized.series.title).toBe(expected);
+  });
+
+  it('does not rewrite URL membership or series identifiers as display text', () => {
+    const url = '/posts/production\u2011ready/';
+    const id = 'production\u2011ready';
+    const definitions = [{ id, title: id, entries: [url] }];
+    expect(cardData(entry({ url, ogSeries: id }), {}, definitions).series)
+      .toMatchObject({ id, title: 'production-ready' });
+    expect(cardData(entry({ url: '/posts/production-ready/' }), {}, definitions).series).toBeNull();
+  });
 });
