@@ -15,7 +15,7 @@ Personal blog and digital garden for Nicholas Clooney. Built on Eleventy v3.
 ## Directory structure
 
 ```
-posts/subspace/   blog posts (Markdown)
+posts/            blog posts (Markdown); bundled examples in posts/samples/
 notes/            short-form notes
 timeline/         personal timeline / captain's log entries
 docs/             feature and planning documentation

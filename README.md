@@ -1,134 +1,86 @@
-# 11ty Subspace Builder
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo/lockup-dark.svg">
+    <img src="docs/assets/logo/lockup-light.svg" alt="11ty Subspace Builder" width="420">
+  </picture>
+</h1>
 
-A warp-speed Eleventy blog starter powered by Tachyons utility classes. It ships with theme switching, accessible navigation, and a flexible layout that adapts to small and large viewports.
+<p align="center">
+  <a href="https://github.com/TheClooneyCollection/11ty-subspace-builder/actions/workflows/test.yml"><img src="https://github.com/TheClooneyCollection/11ty-subspace-builder/actions/workflows/test.yml/badge.svg" alt="Tests"></a>
+  <a href="https://github.com/TheClooneyCollection/11ty-subspace-builder/releases/latest"><img src="https://img.shields.io/github/v/release/TheClooneyCollection/11ty-subspace-builder" alt="Latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/TheClooneyCollection/11ty-subspace-builder" alt="License"></a>
+  <img src="https://img.shields.io/badge/node-20%2B-339933" alt="Node 20+">
+  <img src="https://img.shields.io/badge/Eleventy-3-222222" alt="Eleventy 3">
+  <a href="https://subspace-builder.nicholas.clooney.io/"><img src="https://img.shields.io/badge/demo-live-0a7ea4" alt="Live demo"></a>
+</p>
 
-https://subspace-builder.nicholas.clooney.io/
+An Eleventy blog starter with ten switchable themes, multilingual posts, series, a timeline, and share cards that build themselves.
 
-## Features
+<table>
+  <tr>
+    <td><img src="assets/images/theme-previews/swiss-light.webp" alt="Swiss theme"></td>
+    <td><img src="assets/images/theme-previews/retro-futurist-light.webp" alt="Retro sci-fi theme"></td>
+  </tr>
+  <tr>
+    <td><img src="assets/images/theme-previews/glass-light.webp" alt="Soft Glass theme"></td>
+    <td><img src="assets/images/theme-previews/liquid-glass-dark-dark.webp" alt="Liquid Glass dark theme"></td>
+  </tr>
+</table>
 
-- Powered by Eleventy 3 with Markdown-it, footnotes, auto-generated heading anchors, and computed content metadata
-- A theme picker in the header with a set of CSS skins over the same pages, from Warm Paper and Swiss to Soft Glass, Liquid Glass and Retro sci-fi; new visitors get Fun mode, which rolls a skin for them, with Soft Glass as the fallback (see [the theme system](docs/theme-system.md))
-- Responsive navigation with a mobile hamburger menu, dark-theme-safe icon styling, and paginated home-page browsing
-- Dedicated content surfaces for posts, drafts, notes, tags, projects, and curated series pages with cross-content series backlinks
-- Reusable post list rendering with excerpt trimming, readable dates, and build-time pagination support
-- Responsive image pipeline powered by `@11ty/eleventy-img` (see [Responsive Images with Eleventy Img](posts/samples/responsive-images-eleventy-img.md))
-- YAML-driven site metadata, series definitions, notes config, theme presets, animation timing controls, and optional Umami analytics
-- Build-time Open Graph image generation for posts and notes, with cached regeneration to keep rebuilds cheap
-- GitHub snippet and embed support via a `{% github %}` shortcode with remote fetch, syntax highlighting, collapsible embeds, copy support, and cache-aware refresh logic
-- Docker and Compose support for local dev, local production preview, and shared-edge deployments
+- **Ten themes and a picker**: readers switch skins and light or dark, and Fun mode rolls one for new visitors. [Theme system](docs/theme-system.md)
+- **Share cards, built for you**: a 1200x630 card for every post, note, timeline entry and page, in Retro, Swiss, Glass or Classic. [Share cards](#share-cards)
+- **Multilingual, opt-in**: translations get their own URLs, labels and share cards, Chinese included. [Multi-language content](docs/feature-i18n.md)
+- **Series and timeline**: group posts, notes and timeline entries into series, and log work on a status-tagged timeline. [Timeline](docs/feature-timeline.md)
+- **Responsive images and GitHub embeds**: `@11ty/eleventy-img` and a `{% github %}` shortcode. [Writing content](#more)
+- **Sample content you can switch off**: the bundled examples stay in the repo, so updates from upstream rebase cleanly. [Configure](#configure)
 
-## Quick Start
-
-### Prerequisites
-
-- Node.js 18 or newer
-
-### Installation
+## Quick start
 
 ```bash
+git clone https://github.com/TheClooneyCollection/11ty-subspace-builder my-blog
+cd my-blog
 npm install
+npm run dev              # http://localhost:8080
+# npm run prod           # production settings with the dev server
+# npm run build          # production build into _site/
 ```
 
-### Local development
+Images are stored in Git LFS: run `git lfs install` before cloning.
 
-```bash
-npm run dev
-```
+Using a coding agent? Ask it to use the `subspace-setup` skill. It walks through setup, configuration, deploying to Cloudflare Pages and staying current with upstream.
 
-This sets `ELEVENTY_ENV=development` and starts Eleventy in watch/serve mode. Visit `http://localhost:8080` (default) to browse the site. Theme selections persist in `localStorage` so you can preview skins as you work.
+## Configure
 
-### Local production preview
+Every setting, its default and accepted values are in the [configuration reference](docs/configuration.md). The usual first changes, all in `_data/site.yaml`:
 
-```bash
-npm run prod
-```
+- **Site**: `title`, `url` and author ([site identity](docs/configuration.md#site-identity-and-navigation)).
+- **Theme**: `theme.defaultStrategy` and `theme.defaultId` ([theme settings](docs/configuration.md#theme-settings)).
+- **Share cards**: `ogImage.style` ([Open Graph images](docs/configuration.md#open-graph-images)).
+- **Samples**: `sampleContent: false` hides the bundled posts, notes and timeline entries.
 
-Runs the site with `ELEVENTY_ENV=production` while keeping Eleventy’s dev server running so you can QA the published experience without deploying.
+## Share cards
 
-### Production build
+The build renders a card for every page with Satori and Resvg, and caches it until the content changes. Pick one style for the site; details are in [OG images](docs/og-images.md).
 
-```bash
-npm run build
-```
+<table>
+  <tr>
+    <td><img src="docs/assets/readme/card-post-retro.webp" alt="Retro card"></td>
+    <td><img src="docs/assets/readme/card-post-swiss.webp" alt="Swiss card"></td>
+    <td><img src="docs/assets/readme/card-post-glass-dark.webp" alt="Glass dark card"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/readme/card-zh-retro.webp" alt="Chinese post card, Retro"></td>
+    <td><img src="docs/assets/readme/card-series-swiss.webp" alt="Series card, Swiss"></td>
+    <td><img src="docs/assets/readme/card-timeline-retro-dark.webp" alt="Timeline card, Retro dark"></td>
+  </tr>
+</table>
 
-This sets `ELEVENTY_ENV=production` and writes the static output to the `_site/` directory. Deploy those files to any static host or CDN.
+## More
 
-### Starter reset wizard
+<details>
+<summary><strong>Writing content</strong></summary>
 
-```bash
-npm run starter:reset
-```
-
-This interactive reset wizard helps downstream users clear sample posts, notes,
-timeline entries, projects, images, and personal site metadata while optionally
-adding starter placeholders back in. Each menu accepts `all`, `skip`, or mixed
-numeric selections like `1 3 5`.
-
-If you want to keep the current author/profile/projects layer and related
-images, run:
-
-```bash
-npm run starter:reset -- --keep-personal-branding
-```
-
-For Nicholas's local workflow, there is also a shortcut:
-
-```bash
-npm run starter:nicholas
-```
-
-## Docker
-
-- `compose.yml` uses the stock `node:25-bookworm-slim` image and installs dependencies at container start.
-- Default mode (public ports): `docker compose up -d`
-- Dev: `http://127.0.0.1:8080`
-- Prod: `http://127.0.0.1:8090`
-- Shared-edge mode (no host ports; for reverse proxy via Caddy on the `edge` network): `docker network create edge 2>/dev/null || true`
-- Run: `docker compose -f compose.yml -f compose.edge.yml up -d`
-- Caddy (in the ingress stack) should `reverse_proxy` to the `dev` or `prod` container names on the `edge` network.
-
-## Social Preview Images
-
-- `scripts/generate-og-images.js` runs before each Eleventy build to produce 1200×630 Open Graph cards using Satori (HTML template) and Resvg. We stick with Satori’s HTML helper instead of JSX so the pipeline stays zero-transpile and works out-of-the-box in Node.
-- Templates blend Lexend (heading) + Inter (body) with Noto Sans SC/TC fallback for Chinese text, all from `@fontsource/*`, and use the Sun theme palette (soft yellow gradient, amber accents, black typography); tweak `buildTemplate` to adjust the look.
-- Headlines/excerpts auto-resize and truncate when needed so long titles (e.g. “The Joy (and Frustrations) of Building Small Sites with GPT-5 Codex”) stay legible without breaking the layout.
-- Content hashing keeps regeneration cheap—changes to a post’s title, excerpt, or the template version trigger a refresh, otherwise cached PNGs in `.cache/og/` are reused.
-- Use `npm run og` to generate cards manually, `npm run og -- --force` (or `OG_FORCE=true npx @11ty/eleventy`) to rebuild everything, and check the emitted file map in `_data/ogImages.json`.
-- Posts, notes, and timeline entries automatically receive an `ogImage` field via computed data, so layouts and feeds can reference `{{ ogImage }}` without manual front matter tweaks. Static cards such as the timeline root page are configured in `_data/site.yaml` under `ogImage.staticEntries`.
-
-## Project Structure
-
-- `_data/` - Global data files (`site.yml` and `themes.yaml`) that drive metadata, theme options, and animation settings.
-- `_includes/layouts/` - Base and page layouts, including the responsive navigation + theme selector UI in `home.njk`.
-- `_includes/components/` - Shareable Nunjucks macros like `post-list.njk` for rendering excerpts.
-- `posts/` - Blog posts and collection defaults (`posts.json` assigns the home layout to the collection).
-- `eleventy.config.js` - Eleventy configuration, Markdown-it setup, the Eleventy Img transform, and custom filters (`readableDate`, `machineDate`, `excerpt`).
-- `index.md` - Home page content that also uses the `home` layout.
-
-## Configuration
-
-See the [complete configuration reference](docs/configuration.md) for every site and data-file setting, defaults, and supported values.
-
-### Site settings (`_data/site.yml`)
-
-- `title`, `url`, and author contact details.
-- `theme` block toggles the selector (`showSelectors`), controls animation timings, and sets the default theme (`defaultId`).
-- `umami` block (optional) controls the analytics script URL (`source`) and tracking `id`; remove or comment it out to disable tracking.
-
-### Comments (`giscus`)
-
-- Giscus is optional and configured via the `giscus` block in `_data/site.yml`.
-- Visit [giscus.app](https://giscus.app/) with your GitHub repository selected to generate the `repo`, `repoId`, `category`, and `categoryId` values—replace the defaults before enabling comments on your site.
-- If you do not plan to use Giscus, delete or comment out the `giscus` block so any clones of this starter do not point comment traffic at someone else’s repository.
-- The remaining attributes (`mapping`, `lang`, etc.) can stay at their defaults unless you want to tweak how threads are created or which language the widget uses.
-
-### Themes (`_data/themes.yaml`)
-
-Each theme is a set of tokens (colours, fonts, radius) plus an optional detail stylesheet. [The theme system](docs/theme-system.md) covers adding a skin, the site default (`site.theme`) and how readers' choices are stored. v1 presets written as Tachyons class pairs still work for one transition release; the same doc shows how to convert them.
-
-## Writing Content
-
-Create a new Markdown file in `posts/` with front matter similar to:
+Create a Markdown file in `posts/` with front matter like:
 
 ```markdown
 ---
@@ -142,40 +94,62 @@ excerpt: |
   A quick teaser paragraph that appears in post lists.
 ---
 
-Your post content starts here. Eleventy handles Markdown -> HTML conversion.
+Your post content starts here.
 ```
 
-Posts automatically pick up the layout defined in `posts/posts.json`. The optional `time` field lets you order posts or notes published on the same date. The `excerpt` field is optional; without it, the `excerpt` filter trims the rendered HTML.
-Markdown footnotes now work too, using standard `[^1]` references plus `[^1]: note text` definitions, or inline `^[note text]` syntax.
+- Posts pick up the layout from `posts/posts.json`. `time` orders posts or notes published on the same date. Without `excerpt`, the `excerpt` filter trims the rendered HTML.
+- Footnotes use `[^1]` references with `[^1]: note text` definitions, or inline `^[note text]`.
+- Images go through `@11ty/eleventy-img`; see [the sample post](posts/samples/responsive-images-eleventy-img.md).
+- `{% github %}` embeds a file or snippet from GitHub with highlighting, collapsing and copy.
+- `{% from "components/post-list.njk" import renderPostList with context %}` renders a styled list of any collection.
 
-## Components & Enhancements
+</details>
 
-- Use `{% from "components/post-list.njk" import renderPostList with context %}` inside a template to render a list of collection items with consistent styling.
-- The `home.njk` layout wraps page content in a `<heading-anchors>` element to enable anchored headings and theme-aware typography.
+<details>
+<summary><strong>Deployment</strong></summary>
 
-## Deployment Tips
+`npm run build` writes the static site to `_site/`; deploy it to any static host. On Cloudflare Pages use build command `npm run build`, output directory `_site` and `NODE_VERSION=20`.
 
-- Set `ELEVENTY_ENV=production` when building for production to leverage Eleventy’s environment-based defaults.
-- Because Tachyons is loaded from a CDN, ensure outbound requests are allowed by your host or replace the `<link>` in `base.njk` with a bundled stylesheet.
+Tachyons loads from a CDN, so the host must allow that request, or replace the `<link>` in `base.njk` with a bundled stylesheet.
 
-## Releases
+</details>
 
-- Releases are managed by `release-please` via `.github/workflows/release-please.yml`.
-- Push Conventional Commits to `main`; `feat:` triggers a minor release, `fix:` triggers a patch release, and `feat!:` or a `BREAKING CHANGE:` footer triggers a major release.
-- When release-worthy commits land, `release-please` opens or updates a release PR that bumps `package.json`, updates `package-lock.json`, and maintains `CHANGELOG.md`.
-- Merging that release PR creates the Git tag and GitHub release automatically.
-- `docs:` and `chore:` commits can still appear in the generated changelog, but they do not bump the version on their own.
+<details>
+<summary><strong>Docker</strong></summary>
 
-## FAQ
+- `compose.yml` uses the stock `node:25-bookworm-slim` image and installs dependencies at container start.
+- Default mode, with public ports: `docker compose up -d`. Dev is on `http://127.0.0.1:8080`, prod on `http://127.0.0.1:8090`.
+- Shared-edge mode, with no host ports, for a reverse proxy on the `edge` network: `docker network create edge 2>/dev/null || true`, then `docker compose -f compose.yml -f compose.edge.yml up -d`. Point the proxy at the `dev` or `prod` container.
 
-### Why does the homepage say "No posts published yet" even though posts exist?
+</details>
 
-The home page runs `renderPostList(collections.posts, ...)` and Eleventy only adds templates to `collections.posts` when they are tagged `posts`. Make sure your post defaults include `"tags": ["posts"]`—for example, set it once in `posts/posts.json` so every Markdown file under `posts/` inherits the tag.
+<details>
+<summary><strong>Starter reset</strong></summary>
 
-### Why are posts ordered oldest-first?
+`npm run starter:reset` clears the starter's personal metadata (site identity, profile, projects and images) on a fresh fork. Each menu accepts `all`, `skip` or numbers like `1 3 5`; skip the sample menus. To hide the sample content, set `sampleContent: false` instead of deleting it: deleted samples conflict with every later update from upstream.
 
-`collections.posts`, `collections.notes`, and `collections.hiddenNotes` are kept in ascending chronological order so the existing templates and pagination can reverse them for newest-first views. When you add `time: "HH:MM"` to post or note front matter, same-day items are sorted by time before those UI-level reversals run.
+</details>
+
+<details>
+<summary><strong>Project structure, releases and testing</strong></summary>
+
+- [Project structure](docs/project-structure.md)
+- [Releases](docs/releasing.md)
+- [Testing](docs/testing.md)
+
+</details>
+
+<details>
+<summary><strong>FAQ</strong></summary>
+
+**The home page says "No posts published yet" even though posts exist.**
+The home page renders `collections.posts`, and Eleventy only adds templates tagged `posts`. Set `"tags": ["posts"]` once in `posts/posts.json` so every file under `posts/` inherits it.
+
+**Why are collections ordered oldest-first?**
+`collections.posts`, `collections.notes` and `collections.hiddenNotes` stay in ascending order so templates and pagination can reverse them for newest-first views. With `time: "HH:MM"` in front matter, same-day items sort by time first.
+
+</details>
 
 ## License
 
-MIT License - see [`LICENSE`](LICENSE).
+MIT No Attribution. See [`LICENSE`](LICENSE).

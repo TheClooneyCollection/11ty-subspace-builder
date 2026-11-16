@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512">
+<g transform="rotate(-16 50 50)">
+  <g fill="none" stroke-width="3.4">
+    <path stroke="#c48a22" d="M 21.4 50 A 28.74 28.74 0 1 1 78.6 50"/>
+    <path stroke="#c48a22" d="M 21.8 50 A 28.31 28.31 0 1 0 78.2 50"/>
+    <path stroke="#0b0b0c" d="M 26.4 50 A 23.64 23.64 0 1 1 73.6 50"/>
+    <path stroke="#0b0b0c" d="M 26.6 50 A 23.43 23.43 0 1 0 73.4 50"/>
+  </g>
+  <circle cx="50" cy="50" r="19" fill="#0b0b0c"/>
+  <path d="M 4 50 Q 50 37 96 50 Q 50 63 4 50 Z" fill="#e2a83a" stroke="#0b0b0c" stroke-width="2.04" stroke-linejoin="round"/>
+  <path d="M 11.36 50 Q 50 43.5 88.64 50 Q 50 56.5 11.36 50 Z" fill="#fbf8f1"/>
+</g>
+</svg>
