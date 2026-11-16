@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixes
+
+* **og:** normalize unsupported typographic spacing and hyphens, report missing font glyphs with source pages, and fit English and Chinese titles to their actual layout space without silent clipping.
+* **theme:** use `0.7s` duration and `8px` blur when fade settings are omitted, matching the sample configuration.
+
 ### Features
 
 * **og:** change the default share card to light Retro sci-fi. Downstream sites can keep the previous v3 design with `ogImage.style: classic` in `_data/site.yaml`. Add eight selectable styles, page `ogStyle` overrides, series selection through `ogSeries`, and separate Chinese cards.

@@ -69,6 +69,14 @@ Glass titles use Newsreader for Latin and Noto Sans SC for Chinese. The Chinese 
 
 A browser CSS stack containing Georgia does not make Georgia available to Satori: Satori only uses font files explicitly supplied to it, and Linux build hosts do not inherit a developer's system fonts. System font redistribution also needs its own license permission. The packaged OFL fonts keep rendering portable without copying Georgia or other system font files. Preserve the packages' license notices when redistributing their font files.
 
+## Typography and long titles
+
+Card text normalizes nonbreaking hyphens and typographic hyphens to `-`, nonbreaking spaces to ordinary spaces, and removes soft hyphens and zero-width characters. Figure dashes become en dashes and horizontal bars become em dashes. Curly quotes and en/em dashes remain intact. This applies to titles, excerpts, parent captions, series titles and site names, without changing source content or URL identities.
+
+Every build checks the text emitted by each template against the cmap tables of its loaded font files, including cached cards. Missing characters produce a warning naming the source page, style and Unicode code point; they do not stop the build. This checks character coverage, not every shaping or emoji-composition behavior. Classic's older font set can still lack emoji and some symbols. Unsupported characters are reported rather than silently replaced.
+
+The initial title sizes preserve the selected design. Before rasterization, Satori measures a copy of the layout without decorative paint, reserving space for metadata, series progress and the footer. Titles that fit retain their exact layout. Oversized titles shrink in steps to the design's minimum; if still too long, they end in an ellipsis within the available area instead of being clipped. The same fitting applies to English and Chinese titles, and to the main excerpt on static page cards. Extremely long words can break within the clamped text.
+
 ## Cache and reproducibility
 
 The build runner uses `lib/og/card-data.js` to normalize card inputs, one pure template module per design family, and `lib/og/render.js` to render with Satori and Resvg. `lib/og/cache-key.js` computes a full SHA-256 key from:

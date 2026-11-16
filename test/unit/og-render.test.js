@@ -95,12 +95,12 @@ describe('share card rendering', () => {
     },
   );
 
-  it('classic keeps its original branding and fits long text', () => {
+  it('classic keeps its branding and leaves the complete title for measured fitting', () => {
     const text = textOf(
       classic({ ...card, title: 'A'.repeat(140), excerpt: 'B'.repeat(300) }),
     );
     expect(text).toContain('Subspace');
-    expect(text).toContain(`${'A'.repeat(112)}…`);
+    expect(text).toContain('A'.repeat(140));
     expect(text).toContain(`${'B'.repeat(260)}…`);
   });
 });
