@@ -32,6 +32,7 @@ export default {
         process.env.ELEVENTY_ENV === 'production'
           ? 'production'
           : 'development',
+        data,
       ),
   },
   eleventyComputed: {
@@ -40,7 +41,7 @@ export default {
         data && typeof data.seriesItem === 'object' ? data.seriesItem : {};
       const environment = data.environment || 'development';
       const { duplicateUrls, draftUrls, missingUrls, entries } =
-        resolveSeriesEntries(seriesItem, data.collections);
+        resolveSeriesEntries(seriesItem, data.collections, data);
 
       const seriesLabel = describeSeries(seriesItem);
 

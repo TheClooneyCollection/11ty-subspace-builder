@@ -123,8 +123,10 @@ describe('data invariants — series.yaml', () => {
     }
 
     if (kind === 'timeline') {
-      const candidate = path.resolve('timeline', `${slug}.md`);
-      return fs.existsSync(candidate) ? candidate : null;
+      const candidates = ['timeline', 'timeline/samples'].map((dir) =>
+        path.resolve(dir, `${slug}.md`),
+      );
+      return candidates.find((candidate) => fs.existsSync(candidate)) || null;
     }
 
     return null;

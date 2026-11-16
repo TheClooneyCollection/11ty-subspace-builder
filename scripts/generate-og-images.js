@@ -1,8 +1,9 @@
-import { readFile, writeFile, mkdir, readdir, rm, stat } from 'node:fs/promises';
+import { getVisibleSeriesList } from '../lib/series.js';
+import { readFile, writeFile, mkdir, rm, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { collectEntries, readYaml } from '../lib/og/collect.js';
-import { generateCards } from '../lib/og/generate.js';
+import { generateCards, outputFilename } from '../lib/og/generate.js';
 import { cacheKey } from '../lib/og/cache-key.js';
 import { loadSources } from '../lib/og/sources.js';
 import { loadFonts } from '../lib/og/fonts.js';
@@ -28,7 +29,8 @@ export async function generateOgImages({ root = ROOT, force = process.argv.inclu
   const cache = path.join(root, '.cache/og');
   await Promise.all([mkdir(output, { recursive: true }), mkdir(cache, { recursive: true })]);
   const site = await readYaml(path.join(root, '_data/site.yaml'));
-  const series = (await readYaml(path.join(root, '_data/series.yaml'), [])).filter((s) => !production || !s.devOnly);
+  const series = getVisibleSeriesList(await readYaml(path.join(root, '_data/series.yaml'), []),
+    production ? 'production' : 'development', { site, root });
   const entries = await collectEntries(root, site, { production });
   const locales = Object.fromEntries(await Promise.all([...new Set(entries.map((e) => e.lang))]
     .map(async (lang) => [lang, await readYaml(path.join(root, `_data/locales/${lang}.yaml`))])));
@@ -43,19 +45,25 @@ export async function generateOgImages({ root = ROOT, force = process.argv.inclu
   };
   const glyphsFor = async (data) => missingGlyphs(template(data), await fontsFor(data.style));
   const renderCard = async (data) => render(template(data), await fontsFor(data.style));
+  const previousManifest = await json(path.join(cache, 'manifest.json'), {});
+  const previousImages = await json(path.join(root, '_data/ogImages.json'), {});
   const result = await generateCards({ entries, site, series, locales, force,
-    manifest: await json(path.join(cache, 'manifest.json'), {}),
+    manifest: previousManifest,
   }, { sourcesFor, renderCard, glyphsFor, warn: (message) => console.warn(message), exists: (file) => exists(path.join(output, file)),
     save: (file, png) => writeFile(path.join(output, file), png),
   });
   // Remove generated files no longer represented, including the comparison post from a prior dev build.
   const keep = new Set(Object.values(result.images).map((url) => path.basename(url)));
-  for (const file of await readdir(output)) {
-    if (file.endsWith('.png') && !keep.has(file)) await rm(path.join(output, file));
+  const previouslyGenerated = new Set([
+    ...Object.keys(previousManifest.entries || {}).map(outputFilename),
+    ...Object.values(previousImages).filter((url) => typeof url === 'string').map((url) => path.basename(url)),
+  ]);
+  for (const file of previouslyGenerated) {
+    if (file.endsWith('.png') && !keep.has(file)) await rm(path.join(output, file), { force: true });
   }
-  const showcase = showcaseData(production);
+  const showcase = showcaseData(production, site);
   let showcaseRendered = 0;
-  if (production) {
+  if (!showcase.length) {
     await rm(path.join(output, 'showcase'), { recursive: true, force: true });
   } else {
     await mkdir(path.join(output, 'showcase'), { recursive: true });

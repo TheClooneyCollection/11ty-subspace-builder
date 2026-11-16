@@ -7,7 +7,7 @@ tags:
   - drafts
   - testing
 draft: true
-ogImage: /assets/og/posts--subspace--draft-chinese-og-check.png
+ogImage: /assets/og/posts--samples--draft-chinese-og-check.png
 excerpt: |
   A draft post that exists purely to verify our OG image pipeline can render Chinese text without dropping glyphs.
 ---
@@ -16,10 +16,10 @@ This draft is here to prove the Open Graph card pipeline can render Chinese text
 
 The page metadata should use the same generated image referenced below, so if this post renders correctly in development we have both the page-level OG tags and the in-body preview covered.
 
-![Generated OG image for this draft](/assets/og/posts--subspace--draft-chinese-og-check.png)
+![Generated OG image for this draft](/assets/og/posts--samples--draft-chinese-og-check.png)
 
 ## What to verify
 
 - The page title renders in Chinese in the article header.
-- The in-body image loads from `/assets/og/posts--subspace--draft-chinese-og-check.png`.
+- The in-body image loads from `/assets/og/posts--samples--draft-chinese-og-check.png`.
 - The generated social card keeps the Chinese title visible instead of showing missing-glyph boxes.

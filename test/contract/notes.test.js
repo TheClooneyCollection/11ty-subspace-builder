@@ -5,14 +5,15 @@ import matter from 'gray-matter';
 import { ensureSiteBuilt } from '../helpers/build-once.js';
 import { parsePage, selectAll, textOf } from '../helpers/parse.js';
 
-// Collect non-hidden, non-draft notes from disk. Notes live directly under
-// notes/ — anything under notes/hidden/ inherits hidden:true via 11tydata.
+// Collect public notes recursively, including the bundled sample namespace.
+// Each hidden/ directory inherits hidden:true from its directory data.
 const collectVisibleNotes = () => {
   const root = path.resolve('notes');
   const visible = [];
-  for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
+  for (const entry of fs.readdirSync(root, { withFileTypes: true, recursive: true })) {
     if (!entry.isFile() || !entry.name.endsWith('.md')) continue;
-    const full = path.join(root, entry.name);
+    const full = path.join(entry.parentPath, entry.name);
+    if (path.relative(root, full).split(path.sep).includes('hidden')) continue;
     const parsed = matter(fs.readFileSync(full, 'utf8'));
     if (parsed.data.hidden) continue;
     if (parsed.data.draft) continue;

@@ -8,13 +8,20 @@ export default {
         (tag) => typeof tag === 'string' && tag === 'testing',
       );
 
-      return isTestingEntry && process.env.ELEVENTY_ENV === 'production'
-        ? false
-        : undefined;
+      if (isTestingEntry && process.env.ELEVENTY_ENV === 'production') return false;
+      const inputPath = data.page?.inputPath || '';
+      if (inputPath.replaceAll('\\', '/').includes('timeline/samples/')
+        && data.permalink === '/timeline/{{ page.fileSlug }}/') {
+        return `/timeline/${inputPath.split(/[\\/]/).pop().replace(/\.md$/, '')}/`;
+      }
+      return data.permalink;
     },
     ogImage: (data) => {
-      const { ogImage, page } = data;
+      const { ogImage, ogImages, page } = data;
       if (ogImage) return ogImage;
+
+      const key = page?.filePathStem;
+      if (key && ogImages?.[key]) return ogImages[key];
 
       const inputPath = page?.inputPath || '';
       const slug = inputPath

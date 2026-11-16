@@ -1,3 +1,5 @@
+import { SAMPLE_DIRECTORIES, sampleContentEnabled, sampleContentUrls, reconcileSampleOutput } from './lib/sample-content.js';
+import { getVisibleSeriesList } from './lib/series.js';
 // 11ty Nav
 import eleventyNavigationPlugin from '@11ty/eleventy-navigation';
 // 11ty RSS
@@ -303,6 +305,11 @@ md.renderer.rules.code_block = (tokens, idx) => {
 
 export default function (eleventyConfig) {
   configureI18n(eleventyConfig, loadSiteData());
+  if (!sampleContentEnabled(loadSiteData())) {
+    for (const directory of SAMPLE_DIRECTORIES) eleventyConfig.ignores.add(`${directory}/**`);
+  }
+  eleventyConfig.addGlobalData('excludedSampleUrls', () =>
+    sampleContentEnabled(loadSiteData()) ? [] : [...sampleContentUrls(process.cwd(), loadSiteData())]);
   const productionEnvironment = process.env.ELEVENTY_ENV === 'production';
 
   eleventyConfig.on('eleventy.after', ({ dir }) => {
@@ -646,19 +653,41 @@ export default function (eleventyConfig) {
     return slugify(value);
   });
 
-  eleventyConfig.on('eleventy.after', ({ results = [] } = {}) => {
+  eleventyConfig.on('eleventy.after', ({ results = [], dir, directories } = {}) => {
+    reconcileSampleOutput({ output: directories?.output || dir?.output || '_site', results, site: loadSiteData() });
     assertNoBrokenInternalLinks(results);
   });
 
   eleventyConfig.on('eleventy.before', async ({ directories, dir } = {}) => {
-    validateTimelineEntryDateTimeQuotes();
+    const site = loadSiteData();
+    const output = directories?.output || dir?.output || '_site';
+    validateTimelineEntryDateTimeQuotes('timeline', site);
+    const oldImages = fs.existsSync('_data/ogImages.json')
+      ? JSON.parse(fs.readFileSync('_data/ogImages.json', 'utf8')) : {};
+    if (!sampleContentEnabled(site)) {
+      const urls = sampleContentUrls(process.cwd(), site);
+      const series = fs.existsSync('_data/series.yaml') ? yaml.load(fs.readFileSync('_data/series.yaml', 'utf8')) || [] : [];
+      const remaining = new Set(getVisibleSeriesList(series, 'development', { site, excludedSampleUrls: urls }).map((item) => item.id));
+      for (const item of series) if (!remaining.has(item.id)) urls.add(`/series/${item.id}/`);
+      for (const url of urls) {
+        const file = path.resolve(output, `.${url}`, 'index.html');
+        if (file.startsWith(`${path.resolve(output)}${path.sep}`)) fs.rmSync(file, { force: true });
+      }
+    }
     const { generateOgImages } =
       await import('./scripts/generate-og-images.js');
-    await generateOgImages({ force: OG_FORCE_ENV });
+    const generated = await generateOgImages({ force: OG_FORCE_ENV });
+    const keptImages = new Set(Object.values(generated?.images || {}));
+    for (const url of Object.values(oldImages)) {
+      if (typeof url === 'string' && /^\/assets\/og\/[a-zA-Z0-9._-]+\.png$/.test(url) && !keptImages.has(url)) {
+        fs.rmSync(path.join(output, url.slice(1)), { force: true });
+      }
+    }
+    if (!sampleContentEnabled(site)) fs.rmSync(path.join(output, 'assets/og/showcase'), { recursive: true, force: true });
     if (productionEnvironment) {
       // A dev build may have used this output folder before the production build.
       for (const preview of ['og', 'posts/draft-og-card-styles', 'assets/og/showcase',
-        'assets/og/posts--subspace--draft-og-card-styles.png']) {
+        'assets/og/posts--samples--draft-og-card-styles.png']) {
         fs.rmSync(path.join(directories?.output || dir?.output || '_site', preview), { recursive: true, force: true });
       }
     }

@@ -11,7 +11,7 @@ https://subspace-builder.nicholas.clooney.io/
 - Responsive navigation with a mobile hamburger menu, dark-theme-safe icon styling, and paginated home-page browsing
 - Dedicated content surfaces for posts, drafts, notes, tags, projects, and curated series pages with cross-content series backlinks
 - Reusable post list rendering with excerpt trimming, readable dates, and build-time pagination support
-- Responsive image pipeline powered by `@11ty/eleventy-img` (see [Responsive Images with Eleventy Img](posts/subspace/responsive-images-eleventy-img.md))
+- Responsive image pipeline powered by `@11ty/eleventy-img` (see [Responsive Images with Eleventy Img](posts/samples/responsive-images-eleventy-img.md))
 - YAML-driven site metadata, series definitions, notes config, theme presets, animation timing controls, and optional Umami analytics
 - Build-time Open Graph image generation for posts and notes, with cached regeneration to keep rebuilds cheap
 - GitHub snippet and embed support via a `{% github %}` shortcode with remote fetch, syntax highlighting, collapsible embeds, copy support, and cache-aware refresh logic

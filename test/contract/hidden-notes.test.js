@@ -11,7 +11,7 @@ import { parsePage, selectAll, textOf } from '../helpers/parse.js';
 
 // In this project, hidden notes are served at /notes/hidden/ (the src/hidden-notes.njk
 // page has permalink: /notes/hidden/). The collection `hiddenNotes` is populated
-// from notes/hidden/ (which inherits hidden:true). In production builds, drafts
+// from notes/samples/hidden/ (which inherits hidden:true). In production builds, drafts
 // are excluded from collections, so any hidden note that is ALSO a draft will
 // not appear in the index even though its individual page is still rendered.
 
@@ -20,7 +20,7 @@ const sidebarNav = yaml.load(
 );
 
 const collectHiddenNotesOnDisk = () => {
-  const root = path.resolve('notes/hidden');
+  const root = path.resolve('notes/samples/hidden');
   if (!fs.existsSync(root)) return [];
   const items = [];
   for (const entry of fs.readdirSync(root, { withFileTypes: true })) {

@@ -34,13 +34,13 @@ describe('development sharing-card previews', () => {
     }
   });
   it('keeps the existing Chinese draft own-image asset in a production build', () => {
-    expect(sitePathExists('assets/og/posts--subspace--draft-chinese-og-check.png')).toBe(true);
+    expect(sitePathExists('assets/og/posts--samples--draft-chinese-og-check.png')).toBe(true);
     expect(sitePathExists('posts/draft-chinese-og-check/index.html')).toBe(true);
   });
   it('cleans development previews when production reuses an output directory', () => {
     const output = fs.mkdtempSync(path.join(os.tmpdir(), 'og-production-reuse-'));
     const previews = ['og/index.html', 'posts/draft-og-card-styles/index.html',
-      'assets/og/showcase/post-retro.png', 'assets/og/posts--subspace--draft-og-card-styles.png'];
+      'assets/og/showcase/post-retro.png', 'assets/og/posts--samples--draft-og-card-styles.png'];
     try {
       for (const file of previews) {
         const target = path.join(output, file);
@@ -51,7 +51,7 @@ describe('development sharing-card previews', () => {
         env: { ...process.env, ELEVENTY_ENV: 'production' }, stdio: 'pipe', timeout: 60000,
       });
       for (const file of previews) expect(fs.existsSync(path.join(output, file)), file).toBe(false);
-      expect(fs.existsSync(path.join(output, 'assets/og/posts--subspace--draft-chinese-og-check.png'))).toBe(true);
+      expect(fs.existsSync(path.join(output, 'assets/og/posts--samples--draft-chinese-og-check.png'))).toBe(true);
     } finally { fs.rmSync(output, { recursive: true, force: true }); }
   }, 60000);
   it('translated post and note metadata use their own language-keyed images', () => {
