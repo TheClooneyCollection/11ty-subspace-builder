@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+* **og:** change the default share card to light Retro sci-fi. Downstream sites can keep the previous v3 design with `ogImage.style: classic` in `_data/site.yaml`. Add eight selectable styles, page `ogStyle` overrides, series selection through `ogSeries`, and separate Chinese cards.
+* **og:** add development-only `/og/` gallery and draft style comparison post; production builds omit the showcase and its rendering work.
+* **og:** invalidate generated cards when their normalized data, template sources, fonts or renderer versions change. See [OG images](docs/og-images.md) for configuration, font licenses and reference rendering costs.
+
 ## [1.41.0](https://github.com/TheClooneyCollection/11ty-subspace-builder/compare/v1.40.1...v1.41.0) (2026-10-04)
 
 

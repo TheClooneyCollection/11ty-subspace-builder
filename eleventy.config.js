@@ -650,10 +650,17 @@ export default function (eleventyConfig) {
     assertNoBrokenInternalLinks(results);
   });
 
-  eleventyConfig.on('eleventy.before', async () => {
+  eleventyConfig.on('eleventy.before', async ({ directories, dir } = {}) => {
     validateTimelineEntryDateTimeQuotes();
     const { generateOgImages } =
       await import('./scripts/generate-og-images.js');
     await generateOgImages({ force: OG_FORCE_ENV });
+    if (productionEnvironment) {
+      // A dev build may have used this output folder before the production build.
+      for (const preview of ['og', 'posts/draft-og-card-styles', 'assets/og/showcase',
+        'assets/og/posts--subspace--draft-og-card-styles.png']) {
+        fs.rmSync(path.join(directories?.output || dir?.output || '_site', preview), { recursive: true, force: true });
+      }
+    }
   });
 }

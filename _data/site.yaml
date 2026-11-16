@@ -26,6 +26,7 @@ codeBlock:
   copyButtonLineThreshold: 10
 
 ogImage:
+  style: retro
   staticEntries:
     - key: /timeline
       slug: timeline

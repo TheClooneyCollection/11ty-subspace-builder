@@ -2,6 +2,7 @@
 /_site-dev/
 assets/og/
 _data/ogImages.json
+_data/ogGallery.json
 /.claude/worktrees
 /worktrees/
 __pycache__/

@@ -165,9 +165,32 @@ Starter profile and prose are sample content; replace them with your own.
 
 ## Open Graph images
 
-`site.ogImage.staticEntries` defaults to `[]`. Each entry needs truthy `key`, `slug`, and `title`, plus a string `excerpt` (empty is allowed); malformed entries are skipped. `key` is the lookup key used by a page, `slug` is the output filename stem, and title/excerpt supply the card copy. The shipped entry uses key `/timeline`, slug `timeline`, and title `Timeline`.
+See [OG images](og-images.md) for designs, fonts, caching, build cost and development previews. Settings live under `site.ogImage`:
 
-`scripts/generate-og-images.js` generates PNGs under `assets/og/` and the derived `_data/ogImages.json` lookup. Do not edit the generated lookup. Post/note data first uses explicit page `ogImage`, then file-path-stem lookup, then slug lookup. Timeline data derives its image filename from the source basename. Translated posts/notes currently use slug lookup unless given an explicit image. Page `ogImage` is a URL, distinct from the site-level configuration block.
+| Setting | Default / accepted value | Effect |
+| --- | --- | --- |
+| `style` | `retro` | `retro`, `retro-dark`, `swiss`, `swiss-dark`, `glass-dark`, `glass-light-b`, `glass-light-c`, or `classic`. Unknown values fail the build with allowed values. |
+| `siteName` | Host of `site.url`, or empty when no URL exists | Card footer string. An explicitly empty string remains empty. |
+| `staticEntries` | `[]` | Array of configured page cards, described below. |
+
+**Upgrade change:** the default card is now light Retro sci-fi. Set `ogImage.style: classic` in the site configuration to retain the previous v3 design.
+
+Static entries need truthy `key`, `slug`, and `title`, plus a string `excerpt` (empty is allowed); malformed entries are skipped. `key` is the lookup key and determines the output filename: leading slashes are removed, path separators become `--`, and other non-filename characters become `-`. For example, `/timeline` produces `timeline.png`. `slug` remains required compatibility metadata, but does not determine the filename. `title` and `excerpt` supply card copy. The shipped entry uses key `/timeline`, slug `timeline`, and title `Timeline`.
+
+The build generates PNGs under `assets/og/` and the derived `_data/ogImages.json` lookup. Do not edit the generated lookup. Chinese posts and notes receive their own cards with translated titles and dates instead of reusing the English image. Explicit page `ogImage` URLs take precedence in page metadata.
+
+### Content front matter for OG cards
+
+| Field | Default / accepted value | Effect |
+| --- | --- | --- |
+| `ogStyle` | `site.ogImage.style`, then `retro` | Per-page override using the same eight style IDs. Unknown values fail the build. |
+| `ogSeries` | First matching series in declaration order | A matching series ID selects that series; boolean `false` suppresses series information. An unknown ID or a series that does not contain the entry fails the build and lists valid IDs for that entry. |
+| `ogImage` | Generated image URL | Explicit URL used by page social metadata. This is distinct from the site configuration object. |
+| `title`, `excerpt`, `date` | Content data | Card text and date. Dates use UTC components or the source date string. |
+| `tags` | Content tags | Timeline cards use the first recognized status in tag order: `shipped`, `thinking`, `wip`, `idea`, `published`. |
+| `parent` | Omitted | Timeline parent URL; its resolved title supplies the parent caption. |
+
+For recognized timeline statuses, a leading `word:` or `word(scope):` is removed from the card title. Without a recognized status, the label is `Timeline` (or `时间线` in Chinese) and the title is kept intact. Series progress follows declared membership order, not the series page's display sort. The OG resolver accepts `entries` and falls back to legacy `posts`; the series pages themselves still require `entries`.
 
 ## UI copy: `_data/ui.yaml`
 
