@@ -14,7 +14,7 @@
   <a href="https://subspace-builder.nicholas.clooney.io/"><img src="https://img.shields.io/badge/demo-live-0a7ea4" alt="Live demo"></a>
 </p>
 
-An Eleventy blog starter with ten switchable themes, multilingual posts, series, a timeline, and share cards that build themselves.
+An Eleventy blog starter with eleven switchable themes, multilingual posts, series, a timeline, and share cards that build themselves.
 
 <table>
   <tr>
@@ -27,7 +27,7 @@ An Eleventy blog starter with ten switchable themes, multilingual posts, series,
   </tr>
 </table>
 
-- **Ten themes and a picker**: readers switch skins and light or dark, and Fun mode rolls one for new visitors. [Theme system](docs/theme-system.md)
+- **Eleven themes and a picker**: ten skins plus a second Liquid Glass dark palette; readers switch skins and light or dark, and Fun mode rolls one for new visitors. [Theme system](docs/theme-system.md)
 - **Share cards, built for you**: a 1200x630 card for every post, note, timeline entry and page, in Retro, Swiss, Glass or Classic. [Share cards](#share-cards)
 - **Multilingual, opt-in**: translations get their own URLs, labels and share cards, Chinese included. [Multi-language content](docs/feature-i18n.md)
 - **Series and timeline**: group posts, notes and timeline entries into series, and log work on a status-tagged timeline. [Timeline](docs/feature-timeline.md)
