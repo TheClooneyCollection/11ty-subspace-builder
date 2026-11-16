@@ -15,17 +15,17 @@ const CONTENT_CHOICES = [
   {
     id: 'posts',
     label: 'Sample blog posts',
-    paths: ['posts/subspace'],
+    paths: ['posts/samples'],
   },
   {
     id: 'notes',
     label: 'Sample notes',
-    paths: ['notes'],
+    paths: ['notes/samples'],
   },
   {
     id: 'timeline',
     label: 'Sample timeline entries',
-    paths: ['timeline'],
+    paths: ['timeline/samples'],
   },
   {
     id: 'series',
@@ -84,17 +84,24 @@ const removePathContents = (relativePath) => {
   }
 };
 
-const removeMarkdownFiles = (relativePath) => {
+const removeSampleContent = (relativePath) => {
   const fullPath = path.join(rootDir, relativePath);
   if (!fs.existsSync(fullPath)) return;
 
-  for (const entry of fs.readdirSync(fullPath)) {
-    if (!entry.endsWith('.md')) continue;
-    fs.rmSync(path.join(fullPath, entry), { force: true });
+  for (const entry of fs.readdirSync(fullPath, { withFileTypes: true })) {
+    const child = path.join(relativePath, entry.name);
+    if (entry.isDirectory()) removeSampleContent(child);
+    else if (entry.name.endsWith('.md') || entry.name.endsWith('.11tydata.js')) {
+      fs.rmSync(path.join(rootDir, child), { force: true });
+    }
   }
 };
 
 const writeFile = (relativePath, content) => {
+  if (fs.existsSync(path.join(rootDir, relativePath))) {
+    output.write(`- Kept existing content: ${relativePath}\n`);
+    return;
+  }
   ensureDir(path.dirname(relativePath));
   fs.writeFileSync(path.join(rootDir, relativePath), content);
 };
@@ -166,7 +173,8 @@ const promptForSelection = async (rl, label, items) => {
 };
 
 const buildPlaceholderPost = () => `---
-title: Start here: your first post
+title: "Start here: your first post"
+permalink: /posts/start-here/
 date: ${today}
 tags:
   - posts
@@ -268,16 +276,15 @@ const applyContentReset = (selected) => {
   const ids = new Set(selected.map((item) => item.id));
 
   if (ids.has('posts')) {
-    removeMarkdownFiles('posts/subspace');
+    removeSampleContent('posts/samples');
   }
 
   if (ids.has('notes')) {
-    removeMarkdownFiles('notes');
-    removeMarkdownFiles('notes/hidden');
+    removeSampleContent('notes/samples');
   }
 
   if (ids.has('timeline')) {
-    removeMarkdownFiles('timeline');
+    removeSampleContent('timeline/samples');
   }
 
   if (ids.has('series')) {
@@ -309,7 +316,7 @@ const applyPlaceholders = (selected, contentSelectionIds) => {
   const ids = new Set(selected.map((item) => item.id));
 
   if (ids.has('blog')) {
-    writeFile('posts/subspace/start-here.md', buildPlaceholderPost());
+    writeFile('posts/start-here.md', buildPlaceholderPost());
   }
 
   if (ids.has('note')) {
@@ -365,8 +372,9 @@ const main = async () => {
   try {
     output.write('Subspace starter reset\n');
     output.write(
-      'This wizard can clear sample content and leave behind starter placeholders.\n',
+      'Use this wizard on a fresh fork to replace personal identity and metadata, optionally deleting samples and adding starter placeholders.\n',
     );
+    output.write('To hide samples without deleting them, set sampleContent: false in _data/site.yaml.\n');
     if (keepPersonalBranding) {
       output.write(
         'Personal branding flag is on: preserving author/profile/projects data and related images.\n',
