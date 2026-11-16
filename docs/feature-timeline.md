@@ -18,7 +18,13 @@ It supports:
 
 ## Source Content
 
-Timeline entries live in `timeline/` as Markdown files.
+Timeline entries live in `timeline/` as Markdown files. Bundled examples live in
+`timeline/samples/`; set `sampleContent: false` in `_data/site.yaml` to hide all
+samples in development and production. Put your own entries outside that namespace.
+`timeline/samples/samples.json` preserves `/timeline/{{ page.fileSlug }}/`, so
+existing parent references such as `/timeline/2026-04-14-shipped-timeline/` stay valid.
+The computed permalink preserves that directory value while still suppressing
+`testing` entries in production.
 
 Base data comes from:
 - `timeline/timeline.json`
@@ -183,7 +189,9 @@ The Open Graph image pipeline generates cards for:
 - each Markdown timeline entry in `timeline/`
 
 The `/timeline/` card text is configured in `_data/site.yaml` under `ogImage.staticEntries`.
-Timeline entry pages resolve generated cards through `timeline/timeline.11tydata.js`.
+Timeline entry pages resolve generated cards through `timeline/timeline.11tydata.js`,
+using `ogImages[page.filePathStem]` before the existing filename fallback. This
+keeps sample entries aligned with their namespaced generated card keys.
 Timeline archive pages do not currently get generated cards.
 
 ## Week Index Behavior

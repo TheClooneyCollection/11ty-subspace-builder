@@ -115,3 +115,15 @@ Glass spends much of its time on the blurred background. Chinese font use did no
 Any benchmark from this Builder's smaller sample site should be reported separately, with environment, card count, cold/warm cache state and whether development showcase cards were included. No Builder benchmark is claimed by the table above.
 
 Possible future Glass optimizations include pre-rendering a background once per variant and using a worker pool. These are proposals, not enabled features; background reuse has not been validated here. Local-render deployment and CJK subsetting also remain outside this implementation.
+
+## Bundled sample cards
+
+Bundled content lives under `posts/samples/`, `notes/samples/`, and
+`timeline/samples/`. Its public page URLs stay flat, while generated image keys
+follow the source path (for example, `/posts/samples/social-cards`). The comparison
+post source is `posts/samples/draft-og-card-styles.md`.
+
+Set `sampleContent: false` in `_data/site.yaml` to hide all bundled samples and
+omit their generated cards in both development and production. The development
+gallery can still show your own content, but the bundled comparison and showcase
+are omitted. Put your own content outside the sample namespaces.

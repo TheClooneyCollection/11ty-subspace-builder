@@ -12,6 +12,7 @@ All paths in this section are relative to `_data/site.yaml`.
 | `url` | Starter public URL; RSS fallback `http://localhost:8080` | Absolute site origin for canonical, feed and social image URLs. Set your deployment URL. |
 | `description` | Omitted; feed falls back to `tagline`, then title | RSS description string; also permitted in locale overrides. Page SEO separately uses page description, excerpt, rendered content, then `metadata.description`. |
 | `tagline` | Omitted | RSS description fallback string. |
+| `sampleContent` | `true` | Include bundled examples. Set `false` to exclude every file under `posts/samples/`, `notes/samples/`, and `timeline/samples/` from development and production output. |
 | `author.name`, `author.email` | Starter author details | Strings retained as author data and used by starter reset. Current page/feed templates do not render them; the About page uses `me.profile`. |
 | `home.target` | `blog` / `blog` | `blog`, `notes`, or `timeline` selects the section rendered at `/`. Its matching sidebar item moves first. Other IDs do not create a homepage automatically. |
 | `home.intro` | Omitted; first `me.intro.paragraphs` item, then `metadata.description` | Intro text on the blog index. |
@@ -315,3 +316,22 @@ Every leaf is a configurable string, with its shipped English value listed below
 The editable data inventory is `site.yaml`, `sidebarNav.yaml`, `themes.yaml`, `me.yaml`, `projects.yaml`, `series.yaml`, `timeline.yaml`, and `ui.yaml`, plus optional `locales/<code>.yaml`. `ogImages.json` is generated. Routing, environment and computed collection fields come from `eleventy.config.js` and content directory data files, not additional site settings.
 
 The reference follows `eleventy.config.js`, `lib/theme-manifest.js`, `lib/theme-bundle.js`, `assets/js/theme-init.js`, `assets/js/theme-picker.js`, `assets/css/theme-base.css`, `lib/i18n/index.js`, `lib/series.js`, `lib/timeline/categories.js`, `lib/markdown/code-block.js`, `scripts/generate-og-images.js`, and the layouts/components and `src/` page templates. Recheck these consumers when adding a setting; a key present in YAML alone does not establish a supported feature.
+
+## Bundled samples and fresh-fork cleanup
+
+Set `sampleContent: false` in `_data/site.yaml` to hide the bundled posts, notes,
+and timeline entries without deleting their source. The switch covers each entire
+`samples/` namespace, including future examples, rather than a front matter list.
+Your own content and generated starter placeholders belong outside those directories.
+Sample directory data preserves the existing flat `/posts/<slug>/`,
+`/notes/<slug>/`, and `/timeline/<slug>/` URLs; hidden sample notes remain at
+`/notes/hidden/<slug>/`. `notes/hidden/hidden.json` still supplies `hidden: true`
+for your own hidden notes.
+
+Use `npm run starter:reset` primarily when adopting a fresh fork to replace
+identity/profile data, projects, analytics, comments, and personal images. Its
+optional sample deletion only touches Markdown and companion data scripts inside
+the sample namespaces. Selecting content deletion also resets series definitions;
+the preview lists this before confirmation. Existing Markdown at starter placeholder paths is preserved. Metadata choices can
+replace existing files, so review them before using the wizard on an established
+site. Hiding samples alone does not anonymize the site's metadata.
