@@ -5,3 +5,5 @@ CLAUDE.md
 CLAUDE.subspace.md
 test/
 worktrees/
+.agents/
+.claude/
